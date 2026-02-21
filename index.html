@@ -9,7 +9,7 @@
             --glass: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.12);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         
         body {
             background: #000; color: #fff; min-height: 100vh;
@@ -17,6 +17,7 @@
             overflow-x: hidden;
         }
 
+        /* Задний фон с размытием */
         #bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
@@ -68,17 +69,24 @@
             font-size: 14px; font-weight: 700;
             display: flex;
             align-items: center;
-            justify-content: center; /* Центрируем текст */
-            position: relative; /* Для позиционирования иконки */
+            justify-content: center; /* Центровка текста */
+            position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .btn img {
+        /* Иконка слева */
+        .btn-icon {
             width: 22px; height: 22px;
-            object-fit: contain;
-            position: absolute; /* Иконка слева */
+            position: absolute;
             left: 20px;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-icon img, .btn-icon svg {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            fill: white; /* Для SVG Яндекса */
         }
 
         .btn:hover {
@@ -101,7 +109,7 @@
         <div class="bio" id="bio"></div>
     </div>
 
-    <div class="links" id="links-container"></div>
+    <div id="links-container" class="links"></div>
 
     <div class="footer">
         © 2026 BULAVIN SYSTEM PRODUCTION
@@ -111,11 +119,13 @@
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    // ✅ Свежие рабочие иконки
+    // SVG логотип Яндекса (надежный вариант)
+    const YANDEX_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545c-3.615 0-6.545-2.93-6.545-6.545S8.385 5.455 12 5.455s6.545 2.93 6.545 6.545-2.93 6.545-6.545 6.545z"/><path d="M12 7.636c-2.41 0-4.364 1.954-4.364 4.364s1.954 4.364 4.364 4.364 4.364-1.954 4.364-4.364-1.954-4.364-4.364-4.364zm0 6.545c-1.205 0-2.182-.977-2.182-2.182s.977-2.182 2.182-2.182 2.182.977 2.182 2.182-.977 2.182-2.182 2.182z"/></svg>`;
+
     const ICONS = {
         'telegram': 'https://img.icons8.com/ios-filled/50/ffffff/telegram-app.png',
         'instagram': 'https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png',
-        'yandex': 'https://img.icons8.com/external-tal-revivo-bold-tal-revivo/24/ffffff/external-yandex-music-a-freemium-music-streaming-service-by-yandex-logo-bold-tal-revivo.png',
+        'yandex': 'svg', // Метка для вставки SVG
         'spotify': 'https://img.icons8.com/ios-filled/50/ffffff/spotify.png',
         'youtube': 'https://img.icons8.com/ios-filled/50/ffffff/youtube-play.png'
     };
@@ -143,8 +153,6 @@
             const rows = parseSafeCSV(text);
             const headers = rows[0];
             const val = rows[1];
-
-            if (!val) return;
 
             const getName = (name) => {
                 const idx = headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
@@ -179,13 +187,21 @@
                     a.href = url;
                     a.target = '_blank';
                     
-                    const icon = document.createElement('img');
-                    icon.src = ICONS[p.key];
+                    const iconDiv = document.createElement('div');
+                    iconDiv.className = 'btn-icon';
+                    
+                    if (ICONS[p.key] === 'svg') {
+                        iconDiv.innerHTML = YANDEX_SVG;
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = ICONS[p.key];
+                        iconDiv.appendChild(img);
+                    }
                     
                     const span = document.createElement('span');
                     span.textContent = p.label;
                     
-                    a.appendChild(icon);
+                    a.appendChild(iconDiv);
                     a.appendChild(span);
                     container.appendChild(a);
                 }
