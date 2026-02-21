@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BULAVIN | Official</title>
-    
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --bg: #050505;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
 
         body {
             background: var(--bg);
@@ -23,94 +22,82 @@
             overflow-x: hidden;
         }
 
-        /* ЗЕРНИСТЫЙ ФОН */
-        body::before {
-            content: "";
-            position: fixed; inset: 0;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.03; pointer-events: none; z-index: 10;
-        }
-
+        /* ФОН С БЛЮРОМ */
         .bg-glow {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(120px) brightness(0.25);
-            transform: scale(1.4); z-index: -1;
+            filter: blur(80px) brightness(0.2);
+            transform: scale(1.2); z-index: -1;
+            transition: background-image 1s ease;
         }
 
         .app {
             width: 100%;
             max-width: 420px;
-            padding: 60px 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             gap: 20px;
             z-index: 1;
         }
 
-        /* ПРОФИЛЬ */
-        .profile { text-align: center; margin-bottom: 20px; }
+        /* АВАТАР И ИМЯ */
+        .profile { text-align: center; margin-bottom: 10px; }
         .avatar {
             width: 120px; height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid var(--glass-border);
+            border: 2px solid var(--glass-border);
             margin-bottom: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .profile h1 { font-size: 32px; letter-spacing: 6px; text-transform: uppercase; font-weight: 900; }
-        .profile p { font-size: 12px; opacity: 0.4; margin-top: 8px; letter-spacing: 1px; line-height: 1.6; }
+        .profile h1 { font-size: 32px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
+        .profile p { font-size: 13px; opacity: 0.5; margin-top: 10px; line-height: 1.5; }
 
-        /* СЕТКА КНОПОК */
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
+        /* КНОПКИ */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        
         .btn {
             background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            padding: 22px;
+            padding: 20px;
             border-radius: 24px;
             text-decoration: none;
-            color: rgba(255,255,255,0.9);
+            color: #fff;
             font-size: 14px;
             font-weight: 600;
-            text-align: center;
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
         }
 
         .btn:hover {
-            background: rgba(255,255,255,0.07);
-            border-color: rgba(255,255,255,0.2);
-            transform: translateY(-4px) scale(1.02);
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            border-color: rgba(255,255,255,0.3);
         }
 
-        /* СТЕКЛЯННЫЙ РАЗДЕЛИТЕЛЬ */
+        /* РАЗДЕЛИТЕЛЬ */
         .divider {
-            margin: 15px 0;
             padding: 12px;
-            background: rgba(255,255,255,0.02);
+            background: var(--glass);
             border-radius: 100px;
             border: 1px solid var(--glass-border);
             text-align: center;
-            font-size: 9px;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.2);
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.4);
             text-transform: uppercase;
+            backdrop-filter: blur(10px);
         }
 
-        .footer { text-align: center; margin-top: 50px; font-size: 10px; opacity: 0.15; letter-spacing: 2px; }
+        .full-width { grid-column: span 2; background: rgba(255,255,255,0.08); }
 
-        /* ВТОРОЙ БЛОК (ПЛОЩАДКИ) */
-        .music-btn {
-            grid-column: span 2;
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.1);
-        }
+        .footer { text-align: center; margin-top: 40px; font-size: 10px; opacity: 0.2; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -119,7 +106,7 @@
 
 <div class="app">
     <div class="profile">
-        <img src="" alt="" class="avatar" id="avatar">
+        <img src="" alt="" class="avatar" id="avatar" style="display: none;">
         <h1 id="name">BULAVIN</h1>
         <p id="bio"></p>
     </div>
@@ -158,49 +145,57 @@
         .then(res => res.text())
         .then(data => {
             const rows = parseCSV(data);
-            const d = rows[1];
+            const d = rows[1]; // Строка 2 с твоими данными
             if(!d) return;
 
-            // Заполнение профиля
-            document.getElementById('name').textContent = d[0];
-            document.getElementById('bio').textContent = d[1];
-            document.getElementById('avatar').src = d[7];
-            document.getElementById('bg').style.backgroundImage = `url('${d[7]}')`;
+            // ДАННЫЕ ИЗ ТВОЕЙ ТАБЛИЦЫ
+            document.getElementById('name').textContent = d[0] || "BULAVIN";
+            document.getElementById('bio').textContent = d[1] || "";
+            
+            const photoUrl = d[7]; 
+            if(photoUrl) {
+                const img = document.getElementById('avatar');
+                img.src = photoUrl;
+                img.style.display = 'inline-block';
+                document.getElementById('bg').style.backgroundImage = `url('${photoUrl}')`;
+            }
 
             const socialGrid = document.getElementById('social-grid');
             const musicGrid = document.getElementById('music-grid');
 
-            // СОЦСЕТИ (Берем Telegram и Instagram)
+            // Конфиг кнопок (Имя, Ссылка, Иконка)
             const socials = [
-                {n: 'Telegram', l: d[2]},
-                {n: 'Instagram', l: d[3]}
+                {n: 'Telegram', l: d[2], i: '✈️'},
+                {n: 'Instagram', l: d[3], i: '📸'}
             ];
 
-            // ПЛОЩАДКИ (Яндекс, Spotify, YouTube)
-            const platforms = [
-                {n: 'Yandex Music', l: d[4]},
-                {n: 'Spotify', l: d[5]},
-                {n: 'YouTube', l: d[6]}
+            const music = [
+                {n: 'Yandex Music', l: d[4], i: '💛'},
+                {n: 'Spotify', l: d[5], i: '🎧'},
+                {n: 'YouTube', l: d[6], i: '📺'}
             ];
 
             socials.forEach(s => {
                 if(s.l && s.l.length > 5) {
                     const a = document.createElement('a');
                     a.className = 'btn';
-                    a.href = s.l; a.target = '_blank'; a.textContent = s.n;
+                    a.href = s.l; a.target = '_blank';
+                    a.innerHTML = `<span>${s.i}</span> ${s.n}`;
                     socialGrid.appendChild(a);
                 }
             });
 
-            platforms.forEach(p => {
-                if(p.l && p.l.length > 5) {
+            music.forEach(m => {
+                if(m.l && m.l.length > 5) {
                     const a = document.createElement('a');
-                    a.className = 'btn music-btn';
-                    a.href = p.l; a.target = '_blank'; a.textContent = p.n;
+                    a.className = 'btn full-width';
+                    a.href = m.l; a.target = '_blank';
+                    a.innerHTML = `<span>${m.i}</span> ${m.n}`;
                     musicGrid.appendChild(a);
                 }
             });
-        });
+        })
+        .catch(err => console.error("Ошибка загрузки данных:", err));
 </script>
 
 </body>
