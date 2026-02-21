@@ -6,11 +6,11 @@
     <title>BULAVIN | Official</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.12);
             --accent: #ff3333;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
         body {
             background: #000; color: #fff; min-height: 100vh;
@@ -21,9 +21,10 @@
         #bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(80px) brightness(0.2);
+            filter: blur(80px) brightness(0.25);
             transform: scale(1.1); z-index: -1;
-            transition: 1.5s ease;
+            transition: background-image 1.5s ease;
+            background-color: #0a0a0a;
         }
 
         body::before {
@@ -48,37 +49,22 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
-        /* Стильный счетчик слушателей */
         .stats {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; gap: 8px;
             background: rgba(255, 255, 255, 0.05);
-            padding: 8px 16px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 16px; border-radius: 100px;
+            font-size: 11px; font-weight: 700; letter-spacing: 1px;
+            margin-bottom: 25px; border: 1px solid rgba(255, 255, 255, 0.1);
             text-transform: uppercase;
-            animation: pulse 2s infinite ease-in-out;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.8; }
-            50% { opacity: 1; transform: scale(1.02); }
-            100% { opacity: 0.8; }
         }
         .stats span { color: var(--accent); }
 
         .avatar {
             width: 130px; height: 130px;
             margin: 0 auto 20px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: #111;
-            display: none;
+            border-radius: 50%; object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: #111; display: none;
         }
 
         h1 { font-size: 32px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; margin-bottom: 8px; }
@@ -90,13 +76,11 @@
             background: var(--glass);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 24px;
-            text-decoration: none;
-            color: #fff;
+            padding: 20px; border-radius: 24px;
+            text-decoration: none; color: #fff;
             font-size: 14px; font-weight: 700;
             text-align: center; letter-spacing: 1px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .btn:hover {
@@ -114,12 +98,12 @@
 
 <div class="container">
     <div class="card">
-        <div id="stats-wrap">
+        <div id="stats-wrap" style="opacity: 0; transition: 1s;">
             <div class="stats">Слушателей в месяц: <span id="listeners-count">...</span></div>
         </div>
         
         <img src="" alt="" class="avatar" id="photo">
-        <h1 id="name">BULAVIN</h1>
+        <h1 id="name">ЗАГРУЗКА</h1>
         <div class="bio" id="bio"></div>
     </div>
 
@@ -134,7 +118,6 @@
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
     const ARTIST_ID = "24009925";
 
-    // ✅ ПАРСЕР ТАБЛИЦЫ
     function parseSafeCSV(text) {
         const result = [];
         let row = [], cell = '', inQuotes = false;
@@ -151,7 +134,7 @@
         return result;
     }
 
-    // ✅ АВТОМАТИЧЕСКИЙ ПАРСЕР СЛУШАТЕЛЕЙ
+    // ✅ Фоновый парсер слушателей
     async function fetchListeners() {
         try {
             const proxy = "https://api.allorigins.win/get?url=";
@@ -159,28 +142,24 @@
             const res = await fetch(proxy + target);
             const data = await res.json();
             
-            // Ищем число слушателей в HTML-коде страницы
-            const match = data.contents.match(/monthlyListeners":(\d+)/) || data.contents.match(/(\d+)\s*слушател[яей]/);
+            const match = data.contents.match(/monthlyListeners":(\d+)/);
             if (match) {
-                const count = parseInt(match[1] || match[0]).toLocaleString('ru-RU');
+                const count = parseInt(match[1]).toLocaleString('ru-RU');
                 document.getElementById('listeners-count').textContent = count;
-            } else {
-                document.getElementById('listeners-count').textContent = "В СЕТИ";
+                document.getElementById('stats-wrap').style.opacity = '1';
             }
-        } catch (e) {
-            document.getElementById('listeners-count').textContent = "LIVE";
-        }
+        } catch (e) { console.log("Stats delay..."); }
     }
 
     async function init() {
-        fetchListeners(); // Запуск парсера Яндекса
-
         try {
             const res = await fetch(CSV_URL);
             const text = await res.text();
             const rows = parseSafeCSV(text);
             const headers = rows[0];
             const val = rows[1];
+
+            if (!val) return;
 
             const getName = (name) => {
                 const idx = headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
@@ -193,11 +172,39 @@
             const photo = getName('photo');
             if (photo && photo.startsWith('http')) {
                 const img = document.getElementById('photo');
-                img.src = photo; img.style.display = 'block';
-                document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
+                // Убираем редирект Яндекса для стабильности
+                const cleanPhoto = photo.split('?')[0]; 
+                img.src = cleanPhoto;
+                img.style.display = 'block';
+                document.getElementById('bg').style.backgroundImage = `url('${cleanPhoto}')`;
             }
 
             const container = document.getElementById('links-container');
             const platforms = [
                 {key: 'telegram', label: 'TELEGRAM'},
-                {key: 'instagram', label:
+                {key: 'instagram', label: 'INSTAGRAM'},
+                {key: 'yandex', label: 'YANDEX MUSIC'},
+                {key: 'spotify', label: 'SPOTIFY'},
+                {key: 'youtube', label: 'YOUTUBE'}
+            ];
+
+            platforms.forEach(p => {
+                const url = getName(p.key);
+                if (url && url.startsWith('http')) {
+                    const a = document.createElement('a');
+                    a.className = 'btn';
+                    a.href = url; a.target = '_blank';
+                    a.textContent = p.label;
+                    container.appendChild(a);
+                }
+            });
+
+            // Запускаем счетчик ТОЛЬКО после того как основной контент готов
+            fetchListeners();
+
+        } catch (e) { console.error("CSV Error", e); }
+    }
+    init();
+</script>
+</body>
+</html>
