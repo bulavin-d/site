@@ -55,78 +55,80 @@
             border-radius: 40px;
             padding: 30px;
             text-align: center;
-            margin-bottom: 10px;
         }
 
         .avatar-wrapper {
-            width: 120px; height: 120px;
+            width: 140px; height: 140px;
             margin: 0 auto 20px;
             border-radius: 50%;
-            padding: 4px;
+            padding: 5px;
             background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            position: relative;
         }
 
         .avatar {
             width: 100%; height: 100%;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
-        .profile-card h1 { font-size: 26px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; font-weight: 900; }
-        .profile-card p { font-size: 13px; opacity: 0.6; line-height: 1.5; }
+        .profile-card h1 { font-size: 28px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+        .profile-card p { font-size: 14px; opacity: 0.6; line-height: 1.5; }
 
-        /* РАЗДЕЛИТЕЛЬ */
-        .divider {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 50px;
-            padding: 12px;
-            text-align: center;
-            font-size: 10px;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.4);
-            text-transform: uppercase;
-            margin: 10px 0;
-            backdrop-filter: blur(10px);
-        }
-
-        /* КНОПКИ */
+        /* СЕТКА */
         .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
+        /* ТВОЙ СТИЛЬ КНОПОК */
         .social-link {
             background: var(--glass);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 24px;
+            padding: 18px;
+            border-radius: 20px;
             text-decoration: none;
             color: #fff;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 8px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .social-link:hover {
             background: rgba(255,255,255,0.1);
-            transform: scale(1.02) translateY(-3px);
+            transform: scale(1.05) translateY(-5px);
+            border-color: rgba(255,255,255,0.3);
         }
 
-        /* ШИРОКИЕ КНОПКИ ДЛЯ МУЗЫКИ */
+        /* СТЕКЛЯННЫЙ РАЗДЕЛИТЕЛЬ */
+        .divider {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+        }
+
+        /* МУЗЫКАЛЬНЫЕ КНОПКИ ШИРОКИЕ */
         .full-width {
             grid-column: span 2;
             background: rgba(255,255,255,0.08);
         }
 
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 11px; opacity: 0.3; margin-top: 20px; letter-spacing: 1px; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -161,6 +163,7 @@
 
 <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
     function parseCSV(text) {
@@ -184,6 +187,7 @@
         .then(data => {
             const rows = parseCSV(data);
             const p = rows[1];
+
             if (!p) return;
 
             document.getElementById('user-name').textContent = p[0];
@@ -197,13 +201,13 @@
             const socGrid = document.getElementById('social-grid');
             const musGrid = document.getElementById('music-grid');
 
-            // СОЦСЕТИ
+            // Соцсети (в сетку 2x2)
             const socials = [
                 { name: 'Telegram', link: p[2], icon: '✈️' },
                 { name: 'Instagram', link: p[3], icon: '📸' }
             ];
 
-            // ПЛОЩАДКИ
+            // Музыка (широкие)
             const music = [
                 { name: 'Yandex Music', link: p[4], icon: '💛' },
                 { name: 'Spotify', link: p[5], icon: '🎧' },
