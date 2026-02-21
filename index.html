@@ -9,31 +9,22 @@
             --glass: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.12);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
         body {
-            background: #000;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            background: #000; color: #fff; min-height: 100vh;
+            display: flex; justify-content: center; align-items: flex-start;
             overflow-x: hidden;
         }
 
-        /* Тот самый задний фон из твоего фото */
         #bg {
-            position: fixed;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            filter: blur(60px) brightness(0.3);
-            transform: scale(1.1);
-            z-index: -1;
-            transition: background-image 1.5s ease;
+            position: fixed; inset: 0;
+            background-size: cover; background-position: center;
+            filter: blur(60px) brightness(0.25);
+            transform: scale(1.1); z-index: -1;
+            transition: 1.5s ease;
         }
 
-        /* Эффект шума для стиля */
         body::before {
             content: ""; position: fixed; inset: 0;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
@@ -41,13 +32,9 @@
         }
 
         .container {
-            width: 100%;
-            max-width: 440px;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            z-index: 10;
+            width: 100%; max-width: 440px;
+            padding: 50px 20px; display: flex; flex-direction: column;
+            gap: 25px; z-index: 10;
         }
 
         .card {
@@ -55,62 +42,52 @@
             backdrop-filter: blur(40px);
             border: 1px solid var(--glass-border);
             border-radius: 40px;
-            padding: 40px 25px;
-            text-align: center;
+            padding: 40px 25px; text-align: center;
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
         .avatar {
             width: 120px; height: 120px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: #111;
+            margin: 0 auto 20px; border-radius: 50%;
+            object-fit: cover; border: 1px solid rgba(255,255,255,0.2);
             display: none;
         }
 
         h1 { font-size: 32px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; margin-bottom: 8px; }
         .bio { font-size: 13px; opacity: 0.5; line-height: 1.6; white-space: pre-wrap; }
 
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .links { display: flex; flex-direction: column; gap: 12px; }
 
-        /* Кнопки со стеклянными логотипами */
         .btn {
             background: var(--glass);
             backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            padding: 16px 20px;
-            border-radius: 22px;
-            text-decoration: none;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
+            padding: 18px 25px;
+            border-radius: 24px;
+            text-decoration: none; color: #fff;
+            font-size: 14px; font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 15px; /* Расстояние между лого и текстом */
+            justify-content: center; /* Центрируем текст */
+            position: relative; /* Для позиционирования иконки */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .btn img {
-            width: 24px;
-            height: 24px;
+            width: 22px; height: 22px;
             object-fit: contain;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
+            position: absolute; /* Иконка слева */
+            left: 20px;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
         }
 
         .btn:hover {
             background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.03) translateY(-3px);
+            transform: scale(1.02) translateY(-2px);
             border-color: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 50px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -124,8 +101,7 @@
         <div class="bio" id="bio"></div>
     </div>
 
-    <div class="links" id="links-container">
-        </div>
+    <div class="links" id="links-container"></div>
 
     <div class="footer">
         © 2026 BULAVIN SYSTEM PRODUCTION
@@ -135,13 +111,13 @@
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    // Иконки для кнопок
+    // ✅ Свежие рабочие иконки
     const ICONS = {
-        'telegram': 'https://cdn-icons-png.flaticon.com/512/2111/2111646.png',
-        'instagram': 'https://cdn-icons-png.flaticon.com/512/2111/2111463.png',
-        'yandex': 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Yandex_Music_icon.svg',
-        'spotify': 'https://cdn-icons-png.flaticon.com/512/174/174872.png',
-        'youtube': 'https://cdn-icons-png.flaticon.com/512/1384/1384060.png'
+        'telegram': 'https://img.icons8.com/ios-filled/50/ffffff/telegram-app.png',
+        'instagram': 'https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png',
+        'yandex': 'https://img.icons8.com/external-tal-revivo-bold-tal-revivo/24/ffffff/external-yandex-music-a-freemium-music-streaming-service-by-yandex-logo-bold-tal-revivo.png',
+        'spotify': 'https://img.icons8.com/ios-filled/50/ffffff/spotify.png',
+        'youtube': 'https://img.icons8.com/ios-filled/50/ffffff/youtube-play.png'
     };
 
     function parseSafeCSV(text) {
@@ -203,7 +179,6 @@
                     a.href = url;
                     a.target = '_blank';
                     
-                    // Добавляем иконку
                     const icon = document.createElement('img');
                     icon.src = ICONS[p.key];
                     
