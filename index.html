@@ -8,10 +8,10 @@
         :root {
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --bg: #050505;
+            --bg: #030303;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 
         body {
             background: var(--bg);
@@ -22,48 +22,51 @@
             overflow-x: hidden;
         }
 
-        /* ФОН С БЛЮРОМ */
+        /* ДИНАМИЧЕСКИЙ ФОН */
         .bg-glow {
             position: fixed; inset: 0;
-            background-size: cover; background-position: center;
-            filter: blur(80px) brightness(0.2);
-            transform: scale(1.2); z-index: -1;
-            transition: background-image 1s ease;
+            background-size: cover;
+            background-position: center;
+            filter: blur(100px) brightness(0.25);
+            transform: scale(1.2);
+            z-index: -1;
+            background-color: #111;
         }
 
         .app {
             width: 100%;
-            max-width: 420px;
-            padding: 40px 20px;
+            max-width: 400px;
+            padding: 50px 20px;
             display: flex;
             flex-direction: column;
             gap: 20px;
             z-index: 1;
         }
 
-        /* АВАТАР И ИМЯ */
+        /* ПРОФИЛЬ */
         .profile { text-align: center; margin-bottom: 10px; }
         .avatar {
-            width: 120px; height: 120px;
+            width: 130px; height: 130px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--glass-border);
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.6);
+            background: #222;
         }
-        .profile h1 { font-size: 32px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
-        .profile p { font-size: 13px; opacity: 0.5; margin-top: 10px; line-height: 1.5; }
+        .profile h1 { font-size: 34px; letter-spacing: 5px; text-transform: uppercase; font-weight: 900; }
+        .profile p { font-size: 13px; opacity: 0.5; margin-top: 8px; line-height: 1.4; padding: 0 10px; }
 
         /* КНОПКИ */
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         
         .btn {
             background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 24px;
+            padding: 18px;
+            border-radius: 22px;
             text-decoration: none;
             color: #fff;
             font-size: 14px;
@@ -71,33 +74,36 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            transition: 0.3s;
+            gap: 10px;
+            transition: all 0.3s ease;
         }
 
         .btn:hover {
-            background: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-3px);
             border-color: rgba(255,255,255,0.3);
         }
 
         /* РАЗДЕЛИТЕЛЬ */
         .divider {
-            padding: 12px;
-            background: var(--glass);
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 100px;
             border: 1px solid var(--glass-border);
             text-align: center;
             font-size: 10px;
-            letter-spacing: 2px;
-            color: rgba(255,255,255,0.4);
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.3);
             text-transform: uppercase;
-            backdrop-filter: blur(10px);
+            margin: 10px 0;
         }
 
-        .full-width { grid-column: span 2; background: rgba(255,255,255,0.08); }
+        .full { grid-column: span 2; background: rgba(255, 255, 255, 0.07); }
 
         .footer { text-align: center; margin-top: 40px; font-size: 10px; opacity: 0.2; letter-spacing: 2px; }
+
+        /* ИКОНКИ СТИЛЬ */
+        .btn i { font-style: normal; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -106,96 +112,74 @@
 
 <div class="app">
     <div class="profile">
-        <img src="" alt="" class="avatar" id="avatar" style="display: none;">
-        <h1 id="name">BULAVIN</h1>
+        <img src="" alt="" class="avatar" id="avatar" style="display:none">
+        <h1 id="name">...</h1>
         <p id="bio"></p>
     </div>
 
-    <div class="grid" id="social-grid"></div>
+    <div class="grid" id="soc-grid"></div>
 
-    <div class="divider">music platforms</div>
+    <div class="divider">Music Platforms</div>
 
-    <div class="grid" id="music-grid"></div>
+    <div class="grid" id="mus-grid"></div>
 
-    <div class="footer">
-        © <span id="year"></span> BULAVIN SYSTEM
-    </div>
+    <div class="footer">© 2026 BULAVIN SYSTEM</div>
 </div>
 
 <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    function parseCSV(text) {
-        return text.split('\n').map(row => {
-            const cells = [];
-            let cell = '';
-            let inQuotes = false;
-            for (let char of row) {
-                if (char === '"') inQuotes = !inQuotes;
-                else if (char === ',' && !inQuotes) { cells.push(cell.trim()); cell = ''; }
-                else cell += char;
-            }
-            cells.push(cell.trim());
-            return cells;
-        });
-    }
-
-    fetch(CSV_URL)
-        .then(res => res.text())
-        .then(data => {
-            const rows = parseCSV(data);
-            const d = rows[1]; // Строка 2 с твоими данными
-            if(!d) return;
-
-            // ДАННЫЕ ИЗ ТВОЕЙ ТАБЛИЦЫ
-            document.getElementById('name').textContent = d[0] || "BULAVIN";
-            document.getElementById('bio').textContent = d[1] || "";
+    async function loadData() {
+        try {
+            const response = await fetch(CSV_URL);
+            const text = await response.text();
+            const rows = text.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
             
-            const photoUrl = d[7]; 
-            if(photoUrl) {
-                const img = document.getElementById('avatar');
-                img.src = photoUrl;
-                img.style.display = 'inline-block';
-                document.getElementById('bg').style.backgroundImage = `url('${photoUrl}')`;
+            const d = rows[1].map(cell => cell.replace(/^"|"$/g, '').trim());
+
+            // Заполнение
+            document.getElementById('name').textContent = d[0];
+            document.getElementById('bio').textContent = d[1];
+            
+            const photo = d[7]; // Колонка H
+            if (photo) {
+                document.getElementById('avatar').src = photo;
+                document.getElementById('avatar').style.display = 'inline-block';
+                document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
             }
 
-            const socialGrid = document.getElementById('social-grid');
-            const musicGrid = document.getElementById('music-grid');
+            const socGrid = document.getElementById('soc-grid');
+            const musGrid = document.getElementById('mus-grid');
 
-            // Конфиг кнопок (Имя, Ссылка, Иконка)
             const socials = [
-                {n: 'Telegram', l: d[2], i: '✈️'},
+                {n: 'Telegram', l: d[2], i: '🔗'},
                 {n: 'Instagram', l: d[3], i: '📸'}
             ];
 
             const music = [
-                {n: 'Yandex Music', l: d[4], i: '💛'},
+                {n: 'Yandex Music', l: d[4], i: '🔥'},
                 {n: 'Spotify', l: d[5], i: '🎧'},
                 {n: 'YouTube', l: d[6], i: '📺'}
             ];
 
             socials.forEach(s => {
                 if(s.l && s.l.length > 5) {
-                    const a = document.createElement('a');
-                    a.className = 'btn';
-                    a.href = s.l; a.target = '_blank';
-                    a.innerHTML = `<span>${s.i}</span> ${s.n}`;
-                    socialGrid.appendChild(a);
+                    socGrid.innerHTML += `<a href="${s.l}" target="_blank" class="btn"><i>${s.i}</i> ${s.n}</a>`;
                 }
             });
 
             music.forEach(m => {
                 if(m.l && m.l.length > 5) {
-                    const a = document.createElement('a');
-                    a.className = 'btn full-width';
-                    a.href = m.l; a.target = '_blank';
-                    a.innerHTML = `<span>${m.i}</span> ${m.n}`;
-                    musicGrid.appendChild(a);
+                    musGrid.innerHTML += `<a href="${m.l}" target="_blank" class="btn full"><i>${m.i}</i> ${m.n}</a>`;
                 }
             });
-        })
-        .catch(err => console.error("Ошибка загрузки данных:", err));
+
+        } catch (e) {
+            console.error("Ошибка:", e);
+        }
+    }
+
+    loadData();
 </script>
 
 </body>
