@@ -6,13 +6,13 @@
     <title>BULAVIN | Official</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.07);
             --glass-border: rgba(255, 255, 255, 0.12);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         
         body {
-            background: #050505;
+            background: #000;
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -21,78 +21,76 @@
             overflow-x: hidden;
         }
 
-        /* Динамический фон */
         #bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(60px) brightness(0.2);
+            filter: blur(80px) brightness(0.25);
             transform: scale(1.1); z-index: -1;
-            transition: 1s ease;
-            background-color: #050505;
+            transition: 1.5s ease;
+        }
+
+        /* Эффект шума */
+        body::before {
+            content: ""; position: fixed; inset: 0;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; pointer-events: none; z-index: 1;
         }
 
         .container {
-            width: 100%;
-            max-width: 420px;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-            z-index: 10;
+            width: 100%; max-width: 440px;
+            padding: 50px 20px;
+            display: flex; flex-direction: column;
+            gap: 20px; z-index: 10;
         }
 
-        /* Главная карточка */
         .card {
             background: var(--glass);
             backdrop-filter: blur(40px);
             border: 1px solid var(--glass-border);
-            border-radius: 35px;
-            padding: 40px 25px;
+            border-radius: 40px;
+            padding: 45px 30px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
         .avatar {
-            width: 120px; height: 120px;
-            margin: 0 auto 20px;
+            width: 130px; height: 130px;
+            margin: 0 auto 25px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.2);
-            box-shadow: 0 0 30px rgba(255,255,255,0.1);
-            background: #222;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: #111;
+            display: none;
         }
 
-        h1 { font-size: 32px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 8px; font-weight: 800; }
-        .bio { font-size: 14px; opacity: 0.5; line-height: 1.6; font-weight: 400; }
+        h1 { font-size: 34px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; margin-bottom: 12px; }
+        .bio { font-size: 14px; opacity: 0.6; line-height: 1.6; font-weight: 400; white-space: pre-wrap; }
 
-        /* Сетка кнопок */
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .links { display: flex; flex-direction: column; gap: 12px; }
 
         .btn {
             background: var(--glass);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            padding: 18px;
-            border-radius: 22px;
+            padding: 20px;
+            border-radius: 24px;
             text-decoration: none;
             color: #fff;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             text-align: center;
-            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .btn:hover {
-            background: rgba(255,255,255,0.15);
-            transform: scale(1.02);
+            background: rgba(255,255,255,0.12);
+            transform: scale(1.03) translateY(-3px);
             border-color: rgba(255,255,255,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 40px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 50px; letter-spacing: 3px; }
     </style>
 </head>
 <body>
@@ -101,13 +99,12 @@
 
 <div class="container">
     <div class="card">
-        <img src="" alt="" class="avatar" id="photo" style="display: none;">
+        <img src="" alt="" class="avatar" id="photo">
         <h1 id="name">BULAVIN</h1>
-        <p class="bio" id="bio"></p>
+        <div class="bio" id="bio"></div>
     </div>
 
-    <div class="links" id="links-container">
-        </div>
+    <div class="links" id="links-container"></div>
 
     <div class="footer">
         © 2026 BULAVIN SYSTEM PRODUCTION
@@ -117,27 +114,50 @@
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
+    // ✅ ТОТ САМЫЙ УМНЫЙ ПАРСЕР (лечит запятые и тире)
+    function parseSafeCSV(text) {
+        const result = [];
+        let row = [], cell = '', inQuotes = false;
+        // Убираем невидимый символ BOM и нормализуем переносы строк
+        text = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
+        
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"' && text[i+1] === '"') { cell += '"'; i++; }
+            else if (char === '"') { inQuotes = !inQuotes; }
+            else if (char === ',' && !inQuotes) { row.push(cell.trim()); cell = ''; }
+            else if (char === '\n' && !inQuotes) { row.push(cell.trim()); result.push(row); row = []; cell = ''; }
+            else { cell += char; }
+        }
+        if (cell || row.length) { row.push(cell.trim()); result.push(row); }
+        return result;
+    }
+
     async function init() {
         try {
-            const response = await fetch(CSV_URL);
-            const data = await response.text();
+            const res = await fetch(CSV_URL);
+            const text = await res.text();
+            const rows = parseSafeCSV(text);
             
-            // Чистим данные от лишних символов
-            const rows = data.split('\n').map(row => row.split(',').map(cell => cell.replace(/"/g, '').trim()));
             const headers = rows[0];
             const val = rows[1];
 
             if (!val) return;
 
-            // Находим данные по заголовкам (чтобы не путать столбцы)
-            const name = val[headers.indexOf('Псевдоним')] || "BULAVIN";
-            const bio = val[headers.indexOf('БИО')] || "";
-            const photo = val[headers.indexOf('PHOTO')] || "";
+            // Находим данные по именам столбцов
+            const getName = (name) => {
+                const idx = headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
+                return idx !== -1 ? val[idx] : null;
+            };
+
+            const name = getName('псевдоним') || "BULAVIN";
+            const bio = getName('био') || "";
+            const photo = getName('photo') || "";
 
             document.getElementById('name').textContent = name;
             document.getElementById('bio').textContent = bio;
 
-            // Обработка фото
+            // Фото и фон
             if (photo && photo.startsWith('http')) {
                 const img = document.getElementById('photo');
                 img.src = photo;
@@ -145,24 +165,30 @@
                 document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
             }
 
-            // Создание кнопок для всех ссылок
+            // Кнопки
             const container = document.getElementById('links-container');
-            const platforms = ['Telegram', 'Instagram', 'Yandex Music', 'Spotify', 'YouTube'];
+            const platforms = [
+                {key: 'telegram', label: 'TELEGRAM'},
+                {key: 'instagram', label: 'INSTAGRAM'},
+                {key: 'yandex', label: 'YANDEX MUSIC'},
+                {key: 'spotify', label: 'SPOTIFY'},
+                {key: 'youtube', label: 'YOUTUBE'}
+            ];
 
             platforms.forEach(p => {
-                const idx = headers.indexOf(p);
-                if (idx !== -1 && val[idx] && val[idx].startsWith('http')) {
+                const url = getName(p.key);
+                if (url && url.startsWith('http')) {
                     const a = document.createElement('a');
                     a.className = 'btn';
-                    a.href = val[idx];
+                    a.href = url;
                     a.target = '_blank';
-                    a.textContent = p.toUpperCase();
+                    a.textContent = p.label;
                     container.appendChild(a);
                 }
             });
 
         } catch (e) {
-            console.error("Ошибка загрузки:", e);
+            console.error("Ошибка:", e);
         }
     }
 
