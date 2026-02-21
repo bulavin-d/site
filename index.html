@@ -3,167 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BULAVIN | Official</title>
     
-    <title>BULAVIN | Official Website</title>
-    <meta property="og:title" content="BULAVIN">
-    <meta property="og:description" content="Официальный сайт музыканта. Слушай новые релизы здесь.">
-    <meta property="og:image" content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
-    <meta name="theme-color" content="#0a0a0a">
-
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --accent: #ffffff;
-            --bg-dark: #080808;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --bg: #050505;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 
         body {
-            background: var(--bg-dark);
+            background: var(--bg);
             color: #fff;
-            min-height: 100vh;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* NOISE & DYNAMIC BG */
+        /* ЗЕРНИСТЫЙ ФОН */
         body::before {
             content: "";
             position: fixed; inset: 0;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.05; pointer-events: none; z-index: 10;
+            opacity: 0.03; pointer-events: none; z-index: 10;
         }
 
-        .dynamic-bg {
+        .bg-glow {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(100px) brightness(0.2);
-            transform: scale(1.3); z-index: -1;
+            filter: blur(120px) brightness(0.25);
+            transform: scale(1.4); z-index: -1;
         }
 
-        .container {
+        .app {
             width: 100%;
-            max-width: 440px;
-            padding: 50px 20px;
+            max-width: 420px;
+            padding: 60px 20px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
             z-index: 1;
         }
 
-        /* HEADER */
-        .header { text-align: center; margin-bottom: 10px; }
+        /* ПРОФИЛЬ */
+        .profile { text-align: center; margin-bottom: 20px; }
         .avatar {
-            width: 110px; height: 110px;
+            width: 120px; height: 120px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--glass-border);
-            margin-bottom: 15px;
-            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+            border: 1px solid var(--glass-border);
+            margin-bottom: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
-        .header h1 { font-size: 32px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
-        .header p { font-size: 13px; opacity: 0.5; margin-top: 5px; letter-spacing: 1px; }
+        .profile h1 { font-size: 32px; letter-spacing: 6px; text-transform: uppercase; font-weight: 900; }
+        .profile p { font-size: 12px; opacity: 0.4; margin-top: 8px; letter-spacing: 1px; line-height: 1.6; }
 
-        /* ГЛАВНАЯ КНОПКА (ЛИКВИД) */
-        .main-release {
-            background: #fff;
-            color: #000;
-            padding: 24px;
-            border-radius: 30px;
-            text-align: center;
-            text-decoration: none;
-            font-weight: 800;
-            font-size: 16px;
-            letter-spacing: 1px;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            box-shadow: 0 10px 40px rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .main-release:hover { transform: scale(1.02); box-shadow: 0 15px 50px rgba(255,255,255,0.3); }
-
-        /* СТЕКЛЯННЫЙ РАЗДЕЛИТЕЛЬ */
-        .divider-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 10px 0;
-        }
-        .divider-line {
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
-        }
-        .divider-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.3;
-        }
-
-        /* СОЦСЕТИ - МЯГКИЕ КНОПКИ */
-        .social-grid {
+        /* СЕТКА КНОПОК */
+        .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
-        .social-btn {
+
+        .btn {
             background: var(--glass);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 25px;
+            padding: 22px;
+            border-radius: 24px;
             text-decoration: none;
-            color: #fff;
+            color: rgba(255,255,255,0.9);
             font-size: 14px;
             font-weight: 600;
             text-align: center;
-            transition: 0.3s;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .social-btn:hover {
-            background: rgba(255,255,255,0.08);
+
+        .btn:hover {
+            background: rgba(255,255,255,0.07);
             border-color: rgba(255,255,255,0.2);
-            transform: translateY(-3px);
+            transform: translateY(-4px) scale(1.02);
         }
 
-        .footer { text-align: center; margin-top: 40px; font-size: 10px; opacity: 0.2; letter-spacing: 2px; }
-
-        /* АНИМАЦИЯ */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* СТЕКЛЯННЫЙ РАЗДЕЛИТЕЛЬ */
+        .divider {
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 100px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+            font-size: 9px;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.2);
+            text-transform: uppercase;
         }
-        .container > * { animation: slideUp 1s ease forwards; }
+
+        .footer { text-align: center; margin-top: 50px; font-size: 10px; opacity: 0.15; letter-spacing: 2px; }
+
+        /* ВТОРОЙ БЛОК (ПЛОЩАДКИ) */
+        .music-btn {
+            grid-column: span 2;
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+        }
     </style>
 </head>
 <body>
 
-<div class="dynamic-bg" id="bg"></div>
+<div class="bg-glow" id="bg"></div>
 
-<div class="container">
-    <div class="header">
-        <img src="" alt="BULAVIN" class="avatar" id="avatar">
+<div class="app">
+    <div class="profile">
+        <img src="" alt="" class="avatar" id="avatar">
         <h1 id="name">BULAVIN</h1>
         <p id="bio"></p>
     </div>
 
-    <a href="#" id="main-btn" class="main-release" target="_blank">
-        🎧 СЛУШАТЬ НОВЫЙ РЕЛИЗ
-    </a>
+    <div class="grid" id="social-grid"></div>
 
-    <div class="divider-container">
-        <div class="divider-line"></div>
-        <div class="divider-label">SOCIALS</div>
-        <div class="divider-line"></div>
-    </div>
+    <div class="divider">music platforms</div>
 
-    <div class="social-grid" id="social-grid">
-        </div>
+    <div class="grid" id="music-grid"></div>
 
     <div class="footer">
         © <span id="year"></span> BULAVIN SYSTEM
@@ -175,8 +140,7 @@
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
     function parseCSV(text) {
-        const rows = text.split('\n');
-        return rows.map(row => {
+        return text.split('\n').map(row => {
             const cells = [];
             let cell = '';
             let inQuotes = false;
@@ -194,31 +158,46 @@
         .then(res => res.text())
         .then(data => {
             const rows = parseCSV(data);
-            const p = rows[1]; 
-            if(!p) return;
+            const d = rows[1];
+            if(!d) return;
 
-            document.getElementById('name').textContent = p[0];
-            document.getElementById('bio').textContent = p[1];
-            document.getElementById('avatar').src = p[7];
-            document.getElementById('bg').style.backgroundImage = `url('${p[7]}')`;
-            document.getElementById('main-btn').href = p[4]; // Яндекс Музыка в топ
+            // Заполнение профиля
+            document.getElementById('name').textContent = d[0];
+            document.getElementById('bio').textContent = d[1];
+            document.getElementById('avatar').src = d[7];
+            document.getElementById('bg').style.backgroundImage = `url('${d[7]}')`;
 
-            const grid = document.getElementById('social-grid');
-            const links = [
-                {n: 'Telegram', l: p[2]},
-                {n: 'Instagram', l: p[3]},
-                {n: 'Spotify', l: p[5]},
-                {n: 'YouTube', l: p[6]}
+            const socialGrid = document.getElementById('social-grid');
+            const musicGrid = document.getElementById('music-grid');
+
+            // СОЦСЕТИ (Берем Telegram и Instagram)
+            const socials = [
+                {n: 'Telegram', l: d[2]},
+                {n: 'Instagram', l: d[3]}
             ];
 
-            links.forEach(link => {
-                if(link.l && link.l.length > 5) {
+            // ПЛОЩАДКИ (Яндекс, Spotify, YouTube)
+            const platforms = [
+                {n: 'Yandex Music', l: d[4]},
+                {n: 'Spotify', l: d[5]},
+                {n: 'YouTube', l: d[6]}
+            ];
+
+            socials.forEach(s => {
+                if(s.l && s.l.length > 5) {
                     const a = document.createElement('a');
-                    a.className = 'social-btn';
-                    a.href = link.l;
-                    a.target = '_blank';
-                    a.textContent = link.n;
-                    grid.appendChild(a);
+                    a.className = 'btn';
+                    a.href = s.l; a.target = '_blank'; a.textContent = s.n;
+                    socialGrid.appendChild(a);
+                }
+            });
+
+            platforms.forEach(p => {
+                if(p.l && p.l.length > 5) {
+                    const a = document.createElement('a');
+                    a.className = 'btn music-btn';
+                    a.href = p.l; a.target = '_blank'; a.textContent = p.n;
+                    musicGrid.appendChild(a);
                 }
             });
         });
