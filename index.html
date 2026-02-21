@@ -6,30 +6,26 @@
     <title>BULAVIN | Official</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.07);
-            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #ff3333;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         
         body {
-            background: #000;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            background: #000; color: #fff; min-height: 100vh;
+            display: flex; justify-content: center; align-items: flex-start;
             overflow-x: hidden;
         }
 
         #bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(80px) brightness(0.25);
+            filter: blur(80px) brightness(0.2);
             transform: scale(1.1); z-index: -1;
             transition: 1.5s ease;
         }
 
-        /* Эффект шума */
         body::before {
             content: ""; position: fixed; inset: 0;
             background: url('https://grainy-gradients.vercel.app/noise.svg');
@@ -38,8 +34,7 @@
 
         .container {
             width: 100%; max-width: 440px;
-            padding: 50px 20px;
-            display: flex; flex-direction: column;
+            padding: 50px 20px; display: flex; flex-direction: column;
             gap: 20px; z-index: 10;
         }
 
@@ -48,14 +43,37 @@
             backdrop-filter: blur(40px);
             border: 1px solid var(--glass-border);
             border-radius: 40px;
-            padding: 45px 30px;
+            padding: 40px 25px;
             text-align: center;
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
+        /* Стильный счетчик слушателей */
+        .stats {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            animation: pulse 2s infinite ease-in-out;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0.8; }
+        }
+        .stats span { color: var(--accent); }
+
         .avatar {
             width: 130px; height: 130px;
-            margin: 0 auto 25px;
+            margin: 0 auto 20px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid rgba(255,255,255,0.2);
@@ -63,8 +81,8 @@
             display: none;
         }
 
-        h1 { font-size: 34px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; margin-bottom: 12px; }
-        .bio { font-size: 14px; opacity: 0.6; line-height: 1.6; font-weight: 400; white-space: pre-wrap; }
+        h1 { font-size: 32px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; margin-bottom: 8px; }
+        .bio { font-size: 13px; opacity: 0.5; line-height: 1.6; white-space: pre-wrap; margin-bottom: 10px; }
 
         .links { display: flex; flex-direction: column; gap: 12px; }
 
@@ -76,21 +94,18 @@
             border-radius: 24px;
             text-decoration: none;
             color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            text-align: center;
-            letter-spacing: 1px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 14px; font-weight: 700;
+            text-align: center; letter-spacing: 1px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .btn:hover {
             background: rgba(255,255,255,0.12);
-            transform: scale(1.03) translateY(-3px);
+            transform: scale(1.02) translateY(-2px);
             border-color: rgba(255,255,255,0.4);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 50px; letter-spacing: 3px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -99,6 +114,10 @@
 
 <div class="container">
     <div class="card">
+        <div id="stats-wrap">
+            <div class="stats">Слушателей в месяц: <span id="listeners-count">...</span></div>
+        </div>
+        
         <img src="" alt="" class="avatar" id="photo">
         <h1 id="name">BULAVIN</h1>
         <div class="bio" id="bio"></div>
@@ -113,14 +132,13 @@
 
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
+    const ARTIST_ID = "24009925";
 
-    // ✅ ТОТ САМЫЙ УМНЫЙ ПАРСЕР (лечит запятые и тире)
+    // ✅ ПАРСЕР ТАБЛИЦЫ
     function parseSafeCSV(text) {
         const result = [];
         let row = [], cell = '', inQuotes = false;
-        // Убираем невидимый символ BOM и нормализуем переносы строк
         text = text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
-        
         for (let i = 0; i < text.length; i++) {
             let char = text[i];
             if (char === '"' && text[i+1] === '"') { cell += '"'; i++; }
@@ -133,67 +151,53 @@
         return result;
     }
 
+    // ✅ АВТОМАТИЧЕСКИЙ ПАРСЕР СЛУШАТЕЛЕЙ
+    async function fetchListeners() {
+        try {
+            const proxy = "https://api.allorigins.win/get?url=";
+            const target = encodeURIComponent(`https://music.yandex.ru/artist/${ARTIST_ID}`);
+            const res = await fetch(proxy + target);
+            const data = await res.json();
+            
+            // Ищем число слушателей в HTML-коде страницы
+            const match = data.contents.match(/monthlyListeners":(\d+)/) || data.contents.match(/(\d+)\s*слушател[яей]/);
+            if (match) {
+                const count = parseInt(match[1] || match[0]).toLocaleString('ru-RU');
+                document.getElementById('listeners-count').textContent = count;
+            } else {
+                document.getElementById('listeners-count').textContent = "В СЕТИ";
+            }
+        } catch (e) {
+            document.getElementById('listeners-count').textContent = "LIVE";
+        }
+    }
+
     async function init() {
+        fetchListeners(); // Запуск парсера Яндекса
+
         try {
             const res = await fetch(CSV_URL);
             const text = await res.text();
             const rows = parseSafeCSV(text);
-            
             const headers = rows[0];
             const val = rows[1];
 
-            if (!val) return;
-
-            // Находим данные по именам столбцов
             const getName = (name) => {
                 const idx = headers.findIndex(h => h.toLowerCase().includes(name.toLowerCase()));
                 return idx !== -1 ? val[idx] : null;
             };
 
-            const name = getName('псевдоним') || "BULAVIN";
-            const bio = getName('био') || "";
-            const photo = getName('photo') || "";
-
-            document.getElementById('name').textContent = name;
-            document.getElementById('bio').textContent = bio;
-
-            // Фото и фон
+            document.getElementById('name').textContent = getName('псевдоним') || "BULAVIN";
+            document.getElementById('bio').textContent = getName('био') || "";
+            
+            const photo = getName('photo');
             if (photo && photo.startsWith('http')) {
                 const img = document.getElementById('photo');
-                img.src = photo;
-                img.style.display = 'block';
+                img.src = photo; img.style.display = 'block';
                 document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
             }
 
-            // Кнопки
             const container = document.getElementById('links-container');
             const platforms = [
                 {key: 'telegram', label: 'TELEGRAM'},
-                {key: 'instagram', label: 'INSTAGRAM'},
-                {key: 'yandex', label: 'YANDEX MUSIC'},
-                {key: 'spotify', label: 'SPOTIFY'},
-                {key: 'youtube', label: 'YOUTUBE'}
-            ];
-
-            platforms.forEach(p => {
-                const url = getName(p.key);
-                if (url && url.startsWith('http')) {
-                    const a = document.createElement('a');
-                    a.className = 'btn';
-                    a.href = url;
-                    a.target = '_blank';
-                    a.textContent = p.label;
-                    container.appendChild(a);
-                }
-            });
-
-        } catch (e) {
-            console.error("Ошибка:", e);
-        }
-    }
-
-    init();
-</script>
-
-</body>
-</html>
+                {key: 'instagram', label:
