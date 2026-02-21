@@ -9,7 +9,7 @@
             --glass: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.12);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         
         body {
             background: #000; color: #fff; min-height: 100vh;
@@ -17,7 +17,7 @@
             overflow-x: hidden;
         }
 
-        /* Задний фон с размытием */
+        /* Задний фон — твое фото с размытием */
         #bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
@@ -67,27 +67,22 @@
             border-radius: 24px;
             text-decoration: none; color: #fff;
             font-size: 14px; font-weight: 700;
-            display: flex;
-            align-items: center;
+            display: flex; align-items: center;
             justify-content: center; /* Центровка текста */
             position: relative;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Иконка слева */
         .btn-icon {
-            width: 22px; height: 22px;
-            position: absolute;
-            left: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 24px; height: 24px;
+            position: absolute; left: 20px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .btn-icon img, .btn-icon svg {
-            width: 100%; height: 100%;
-            object-fit: contain;
-            fill: white; /* Для SVG Яндекса */
-        }
+        
+        .btn-icon img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* Специальный стиль для лого Яндекса */
+        .yandex-logo { border-radius: 50%; overflow: hidden; }
 
         .btn:hover {
             background: rgba(255, 255, 255, 0.15);
@@ -108,24 +103,18 @@
         <h1 id="name">BULAVIN</h1>
         <div class="bio" id="bio"></div>
     </div>
-
     <div id="links-container" class="links"></div>
-
-    <div class="footer">
-        © 2026 BULAVIN SYSTEM PRODUCTION
-    </div>
+    <div class="footer">© 2026 BULAVIN SYSTEM PRODUCTION</div>
 </div>
 
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    // SVG логотип Яндекса (надежный вариант)
-    const YANDEX_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.545c-3.615 0-6.545-2.93-6.545-6.545S8.385 5.455 12 5.455s6.545 2.93 6.545 6.545-2.93 6.545-6.545 6.545z"/><path d="M12 7.636c-2.41 0-4.364 1.954-4.364 4.364s1.954 4.364 4.364 4.364 4.364-1.954 4.364-4.364-1.954-4.364-4.364-4.364zm0 6.545c-1.205 0-2.182-.977-2.182-2.182s.977-2.182 2.182-2.182 2.182.977 2.182 2.182-.977 2.182-2.182 2.182z"/></svg>`;
-
+    // ✅ Использовал актуальные иконки, включая ту самую "искру" Яндекса
     const ICONS = {
         'telegram': 'https://img.icons8.com/ios-filled/50/ffffff/telegram-app.png',
         'instagram': 'https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png',
-        'yandex': 'svg', // Метка для вставки SVG
+        'yandex': 'https://music.yandex.kz/favicon.ico', // Подтягивает актуальную иконку ЯМ
         'spotify': 'https://img.icons8.com/ios-filled/50/ffffff/spotify.png',
         'youtube': 'https://img.icons8.com/ios-filled/50/ffffff/youtube-play.png'
     };
@@ -163,10 +152,9 @@
             document.getElementById('bio').textContent = getName('био') || "";
             
             const photo = getName('photo');
-            if (photo && photo.startsWith('http')) {
+            if (photo) {
                 const img = document.getElementById('photo');
-                img.src = photo;
-                img.style.display = 'block';
+                img.src = photo; img.style.display = 'block';
                 document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
             }
 
@@ -184,23 +172,19 @@
                 if (url && url.startsWith('http')) {
                     const a = document.createElement('a');
                     a.className = 'btn';
-                    a.href = url;
-                    a.target = '_blank';
+                    a.href = url; a.target = '_blank';
                     
                     const iconDiv = document.createElement('div');
                     iconDiv.className = 'btn-icon';
+                    if(p.key === 'yandex') iconDiv.classList.add('yandex-logo');
                     
-                    if (ICONS[p.key] === 'svg') {
-                        iconDiv.innerHTML = YANDEX_SVG;
-                    } else {
-                        const img = document.createElement('img');
-                        img.src = ICONS[p.key];
-                        iconDiv.appendChild(img);
-                    }
+                    const img = document.createElement('img');
+                    img.src = ICONS[p.key];
                     
                     const span = document.createElement('span');
                     span.textContent = p.label;
                     
+                    iconDiv.appendChild(img);
                     a.appendChild(iconDiv);
                     a.appendChild(span);
                     container.appendChild(a);
