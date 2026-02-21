@@ -3,62 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BULAVIN | Official</title>
+    <title>BULAVIN | Official Site</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.06);
+            --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --bg-dark: #050505;
+            --accent: #ffffff;
+            --bg-dark: #0a0a0a;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
 
         body {
             background: var(--bg-dark);
             color: #fff;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .bg-blur {
+        body::before {
+            content: "";
+            position: fixed; inset: 0;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; pointer-events: none; z-index: 10;
+        }
+
+        .dynamic-bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(80px) brightness(0.2);
+            filter: blur(80px) brightness(0.3);
             transform: scale(1.2); z-index: -1;
+            transition: background-image 1s ease-in-out;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
+            max-width: 480px;
             padding: 40px 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
             z-index: 1;
         }
 
-        /* ПРОФИЛЬ */
-        .profile { text-align: center; margin-bottom: 10px; }
-        .avatar {
+        .profile-card {
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .avatar-wrapper {
             width: 120px; height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+        }
+
+        .avatar {
+            width: 100%; height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--glass-border);
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-        .profile h1 { font-size: 32px; letter-spacing: 5px; text-transform: uppercase; font-weight: 900; }
-        .profile p { font-size: 13px; opacity: 0.5; margin-top: 8px; line-height: 1.4; }
 
-        /* СЕТКА КНОПОК */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        .btn {
+        .profile-card h1 { font-size: 26px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 10px; font-weight: 900; }
+        .profile-card p { font-size: 13px; opacity: 0.6; line-height: 1.5; }
+
+        /* РАЗДЕЛИТЕЛЬ */
+        .divider {
             background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 12px;
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            margin: 10px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        /* КНОПКИ */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .social-link {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             padding: 20px;
             border-radius: 24px;
@@ -66,112 +107,132 @@
             color: #fff;
             font-size: 14px;
             font-weight: 600;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: 0.3s cubic-bezier(0.2, 0, 0.2, 1);
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-3px); }
-
-        /* РАЗДЕЛИТЕЛЬ */
-        .divider {
-            padding: 14px;
-            background: var(--glass);
-            border-radius: 50px;
-            border: 1px solid var(--glass-border);
-            text-align: center;
-            font-size: 9px;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.3);
-            text-transform: uppercase;
-            margin: 5px 0;
-            backdrop-filter: blur(10px);
+        .social-link:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.02) translateY(-3px);
         }
 
-        .wide { grid-column: span 2; background: rgba(255,255,255,0.08); }
-        .btn i { font-style: normal; font-size: 18px; }
+        /* ШИРОКИЕ КНОПКИ ДЛЯ МУЗЫКИ */
+        .full-width {
+            grid-column: span 2;
+            background: rgba(255,255,255,0.08);
+        }
 
-        .footer { text-align: center; margin-top: 30px; font-size: 10px; opacity: 0.2; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container > * { animation: fadeIn 0.8s ease forwards; }
     </style>
 </head>
 <body>
 
-<div class="bg-blur" id="bg"></div>
+<div class="dynamic-bg" id="bg"></div>
 
 <div class="container">
-    <div class="profile">
-        <img src="" alt="" class="avatar" id="avatar" style="display:none">
-        <h1 id="name">BULAVIN</h1>
-        <p id="bio"></p>
+    <div class="profile-card">
+        <div class="avatar-wrapper">
+            <img src="" alt="BULAVIN" class="avatar" id="user-photo">
+        </div>
+        <h1 id="user-name">Загрузка...</h1>
+        <p id="user-bio"></p>
     </div>
 
     <div class="grid" id="social-grid"></div>
 
-    <div class="divider">Music & Video</div>
+    <div class="divider">Music Platforms</div>
 
     <div class="grid" id="music-grid"></div>
 
-    <div class="footer">© 2026 BULAVIN SYSTEM</div>
+    <div class="footer">
+        © <span id="year"></span> BULAVIN SYSTEM PRODUCTION
+    </div>
 </div>
 
 <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    async function init() {
-        try {
-            const res = await fetch(CSV_URL);
-            const data = await res.text();
-            
-            // Умный парсинг строк
-            const rows = data.split('\n').map(row => {
-                const matches = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-                return matches ? matches.map(m => m.replace(/^"|"$/g, '').trim()) : [];
-            });
+    function parseCSV(text) {
+        const rows = text.split('\n');
+        return rows.map(row => {
+            const cells = [];
+            let cell = '';
+            let inQuotes = false;
+            for (let char of row) {
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) { cells.push(cell.trim()); cell = ''; }
+                else cell += char;
+            }
+            cells.push(cell.trim());
+            return cells;
+        });
+    }
 
-            const d = rows[1]; // Твои данные
-            if(!d) return;
+    fetch(CSV_URL)
+        .then(res => res.text())
+        .then(data => {
+            const rows = parseCSV(data);
+            const p = rows[1];
+            if (!p) return;
 
-            document.getElementById('name').textContent = d[0];
-            document.getElementById('bio').textContent = d[1];
+            document.getElementById('user-name').textContent = p[0];
+            document.getElementById('user-bio').textContent = p[1];
             
-            if(d[7]) { // PHOTO в колонке H
-                document.getElementById('avatar').src = d[7];
-                document.getElementById('avatar').style.display = 'inline-block';
-                document.getElementById('bg').style.backgroundImage = `url('${d[7]}')`;
+            if (p[7]) {
+                document.getElementById('user-photo').src = p[7];
+                document.getElementById('bg').style.backgroundImage = `url('${p[7]}')`;
             }
 
             const socGrid = document.getElementById('social-grid');
             const musGrid = document.getElementById('music-grid');
 
-            // Конфиг (Название, Ссылка, Иконка)
-            const socs = [
-                {n: 'Telegram', l: d[2], i: '✈️'},
-                {n: 'Instagram', l: d[3], i: '📸'}
+            // СОЦСЕТИ
+            const socials = [
+                { name: 'Telegram', link: p[2], icon: '✈️' },
+                { name: 'Instagram', link: p[3], icon: '📸' }
             ];
 
-            const mus = [
-                {n: 'Yandex Music', l: d[4], i: '💛'},
-                {n: 'Spotify', l: d[5], i: '🎧'},
-                {n: 'YouTube', l: d[6], i: '📺'}
+            // ПЛОЩАДКИ
+            const music = [
+                { name: 'Yandex Music', link: p[4], icon: '💛' },
+                { name: 'Spotify', link: p[5], icon: '🎧' },
+                { name: 'YouTube', link: p[6], icon: '📺' }
             ];
 
-            socs.forEach(s => {
-                if(s.l && s.l.length > 5) {
-                    socGrid.innerHTML += `<a href="${s.l}" target="_blank" class="btn"><i>${s.i}</i> ${s.n}</a>`;
+            socials.forEach(s => {
+                if (s.link && s.link.length > 5) {
+                    const el = document.createElement('a');
+                    el.className = 'social-link';
+                    el.href = s.link;
+                    el.target = '_blank';
+                    el.innerHTML = `<span>${s.icon}</span> ${s.name}`;
+                    socGrid.appendChild(el);
                 }
             });
 
-            mus.forEach(m => {
-                if(m.l && m.l.length > 5) {
-                    musGrid.innerHTML += `<a href="${m.l}" target="_blank" class="btn wide"><i>${m.i}</i> ${m.n}</a>`;
+            music.forEach(m => {
+                if (m.link && m.link.length > 5) {
+                    const el = document.createElement('a');
+                    el.className = 'social-link full-width';
+                    el.href = m.link;
+                    el.target = '_blank';
+                    el.innerHTML = `<span>${m.icon}</span> ${m.name}`;
+                    musGrid.appendChild(el);
                 }
             });
-
-        } catch (e) { console.error(e); }
-    }
-    init();
+        });
 </script>
+
 </body>
 </html>
