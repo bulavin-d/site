@@ -6,7 +6,8 @@
     <title>BULAVIN | Official</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.04);
+            /* ЦВЕТОВАЯ ПАЛИТРА — МОЖНО МЕНЯТЬ */
+            --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --bg-dark: #000000;
         }
@@ -22,67 +23,65 @@
             overflow-x: hidden;
         }
 
-        /* Текстура шума и фон */
-        body::before {
-            content: "";
-            position: fixed; inset: 0;
-            background: url('https://grainy-gradients.vercel.app/noise.svg');
-            opacity: 0.05; pointer-events: none; z-index: 2;
-        }
-
+        /* ФУНДАМЕНТАЛЬНО: ДИНАМИЧЕСКИЙ ФОН */
         .dynamic-bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(60px) brightness(0.25);
+            filter: blur(80px) brightness(0.25);
             transform: scale(1.1); z-index: -1;
+            transition: background-image 1s ease-in-out;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
-            padding: 60px 20px;
+            max-width: 440px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
             z-index: 1;
         }
 
-        /* Карточка профиля */
+        /* ДИЗАЙН КАРТОЧКИ (ПРЕМИАЛЬНОЕ СТЕКЛО) */
         .profile-card {
             background: var(--glass);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
-            border-radius: 35px;
+            border-radius: 40px;
             padding: 40px 25px;
             text-align: center;
-            margin-bottom: 20px;
         }
 
         .avatar-wrapper {
-            width: 120px; height: 120px;
-            margin: 0 auto 25px;
+            width: 130px; height: 130px;
+            margin: 0 auto 20px;
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 4px;
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 5px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
         }
 
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        .profile-card h1 { font-size: 26px; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; margin-bottom: 12px; }
-        .profile-card p { font-size: 13px; opacity: 0.5; line-height: 1.6; font-weight: 400; }
-
-        /* Кнопки */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .profile-card h1 { 
+            font-size: 28px; letter-spacing: 5px; text-transform: uppercase; 
+            font-weight: 900; margin-bottom: 10px; 
+        }
         
-        .btn {
+        .profile-card p { font-size: 13px; opacity: 0.6; line-height: 1.5; }
+
+        /* СЕТКА КНОПОК */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+        .social-link {
             position: relative;
             background: var(--glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            padding: 18px 20px;
-            border-radius: 20px;
+            padding: 20px;
+            border-radius: 22px;
             text-decoration: none;
             color: #fff;
             font-size: 13px;
@@ -90,36 +89,37 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.3s ease;
         }
 
-        .btn-icon {
-            position: absolute; left: 18px;
+        /* ИКОНКИ СЛЕВА */
+        .btn-logo {
+            position: absolute; left: 20px;
             width: 20px; height: 20px;
-            fill: #fff; opacity: 0.8;
+            fill: #fff;
         }
 
-        .btn:hover {
-            background: rgba(255,255,255,0.08);
+        .social-link:hover {
+            background: rgba(255,255,255,0.1);
             border-color: rgba(255,255,255,0.3);
             transform: translateY(-2px);
         }
 
-        .btn:active { transform: scale(0.97); }
-
         .divider {
-            padding: 15px;
-            text-align: center;
-            font-size: 9px;
-            letter-spacing: 4px;
-            color: rgba(255,255,255,0.25);
-            text-transform: uppercase;
-            font-weight: 700;
+            padding: 10px; text-align: center; font-size: 10px;
+            letter-spacing: 4px; color: rgba(255,255,255,0.3);
+            text-transform: uppercase; margin-top: 10px;
         }
 
-        .full { grid-column: span 2; }
+        .full-width { grid-column: span 2; }
 
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 40px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 11px; opacity: 0.3; margin-top: 30px; letter-spacing: 1px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container > * { animation: fadeIn 0.8s ease forwards; }
     </style>
 </head>
 <body>
@@ -129,88 +129,108 @@
 <div class="container">
     <div class="profile-card">
         <div class="avatar-wrapper">
-            <img src="" alt="" class="avatar" id="user-photo">
+            <img src="" alt="BULAVIN" class="avatar" id="user-photo">
         </div>
         <h1 id="user-name">...</h1>
         <p id="user-bio"></p>
     </div>
 
-    <div class="grid" id="socials"></div>
-    <div class="divider">Music</div>
-    <div class="grid" id="music"></div>
+    <div class="grid" id="social-grid"></div>
+    <div class="divider">Music Platforms</div>
+    <div class="grid" id="music-grid"></div>
 
-    <div class="footer">© <span id="year"></span> BULAVIN SYSTEM</div>
+    <div class="footer">
+        © <span id="year"></span> BULAVIN SYSTEM PRODUCTION
+    </div>
 </div>
 
 <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    const ICONS = {
-        telegram: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>`,
-        instagram: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8A3.6 3.6 0 007.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6A3.6 3.6 0 0016.4 4H7.6m4.4 3a5 5 0 015 5 5 5 0 01-5 5 5 5 0 01-5-5 5 5 0 015-5m0 2a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3 3 3 0 00-3-3m5-2.5a1.2 1.2 0 11-1.2 1.2 1.2 1.2 0 011.2-1.2z"/></svg>`,
-        yandex: `<svg class="btn-icon" viewBox="0 0 48 48"><path d="M26.43,5,22.82,21.78,5,19.34l14.29,9.45L5,41.4l17.82-2.43L26.43,55l3.61-16L48,41.4,33.71,28.79,48,19.34,30.18,21.78Z" transform="translate(-2.5 -5)"/></svg>`, // ТА САМАЯ ИСКРА/ЗВЕЗДА
-        spotify: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.58 14.45c-.2.32-.61.42-.93.22-2.3-1.41-5.21-1.73-8.63-.95-.36.08-.73-.15-.81-.51-.08-.36.15-.73.51-.81 3.75-.85 6.98-.49 9.56 1.09.32.2.42.61.22.93zm1.22-2.73c-.26.41-.79.54-1.2.28-2.63-1.62-6.65-2.09-9.76-1.15-.46.14-.94-.12-1.08-.58-.14-.46.12-.94.58-1.08 3.55-1.07 8-0.54 11.03 1.32.42.26.55.79.28 1.21zm.11-2.85c-3.16-1.87-8.37-2.05-11.39-1.13-.48.15-1-.12-1.15-.6s.12-1 .6-1.15c3.48-1.06 9.22-0.85 12.89 1.33.43.26.58.82.32 1.25-.26.43-.82.58-1.25.32z"/></svg>`,
-        youtube: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M19.61 7.23c-.22-.84-.88-1.5-1.72-1.72C16.37 5 12 5 12 5s-4.37 0-5.89.51c-.84.22-1.5.88-1.72 1.72C4 8.75 4 12 4 12s0 3.25.39 4.77c.22.84.88 1.5 1.72 1.72C7.63 19 12 19 12 19s4.37 0 5.89-.51c.84-.22 1.5-.88 1.72-1.72.39-1.52.39-4.77.39-4.77s0-3.25-.39-4.77zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>`
-    };
-
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
+    // ФУНДАМЕНТАЛЬНО: ИКОНКИ (SVG)
+    const ICONS = {
+        tg: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>`,
+        inst: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8A3.6 3.6 0 007.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6A3.6 3.6 0 0016.4 4H7.6m4.4 3a5 5 0 015 5 5 5 0 01-5 5 5 5 0 01-5-5 5 5 0 015-5m0 2a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3 3 3 0 00-3-3m5-2.5a1.2 1.2 0 11-1.2 1.2 1.2 1.2 0 011.2-1.2z"/></svg>`,
+        yandex: `<svg class="btn-logo" viewBox="0 0 100 100"><path d="M53.1,1.9L46.8,31C35,31.7,1.8,26,1.8,26l24.9,16.4L1.8,65l31.1-4.2l6.3,29l6.3-27.9l31.1,4.2L68.4,49.1L93.3,65l-24.9-16.4L93.3,32.2L68.4,36.4L53.1,1.9z"/></svg>`, // ТА САМАЯ ИСКРА
+        spotify: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.58 14.45c-.2.32-.61.42-.93.22-2.3-1.41-5.21-1.73-8.63-.95-.36.08-.73-.15-.81-.51-.08-.36.15-.73.51-.81 3.75-.85 6.98-.49 9.56 1.09.32.2.42.61.22.93zm1.22-2.73c-.26.41-.79.54-1.2.28-2.63-1.62-6.65-2.09-9.76-1.15-.46.14-.94-.12-1.08-.58-.14-.46.12-.94.58-1.08 3.55-1.07 8-0.54 11.03 1.32.42.26.55.79.28 1.21zm.11-2.85c-3.16-1.87-8.37-2.05-11.39-1.13-.48.15-1-.12-1.15-.6s.12-1 .6-1.15c3.48-1.06 9.22-0.85 12.89 1.33.43.26.58.82.32 1.25-.26.43-.82.58-1.25.32z"/></svg>`,
+        yt: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M19.61 7.23c-.22-.84-.88-1.5-1.72-1.72C16.37 5 12 5 12 5s-4.37 0-5.89.51c-.84.22-1.5.88-1.72 1.72C4 8.75 4 12 4 12s0 3.25.39 4.77c.22.84.88 1.5 1.72 1.72C7.63 19 12 19 12 19s4.37 0 5.89-.51c.84-.22 1.5-.88 1.72-1.72.39-1.52.39-4.77.39-4.77s0-3.25-.39-4.77zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>`
+    };
+
+    // ФУНДАМЕНТАЛЬНО: ПАРСЕР ТАБЛИЦЫ
     function parseCSV(text) {
         const rows = text.split(/\r?\n/);
         return rows.map(row => {
             const cells = [];
             let current = '', inQuotes = false;
-            for (let char of row) {
-                if (char === '"') inQuotes = !inQuotes;
+            for (let i = 0; i < row.length; i++) {
+                const char = row[i];
+                if (char === '"' && row[i+1] === '"') { current += '"'; i++; } // Экранирование
+                else if (char === '"') inQuotes = !inQuotes;
                 else if (char === ',' && !inQuotes) { cells.push(current.trim()); current = ''; }
-                else current += char;
+                else { current += char; }
             }
             cells.push(current.trim());
-            return cells;
+            // Очистка от внешних кавычек (фикс бага со скриншота)
+            return cells.map(cell => cell.replace(/^"|"$/g, ''));
         });
     }
 
     fetch(CSV_URL)
         .then(res => res.text())
         .then(data => {
-            const p = parseCSV(data)[1];
-            if (!p) return;
+            const rows = parseCSV(data);
+            const p = rows[1]; // Вторая строка (данные)
 
-            document.getElementById('user-name').textContent = p[0].replace(/^"|"$/g, '');
-            document.getElementById('user-bio').textContent = p[1].replace(/^"|"$/g, '');
+            if (!p || p.length < 2) return;
+
+            // Расстановка данных по ID
+            document.getElementById('user-name').textContent = p[0];
+            document.getElementById('user-bio').textContent = p[1];
             
-            const photo = p[7] ? p[7].replace(/^"|"$/g, '') : '';
+            const photo = p[7];
             if (photo) {
                 document.getElementById('user-photo').src = photo;
                 document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
             }
 
-            const socList = [
-                { name: 'Telegram', link: p[2], icon: ICONS.telegram },
-                { name: 'Instagram', link: p[3], icon: ICONS.instagram }
+            const socGrid = document.getElementById('social-grid');
+            const musGrid = document.getElementById('music-grid');
+
+            // Конфигурация кнопок
+            const socials = [
+                { name: 'Telegram', link: p[2], icon: ICONS.tg },
+                { name: 'Instagram', link: p[3], icon: ICONS.inst }
             ];
 
-            const musList = [
+            const music = [
                 { name: 'Yandex Music', link: p[4], icon: ICONS.yandex },
                 { name: 'Spotify', link: p[5], icon: ICONS.spotify },
-                { name: 'YouTube', link: p[6], icon: ICONS.youtube }
+                { name: 'YouTube', link: p[6], icon: ICONS.yt }
             ];
 
-            socList.forEach(s => {
+            // Рендер социальных сетей
+            socials.forEach(s => {
                 if (s.link && s.link.length > 5) {
-                    const a = document.createElement('a');
-                    a.className = 'btn'; a.href = s.link.replace(/^"|"$/g, ''); a.target = '_blank';
-                    a.innerHTML = `${s.icon} <span>${s.name}</span>`;
-                    document.getElementById('socials').appendChild(a);
+                    const el = document.createElement('a');
+                    el.className = 'social-link';
+                    el.href = s.link;
+                    el.target = '_blank';
+                    el.innerHTML = `${s.icon} <span>${s.name}</span>`;
+                    socGrid.appendChild(el);
                 }
             });
 
-            musList.forEach(m => {
+            // Рендер музыкальных площадок
+            music.forEach(m => {
                 if (m.link && m.link.length > 5) {
-                    const a = document.createElement('a');
-                    a.className = 'btn full'; a.href = m.link.replace(/^"|"$/g, ''); a.target = '_blank';
-                    a.innerHTML = `${m.icon} <span>${m.name}</span>`;
-                    document.getElementById('music').appendChild(a);
+                    const el = document.createElement('a');
+                    el.className = 'social-link full-width';
+                    el.href = m.link;
+                    el.target = '_blank';
+                    el.innerHTML = `${m.icon} <span>${m.name}</span>`;
+                    musGrid.appendChild(el);
                 }
             });
         });
