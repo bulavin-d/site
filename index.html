@@ -95,8 +95,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            position: relative; /* Для позиционирования иконки */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* ИКОНКА СЛЕВА */
+        .btn-logo {
+            position: absolute;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1); /* Делает логотипы чисто белыми */
+            opacity: 0.7;
+            object-fit: contain;
         }
 
         .social-link:hover {
@@ -104,6 +115,8 @@
             transform: scale(1.03) translateY(-3px);
             border-color: rgba(255,255,255,0.3);
         }
+
+        .social-link:hover .btn-logo { opacity: 1; }
 
         .divider {
             background: var(--glass);
@@ -159,7 +172,6 @@
 
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    // ТОТ САМЫЙ УМНЫЙ ПАРСЕР, КОТОРЫЙ СПАС НАШ ПРОЕКТ С БИТАМИ
     function parseCSV(text) {
         const rows = text.split('\r\n');
         return rows.map(row => {
@@ -201,15 +213,16 @@
             const socGrid = document.getElementById('social-grid');
             const musGrid = document.getElementById('music-grid');
 
+            // Конфиг с ссылками на SVG логотипы
             const socials = [
-                { name: 'Telegram', link: p[2], icon: '✈️' },
-                { name: 'Instagram', link: p[3], icon: '📸' }
+                { name: 'Telegram', link: p[2], logo: 'https://www.svgrepo.com/show/354443/telegram-icon.svg' },
+                { name: 'Instagram', link: p[3], logo: 'https://www.svgrepo.com/show/353915/instagram-icon.svg' }
             ];
 
             const music = [
-                { name: 'Yandex Music', link: p[4], icon: '💛' },
-                { name: 'Spotify', link: p[5], icon: '🎧' },
-                { name: 'YouTube', link: p[6], icon: '📺' }
+                { name: 'Yandex Music', link: p[4], logo: 'https://www.svgrepo.com/show/331652/yandex-music.svg' },
+                { name: 'Spotify', link: p[5], logo: 'https://www.svgrepo.com/show/475684/spotify-color.svg' },
+                { name: 'YouTube', link: p[6], logo: 'https://www.svgrepo.com/show/475697/youtube-color.svg' }
             ];
 
             socials.forEach(s => {
@@ -219,7 +232,7 @@
                     el.className = 'social-link';
                     el.href = cleanLink;
                     el.target = '_blank';
-                    el.innerHTML = `<span>${s.icon}</span> ${s.name}`;
+                    el.innerHTML = `<img src="${s.logo}" class="btn-logo"><span>${s.name}</span>`;
                     socGrid.appendChild(el);
                 }
             });
@@ -231,7 +244,7 @@
                     el.className = 'social-link full-width';
                     el.href = cleanLink;
                     el.target = '_blank';
-                    el.innerHTML = `<span>${m.icon}</span> ${m.name}`;
+                    el.innerHTML = `<img src="${m.logo}" class="btn-logo"><span>${m.name}</span>`;
                     musGrid.appendChild(el);
                 }
             });
