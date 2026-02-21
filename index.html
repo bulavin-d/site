@@ -6,15 +6,15 @@
     <title>BULAVIN | Official</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --bg: #030303;
+            --bg-dark: #050505;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, system-ui, sans-serif; }
 
         body {
-            background: var(--bg);
+            background: var(--bg-dark);
             color: #fff;
             display: flex;
             justify-content: center;
@@ -22,51 +22,46 @@
             overflow-x: hidden;
         }
 
-        /* ДИНАМИЧЕСКИЙ ФОН */
-        .bg-glow {
+        .bg-blur {
             position: fixed; inset: 0;
-            background-size: cover;
-            background-position: center;
-            filter: blur(100px) brightness(0.25);
-            transform: scale(1.2);
-            z-index: -1;
-            background-color: #111;
+            background-size: cover; background-position: center;
+            filter: blur(80px) brightness(0.2);
+            transform: scale(1.2); z-index: -1;
         }
 
-        .app {
+        .container {
             width: 100%;
-            max-width: 400px;
-            padding: 50px 20px;
+            max-width: 420px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             z-index: 1;
         }
 
         /* ПРОФИЛЬ */
         .profile { text-align: center; margin-bottom: 10px; }
         .avatar {
-            width: 130px; height: 130px;
+            width: 120px; height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--glass-border);
             margin-bottom: 20px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.6);
-            background: #222;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-        .profile h1 { font-size: 34px; letter-spacing: 5px; text-transform: uppercase; font-weight: 900; }
-        .profile p { font-size: 13px; opacity: 0.5; margin-top: 8px; line-height: 1.4; padding: 0 10px; }
+        .profile h1 { font-size: 32px; letter-spacing: 5px; text-transform: uppercase; font-weight: 900; }
+        .profile p { font-size: 13px; opacity: 0.5; margin-top: 8px; line-height: 1.4; }
 
-        /* КНОПКИ */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        /* СЕТКА КНОПОК */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
         .btn {
             background: var(--glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
-            padding: 18px;
-            border-radius: 22px;
+            padding: 20px;
+            border-radius: 24px;
             text-decoration: none;
             color: #fff;
             font-size: 14px;
@@ -75,53 +70,48 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: all 0.3s ease;
+            transition: 0.3s cubic-bezier(0.2, 0, 0.2, 1);
         }
 
-        .btn:hover {
-            background: rgba(255,255,255,0.12);
-            transform: translateY(-3px);
-            border-color: rgba(255,255,255,0.3);
-        }
+        .btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-3px); }
 
         /* РАЗДЕЛИТЕЛЬ */
         .divider {
             padding: 14px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 100px;
+            background: var(--glass);
+            border-radius: 50px;
             border: 1px solid var(--glass-border);
             text-align: center;
-            font-size: 10px;
+            font-size: 9px;
             letter-spacing: 3px;
             color: rgba(255,255,255,0.3);
             text-transform: uppercase;
-            margin: 10px 0;
+            margin: 5px 0;
+            backdrop-filter: blur(10px);
         }
 
-        .full { grid-column: span 2; background: rgba(255, 255, 255, 0.07); }
-
-        .footer { text-align: center; margin-top: 40px; font-size: 10px; opacity: 0.2; letter-spacing: 2px; }
-
-        /* ИКОНКИ СТИЛЬ */
+        .wide { grid-column: span 2; background: rgba(255,255,255,0.08); }
         .btn i { font-style: normal; font-size: 18px; }
+
+        .footer { text-align: center; margin-top: 30px; font-size: 10px; opacity: 0.2; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-<div class="bg-glow" id="bg"></div>
+<div class="bg-blur" id="bg"></div>
 
-<div class="app">
+<div class="container">
     <div class="profile">
         <img src="" alt="" class="avatar" id="avatar" style="display:none">
-        <h1 id="name">...</h1>
+        <h1 id="name">BULAVIN</h1>
         <p id="bio"></p>
     </div>
 
-    <div class="grid" id="soc-grid"></div>
+    <div class="grid" id="social-grid"></div>
 
-    <div class="divider">Music Platforms</div>
+    <div class="divider">Music & Video</div>
 
-    <div class="grid" id="mus-grid"></div>
+    <div class="grid" id="music-grid"></div>
 
     <div class="footer">© 2026 BULAVIN SYSTEM</div>
 </div>
@@ -129,58 +119,59 @@
 <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    async function loadData() {
+    async function init() {
         try {
-            const response = await fetch(CSV_URL);
-            const text = await response.text();
-            const rows = text.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+            const res = await fetch(CSV_URL);
+            const data = await res.text();
             
-            const d = rows[1].map(cell => cell.replace(/^"|"$/g, '').trim());
+            // Умный парсинг строк
+            const rows = data.split('\n').map(row => {
+                const matches = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                return matches ? matches.map(m => m.replace(/^"|"$/g, '').trim()) : [];
+            });
 
-            // Заполнение
+            const d = rows[1]; // Твои данные
+            if(!d) return;
+
             document.getElementById('name').textContent = d[0];
             document.getElementById('bio').textContent = d[1];
             
-            const photo = d[7]; // Колонка H
-            if (photo) {
-                document.getElementById('avatar').src = photo;
+            if(d[7]) { // PHOTO в колонке H
+                document.getElementById('avatar').src = d[7];
                 document.getElementById('avatar').style.display = 'inline-block';
-                document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
+                document.getElementById('bg').style.backgroundImage = `url('${d[7]}')`;
             }
 
-            const socGrid = document.getElementById('soc-grid');
-            const musGrid = document.getElementById('mus-grid');
+            const socGrid = document.getElementById('social-grid');
+            const musGrid = document.getElementById('music-grid');
 
-            const socials = [
-                {n: 'Telegram', l: d[2], i: '🔗'},
+            // Конфиг (Название, Ссылка, Иконка)
+            const socs = [
+                {n: 'Telegram', l: d[2], i: '✈️'},
                 {n: 'Instagram', l: d[3], i: '📸'}
             ];
 
-            const music = [
-                {n: 'Yandex Music', l: d[4], i: '🔥'},
+            const mus = [
+                {n: 'Yandex Music', l: d[4], i: '💛'},
                 {n: 'Spotify', l: d[5], i: '🎧'},
                 {n: 'YouTube', l: d[6], i: '📺'}
             ];
 
-            socials.forEach(s => {
+            socs.forEach(s => {
                 if(s.l && s.l.length > 5) {
                     socGrid.innerHTML += `<a href="${s.l}" target="_blank" class="btn"><i>${s.i}</i> ${s.n}</a>`;
                 }
             });
 
-            music.forEach(m => {
+            mus.forEach(m => {
                 if(m.l && m.l.length > 5) {
-                    musGrid.innerHTML += `<a href="${m.l}" target="_blank" class="btn full"><i>${m.i}</i> ${m.n}</a>`;
+                    musGrid.innerHTML += `<a href="${m.l}" target="_blank" class="btn wide"><i>${m.i}</i> ${m.n}</a>`;
                 }
             });
 
-        } catch (e) {
-            console.error("Ошибка:", e);
-        }
+        } catch (e) { console.error(e); }
     }
-
-    loadData();
+    init();
 </script>
-
 </body>
 </html>
