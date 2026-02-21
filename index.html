@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BULAVIN | Official</title>
+    <title>BULAVIN | Official Site</title>
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --bg-dark: #000000;
+            --accent: #ffffff;
+            --bg-dark: #0a0a0a;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
 
         body {
             background: var(--bg-dark);
@@ -19,63 +20,72 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            overflow-x: hidden;
         }
 
-        /* ДИНАМИЧЕСКИЙ ФОН (ФУНДАМЕНТАЛЬНО) */
+        body::before {
+            content: "";
+            position: fixed; inset: 0;
+            background: url('https://grainy-gradients.vercel.app/noise.svg');
+            opacity: 0.05; pointer-events: none; z-index: 10;
+        }
+
         .dynamic-bg {
             position: fixed; inset: 0;
             background-size: cover; background-position: center;
-            filter: blur(70px) brightness(0.2);
-            transform: scale(1.1); z-index: -1;
+            filter: blur(80px) brightness(0.3);
+            transform: scale(1.2); z-index: -1;
+            transition: background-image 1s ease-in-out;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
-            padding: 50px 20px;
+            max-width: 480px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 20px;
             z-index: 1;
         }
 
-        /* КАРТОЧКА ПРОФИЛЯ */
         .profile-card {
             background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
-            border-radius: 35px;
-            padding: 40px 25px;
+            border-radius: 40px;
+            padding: 30px;
             text-align: center;
-            margin-bottom: 15px;
         }
 
         .avatar-wrapper {
-            width: 125px; height: 125px;
+            width: 140px; height: 140px;
             margin: 0 auto 20px;
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.15);
-            overflow: hidden;
+            padding: 5px;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
         }
 
-        .avatar { width: 100%; height: 100%; object-fit: cover; }
-
-        .profile-card h1 { 
-            font-size: 26px; letter-spacing: 4px; text-transform: uppercase; 
-            font-weight: 800; margin-bottom: 10px; 
+        .avatar {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.1);
         }
-        
-        .profile-card p { font-size: 13px; opacity: 0.5; line-height: 1.5; }
 
-        /* КНОПКИ (БЕЗ МАГНИТОВ) */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .profile-card h1 { font-size: 28px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; font-weight: 900; }
+        .profile-card p { font-size: 14px; opacity: 0.6; line-height: 1.5; }
 
-        .btn {
-            position: relative;
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .social-link {
             background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             padding: 18px;
             border-radius: 20px;
@@ -83,34 +93,57 @@
             color: #fff;
             font-size: 13px;
             font-weight: 600;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s ease, background 0.2s ease;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .btn-icon {
-            position: absolute; left: 18px;
-            width: 20px; height: 20px;
-            fill: #fff;
+        /* ИКОНКА СЛЕВА */
+        .btn-logo {
+            position: absolute;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            fill: #ffffff; /* Теперь управляем цветом через fill, так как это SVG */
+            opacity: 0.7;
         }
 
-        .btn:hover {
+        .social-link:hover {
             background: rgba(255,255,255,0.1);
+            transform: scale(1.03) translateY(-3px);
             border-color: rgba(255,255,255,0.3);
         }
 
-        .btn:active { transform: scale(0.96); }
+        .social-link:hover .btn-logo { opacity: 1; }
 
         .divider {
-            padding: 10px; text-align: center; font-size: 9px;
-            letter-spacing: 3px; color: rgba(255,255,255,0.2);
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            padding: 10px;
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.3);
             text-transform: uppercase;
         }
 
-        .full { grid-column: span 2; }
+        .full-width {
+            grid-column: span 2;
+            background: rgba(255,255,255,0.08);
+        }
 
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 40px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 11px; opacity: 0.3; margin-top: 20px; letter-spacing: 1px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container > * { animation: fadeIn 0.8s ease forwards; }
     </style>
 </head>
 <body>
@@ -120,7 +153,7 @@
 <div class="container">
     <div class="profile-card">
         <div class="avatar-wrapper">
-            <img src="" alt="" class="avatar" id="user-photo">
+            <img src="" alt="BULAVIN" class="avatar" id="user-photo">
         </div>
         <h1 id="user-name">...</h1>
         <p id="user-bio"></p>
@@ -130,78 +163,99 @@
     <div class="divider">Music Platforms</div>
     <div class="grid" id="music-grid"></div>
 
-    <div class="footer">© <span id="year"></span> BULAVIN SYSTEM</div>
+    <div class="footer">
+        © <span id="year"></span> BULAVIN SYSTEM PRODUCTION
+    </div>
 </div>
 
 <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // ПРАВИЛЬНЫЕ ИКОНКИ (SVG)
+    // ВШИТЫЕ ИКОНКИ (SVG КОРРЕКТНОГО ФОРМАТА)
     const ICONS = {
-        tg: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>`,
-        inst: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8A3.6 3.6 0 007.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6A3.6 3.6 0 0016.4 4H7.6m4.4 3a5 5 0 015 5 5 5 0 01-5 5 5 5 0 01-5-5 5 5 0 015-5m0 2a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3 3 3 0 00-3-3m5-2.5a1.2 1.2 0 11-1.2 1.2 1.2 1.2 0 011.2-1.2z"/></svg>`,
-        yandex: `<svg class="btn-icon" viewBox="0 0 100 100"><path d="M53.1,1.9L46.8,31C35,31.7,1.8,26,1.8,26l24.9,16.4L1.8,65l31.1-4.2l6.3,29l6.3-27.9l31.1,4.2L68.4,49.1L93.3,65l-24.9-16.4L93.3,32.2L68.4,36.4L53.1,1.9z"/></svg>`, // ТВОЯ ИСКРА
-        spot: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.58 14.45c-.2.32-.61.42-.93.22-2.3-1.41-5.21-1.73-8.63-.95-.36.08-.73-.15-.81-.51-.08-.36.15-.73.51-.81 3.75-.85 6.98-.49 9.56 1.09.32.2.42.61.22.93zm1.22-2.73c-.26.41-.79.54-1.2.28-2.63-1.62-6.65-2.09-9.76-1.15-.46.14-.94-.12-1.08-.58-.14-.46.12-.94.58-1.08 3.55-1.07 8-0.54 11.03 1.32.42.26.55.79.28 1.21zm.11-2.85c-3.16-1.87-8.37-2.05-11.39-1.13-.48.15-1-.12-1.15-.6s.12-1 .6-1.15c3.48-1.06 9.22-0.85 12.89 1.33.43.26.58.82.32 1.25-.26.43-.82.58-1.25.32z"/></svg>`,
-        yt: `<svg class="btn-icon" viewBox="0 0 24 24"><path d="M19.61 7.23c-.22-.84-.88-1.5-1.72-1.72C16.37 5 12 5 12 5s-4.37 0-5.89.51c-.84.22-1.5.88-1.72 1.72C4 8.75 4 12 4 12s0 3.25.39 4.77c.22.84.88 1.5 1.72 1.72C7.63 19 12 19 12 19s4.37 0 5.89-.51c.84-.22 1.5-.88 1.72-1.72.39-1.52.39-4.77.39-4.77s0-3.25-.39-4.77zM10 14.5v-5l4.5 2.5-4.5 2.5z"/></svg>`
+        telegram: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>`,
+        instagram: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>`,
+        yandex: `<svg class="btn-logo" viewBox="0 0 100 100"><path d="M53.1,1.9L46.8,31C35,31.7,1.8,26,1.8,26l24.9,16.4L1.8,65l31.1-4.2l6.3,29l6.3-27.9l31.1,4.2L68.4,49.1L93.3,65l-24.9-16.4L93.3,32.2L68.4,36.4L53.1,1.9z"/></svg>`, // ТА САМАЯ ИСКРА
+        spotify: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.524-1.543-5.701-1.892-9.444-1.038-.405.093-.811-.158-.904-.562-.093-.405.158-.812.562-.904 4.1-.937 7.62-.533 10.463 1.203.354.216.465.674.249 1.029zm1.441-3.259c-.272.441-.848.583-1.288.311-2.889-1.775-7.301-2.285-10.72-1.248-.498.151-1.023-.131-1.173-.629-.151-.498.131-1.023.629-1.173 3.905-1.185 8.784-.616 12.126 1.435.441.272.583.848.311 1.288zm.107-3.348c-3.465-2.058-9.176-2.248-12.482-1.246-.532.161-1.096-.14-1.257-.672-.161-.532.14-1.096.672-1.257 3.8-1.152 10.103-.929 14.12 1.455.479.284.636.899.352 1.378-.284.479-.899.636-1.378.352z"/></svg>`,
+        youtube: `<svg class="btn-logo" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`
     };
 
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRZWXN9Zd5Mx5G2ppOxluN6k2IhDObKCxauEtINpQyOsBtxy5dopYqXCEDyGUYXza4XQ_QHauusLxmH/pub?output=csv";
 
-    // УМНЫЙ ПАРСЕР (ДЛЯ БИО С ЗАПЯТЫМИ)
     function parseCSV(text) {
-        const rows = text.split(/\r?\n/);
+        const rows = text.split('\r\n');
         return rows.map(row => {
-            const cells = [];
-            let current = '', inQuotes = false;
+            const result = [];
+            let current = '';
+            let inQuotes = false;
             for (let i = 0; i < row.length; i++) {
-                if (row[i] === '"') inQuotes = !inQuotes;
-                else if (row[i] === ',' && !inQuotes) { cells.push(current.trim()); current = ''; }
-                else current += row[i];
+                const char = row[i];
+                if (char === '"') inQuotes = !inQuotes;
+                else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
             }
-            cells.push(current.trim());
-            return cells.map(c => c.replace(/^"|"$/g, ''));
+            result.push(current.trim());
+            return result;
         });
     }
 
     fetch(CSV_URL)
         .then(res => res.text())
         .then(data => {
-            const p = parseCSV(data)[1]; // Данные из второй строки
-            if (!p) return;
+            const rows = parseCSV(data);
+            const p = rows[1]; 
 
-            document.getElementById('user-name').textContent = p[0];
-            document.getElementById('user-bio').textContent = p[1];
+            if (!p || p.length < 2) return;
+
+            document.getElementById('user-name').textContent = p[0].replace(/^"|"$/g, '');
+            document.getElementById('user-bio').textContent = p[1].replace(/^"|"$/g, '');
             
-            if (p[7]) {
-                document.getElementById('user-photo').src = p[7];
-                document.getElementById('bg').style.backgroundImage = `url('${p[7]}')`;
+            const photo = p[7] ? p[7].replace(/^"|"$/g, '') : '';
+            if (photo) {
+                document.getElementById('user-photo').src = photo;
+                document.getElementById('bg').style.backgroundImage = `url('${photo}')`;
             }
 
-            const socs = [
-                { n: 'Telegram', l: p[2], i: ICONS.tg },
-                { n: 'Instagram', l: p[3], i: ICONS.inst }
-            ];
-            const mus = [
-                { n: 'Yandex Music', l: p[4], i: ICONS.yandex },
-                { n: 'Spotify', l: p[5], i: ICONS.spot },
-                { n: 'YouTube', l: p[6], i: ICONS.yt }
+            const socGrid = document.getElementById('social-grid');
+            const musGrid = document.getElementById('music-grid');
+
+            // Конфиг теперь использует SVG константы
+            const socials = [
+                { name: 'Telegram', link: p[2], svg: ICONS.telegram },
+                { name: 'Instagram', link: p[3], svg: ICONS.instagram }
             ];
 
-            socs.forEach(s => {
-                if(s.l && s.l.length > 5) {
-                    const a = document.createElement('a');
-                    a.className = 'btn'; a.href = s.l; a.target = '_blank';
-                    a.innerHTML = `${s.i} <span>${s.n}</span>`;
-                    document.getElementById('social-grid').appendChild(a);
+            const music = [
+                { name: 'Yandex Music', link: p[4], svg: ICONS.yandex },
+                { name: 'Spotify', link: p[5], svg: ICONS.spotify },
+                { name: 'YouTube', link: p[6], svg: ICONS.youtube }
+            ];
+
+            socials.forEach(s => {
+                let cleanLink = s.link ? s.link.replace(/^"|"$/g, '') : '';
+                if (cleanLink.length > 5) {
+                    const el = document.createElement('a');
+                    el.className = 'social-link';
+                    el.href = cleanLink;
+                    el.target = '_blank';
+                    el.innerHTML = `${s.svg}<span>${s.name}</span>`;
+                    socGrid.appendChild(el);
                 }
             });
 
-            mus.forEach(m => {
-                if(m.l && m.l.length > 5) {
-                    const a = document.createElement('a');
-                    a.className = 'btn full'; a.href = m.l; a.target = '_blank';
-                    a.innerHTML = `${m.i} <span>${m.n}</span>`;
-                    document.getElementById('music-grid').appendChild(a);
+            music.forEach(m => {
+                let cleanLink = m.link ? m.link.replace(/^"|"$/g, '') : '';
+                if (cleanLink.length > 5) {
+                    const el = document.createElement('a');
+                    el.className = 'social-link full-width';
+                    el.href = cleanLink;
+                    el.target = '_blank';
+                    el.innerHTML = `${m.svg}<span>${m.name}</span>`;
+                    musGrid.appendChild(el);
                 }
             });
         });
