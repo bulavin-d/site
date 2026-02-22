@@ -16,8 +16,7 @@
             --yandex-color: #ffcc00;
             --vk-color: #0077ff;
             --spotify-color: #1ed760;
-            --apple-color: #fc3c44;
-            --yt-color: #ff0000; /* Цвет YouTube */
+            --yt-color: #ff0000; 
             --sc-color: #ff5500;
             --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
         }
@@ -70,7 +69,6 @@
             margin-bottom: 10px;
         }
 
-        /* --- АВАТАРКА БЕЗ МИКРОВОЛНОВКИ --- */
         .avatar-link {
             display: block;
             width: 110px; height: 110px;
@@ -181,8 +179,16 @@
         .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
         .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
         .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
-        .btn-apple:hover { color: var(--apple-color); box-shadow: inset 0 0 20px rgba(252, 60, 68, 0.15); }
-        .btn-yt:hover { color: #ff4d4d; box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); } /* Тёмно-красный эффект */
+        
+        /* APPLE MUSIC - Белое стеклянное свечение */
+        .btn-apple:hover { 
+            color: #fff; 
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1), 0 0 15px rgba(255, 255, 255, 0.05); 
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .btn-yt:hover { color: #ff4d4d; box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); }
         .btn-soundcloud:hover { color: var(--sc-color); box-shadow: inset 0 0 20px rgba(255, 85, 0, 0.15); }
 
         .full { grid-column: span 2; }
