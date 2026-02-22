@@ -361,7 +361,7 @@
             const data = await response.json();
             const advice = JSON.parse(data.contents);
             textEl.innerText = advice.text;
-        } catch (e) { textEl.innerText = "Делай то, что любишь. Остальное подтянется."; }
+        } catch (e) { textEl.innerText = "Делай то, что любишь."; }
     }
     fetchPrediction();
 </script>
