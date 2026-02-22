@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BULAVIN</title>
 
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
@@ -31,15 +31,16 @@
             display: flex;
             justify-content: center;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* Канвас для летающих эмодзи */
         #global-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            filter: grayscale(1) brightness(0.7) blur(1px); /* Делаем их стильно-серыми */
+            filter: grayscale(1) brightness(0.6) blur(1px);
+            pointer-events: none; /* Чтобы не мешал тапам */
         }
 
         .dynamic-bg {
@@ -82,50 +83,26 @@
         }
 
         .avatar-link::before {
-            content: '';
-            position: absolute;
-            inset: 0;
+            content: ''; position: absolute; inset: 0;
             background: var(--insta-gradient);
             border-radius: 50%;
             animation: rotate-gradient 4s linear infinite;
             z-index: -2;
         }
 
-        .avatar-link::after {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: var(--insta-gradient);
-            border-radius: 50%;
-            filter: blur(10px);
-            opacity: 0.5;
-            z-index: -3;
-        }
-
         .avatar-inner-border {
-            position: absolute;
-            inset: 4px;
-            background: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; inset: 4px;
+            background: #000; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
             padding: 3px;
         }
 
-        .avatar { 
-            width: 100%; height: 100%; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            display: block;
-        }
+        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
         @keyframes rotate-gradient {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-
-        .avatar-link:hover { transform: scale(1.08); }
 
         .name-wrapper {
             display: flex; align-items: center; justify-content: center;
@@ -148,17 +125,14 @@
             border-radius: 20px;
             text-decoration: none; color: #fff;
             font-size: 13px; font-weight: 600;
-            display: flex; 
-            align-items: center; 
-            justify-content: flex-start;
+            display: flex; align-items: center; justify-content: flex-start;
             transition: all 0.3s ease;
             cursor: pointer;
-            overflow: hidden;
         }
 
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
 
         .collapse-wrapper {
             display: grid; grid-template-rows: 0fr;
@@ -169,83 +143,39 @@
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
         .collapse-content > *:first-child { margin-top: 10px; }
 
-        .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
-        .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
-        .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
-        .btn-apple:hover { border-color: rgba(255, 255, 255, 0.4); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1); }
-        .btn-yt:hover { color: #ff4d4d; box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); }
-        .btn-soundcloud:hover { color: var(--sc-color); box-shadow: inset 0 0 20px rgba(255, 85, 0, 0.15); }
-
         .afisha-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             border-radius: 25px;
             padding: 25px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(15px);
-            text-align: center;
+            display: flex; flex-direction: column; align-items: center;
+            backdrop-filter: blur(15px); text-align: center;
         }
-        .afisha-status { 
-            font-size: 12px; 
-            opacity: 0.7; 
-            margin-bottom: 15px;
-            white-space: nowrap; 
-            letter-spacing: 0.3px;
-        }
+        .afisha-status { font-size: 12px; opacity: 0.7; margin-bottom: 15px; white-space: nowrap; }
         .organizer-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--red-accent);
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 10px 24px;
-            border: 1px solid rgba(255, 75, 43, 0.25);
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--red-accent); text-decoration: none;
+            font-size: 11px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 1.5px; padding: 10px 24px;
+            border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px;
             animation: pulse-red 3s infinite;
         }
+
         @keyframes pulse-red {
             0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.3); }
             70% { box-shadow: 0 0 0 8px rgba(255, 75, 43, 0); }
             100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); }
         }
-        .organizer-link:hover {
-            background: rgba(255, 75, 43, 0.15);
-            border-color: var(--red-accent);
-            transform: translateY(-1px);
-        }
 
-        .full { grid-column: span 2; }
-
-        .prediction-wrapper { position: relative; width: 100%; margin-top: 15px; }
         .prediction-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            padding: 30px 25px;
-            backdrop-filter: blur(20px);
-            text-align: center;
-            position: relative; z-index: 2;
+            border-radius: 30px; padding: 30px 25px;
+            backdrop-filter: blur(20px); text-align: center;
+            position: relative; z-index: 2; margin-top: 15px;
         }
-
-        .prediction-header {
-            font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
-            margin-bottom: 15px; color: var(--verify-blue); font-weight: 800; opacity: 0.8;
-        }
-        .prediction-text { font-size: 15px; line-height: 1.6; font-weight: 400; color: #fff; }
-
-        #magic-canvas {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120%; height: 150%; z-index: 1; pointer-events: none;
-        }
+        .prediction-header { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; color: var(--verify-blue); font-weight: 800; }
+        .prediction-text { font-size: 15px; line-height: 1.6; }
 
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
@@ -320,12 +250,9 @@
         </div>
     </div>
 
-    <div class="prediction-wrapper">
-        <canvas id="magic-canvas"></canvas>
-        <div class="prediction-card">
-            <div class="prediction-header">BULAVIN SYSTEM • БАЗА ДНЯ</div>
-            <div id="prediction" class="prediction-text">Подключаюсь...</div>
-        </div>
+    <div class="prediction-card">
+        <div class="prediction-header">BULAVIN SYSTEM • БАЗА ДНЯ</div>
+        <div id="prediction" class="prediction-text">Подключаюсь...</div>
     </div>
 
     <div class="footer">© 2026 BULAVIN</div>
@@ -337,75 +264,70 @@
         const wrapper = document.getElementById(wrapperId);
         btn.addEventListener('click', () => {
             wrapper.classList.toggle('show');
-            btn.style.transform = wrapper.classList.contains('show') ? 'scale(0.98)' : 'translateY(-2px)';
         });
     }
 
     setupCollapse('music-btn', 'music-wrapper');
     setupCollapse('afisha-btn', 'afisha-wrapper');
 
-    // Настройка летающих эмодзи
-    const globalCanvas = document.getElementById('global-canvas');
-    const gCtx = globalCanvas.getContext('2d');
-    let gEmojis = [];
+    const canvas = document.getElementById('global-canvas');
+    const ctx = canvas.getContext('2d');
+    let emojis = [];
     const emojiList = ['🖤', '💼', '🎧'];
-
-    function initGlobalCanvas() {
-        globalCanvas.width = window.innerWidth;
-        globalCanvas.height = window.innerHeight;
-        gEmojis = [];
-        let count = 15; // Оптимальное количество для фона
-        for (let i = 0; i < count; i++) { gEmojis.push(new FloatingEmoji()); }
-    }
 
     class FloatingEmoji {
         constructor() {
-            this.init();
-        }
-        init() {
-            this.x = Math.random() * globalCanvas.width;
-            this.y = Math.random() * globalCanvas.height;
+            this.x = Math.random() * window.innerWidth;
+            this.y = Math.random() * window.innerHeight;
             this.emoji = emojiList[Math.floor(Math.random() * emojiList.length)];
             this.size = Math.random() * 20 + 20;
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = (Math.random() - 0.5) * 0.5;
-            this.rotation = Math.random() * Math.PI * 2;
-            this.rotationSpeed = (Math.random() - 0.5) * 0.01;
-            this.opacity = Math.random() * 0.3 + 0.1;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.rot = Math.random() * Math.PI * 2;
+            this.rotSpd = (Math.random() - 0.5) * 0.01;
+            this.op = Math.random() * 0.2 + 0.1;
         }
         update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.rotation += this.rotationSpeed;
-
-            // Бесшовный перелет границ
-            if (this.x < -50) this.x = globalCanvas.width + 50;
-            if (this.x > globalCanvas.width + 50) this.x = -50;
-            if (this.y < -50) this.y = globalCanvas.height + 50;
-            if (this.y > globalCanvas.height + 50) this.y = -50;
+            this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd;
+            if (this.x < -50) this.x = window.innerWidth + 50;
+            if (this.x > window.innerWidth + 50) this.x = -50;
+            if (this.y < -50) this.y = window.innerHeight + 50;
+            if (this.y > window.innerHeight + 50) this.y = -50;
         }
         draw() {
-            gCtx.save();
-            gCtx.translate(this.x, this.y);
-            gCtx.rotate(this.rotation);
-            gCtx.globalAlpha = this.opacity;
-            gCtx.font = `${this.size}px serif`;
-            gCtx.textAlign = 'center';
-            gCtx.textBaseline = 'middle';
-            gCtx.fillText(this.emoji, 0, 0);
-            gCtx.restore();
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rot);
+            ctx.globalAlpha = this.op;
+            ctx.font = `${this.size}px serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(this.emoji, 0, 0);
+            ctx.restore();
         }
     }
 
-    function animateGlobal() {
-        gCtx.clearRect(0, 0, globalCanvas.width, globalCanvas.height);
-        gEmojis.forEach(e => { e.update(); e.draw(); });
-        requestAnimationFrame(animateGlobal);
+    function init() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        if (emojis.length === 0) {
+            for (let i = 0; i < 15; i++) emojis.push(new FloatingEmoji());
+        }
     }
 
-    window.addEventListener('resize', initGlobalCanvas);
-    initGlobalCanvas(); 
-    animateGlobal();
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        emojis.forEach(e => { e.update(); e.draw(); });
+        requestAnimationFrame(animate);
+    }
+
+    // Умный ресайз без сброса позиций
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+
+    init(); animate();
 
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
@@ -417,38 +339,6 @@
         } catch (e) { textEl.innerText = "Делай то, что любишь. Остальное подтянется."; }
     }
     fetchPrediction();
-
-    const mCanvas = document.getElementById('magic-canvas');
-    const mCtx = mCanvas.getContext('2d');
-    let mParticles = [];
-    function initMCanvas() { mCanvas.width = mCanvas.offsetWidth; mCanvas.height = mCanvas.offsetHeight; }
-    class MParticle {
-        constructor() {
-            this.x = Math.random() * mCanvas.width;
-            this.y = Math.random() * mCanvas.height;
-            this.size = Math.random() * 2;
-            this.sx = Math.random() * 0.4 - 0.2;
-            this.sy = Math.random() * 0.4 - 0.2;
-        }
-        update() {
-            this.x += this.sx; this.y += this.sy;
-            if (this.x < 0 || this.x > mCanvas.width) this.sx *= -1;
-            if (this.y < 0 || this.y > mCanvas.height) this.sy *= -1;
-        }
-        draw() {
-            mCtx.fillStyle = 'rgba(0, 149, 246, 0.3)';
-            mCtx.beginPath(); mCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); mCtx.fill();
-        }
-    }
-    function animateM() {
-        mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
-        mParticles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animateM);
-    }
-    window.addEventListener('resize', initMCanvas);
-    initMCanvas();
-    for(let i=0; i<30; i++) mParticles.push(new MParticle());
-    animateM();
 </script>
 
 </body>
