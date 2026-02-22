@@ -72,7 +72,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px; /* Прижал галочку */
+            gap: 4px;
             margin-bottom: 8px;
         }
 
@@ -87,7 +87,7 @@
         .bio { 
             font-size: 12px; 
             opacity: 0.6; 
-            text-align: center; /* Центровка */
+            text-align: center;
             letter-spacing: 0.2px;
             line-height: 1.4;
         }
@@ -110,7 +110,7 @@
             align-items: center;
             justify-content: center;
             transition: 0.3s ease;
-            opacity: 0; /* Для анимации */
+            opacity: 0;
         }
 
         .btn-icon {
@@ -129,11 +129,39 @@
 
         .full { grid-column: span 2; }
 
-        /* Анимация появления кнопок */
+        /* Блок Гороскопа */
+        .horoscope-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 20px;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .horoscope-card h3 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: var(--verify-blue);
+        }
+
+        .horoscope-text {
+            font-size: 13px;
+            line-height: 1.5;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
             to { opacity: 1; transform: translateY(0); filter: blur(0); }
         }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .music-btn { animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .music-btn:nth-child(1) { animation-delay: 0.1s; }
@@ -141,7 +169,7 @@
         .music-btn:nth-child(3) { animation-delay: 0.3s; }
         .music-btn:nth-child(4) { animation-delay: 0.4s; }
 
-        .social-btn { opacity: 1; } /* Соцсети пусть будут сразу */
+        .social-btn { opacity: 1; }
 
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
@@ -180,7 +208,7 @@
             <svg class="btn-icon" viewBox="0 0 100 100"><path d="M53.1,1.9L46.8,31C35,31.7,1.8,26,1.8,26l24.9,16.4L1.8,65l31.1-4.2l6.3,29l6.3-27.9l31.1,4.2L68.4,49.1L93.3,65l-24.9-16.4L93.3,32.2L68.4,36.4L53.1,1.9z"/></svg>
             <span>Yandex Music</span>
         </a>
-        <a href="https://open.spotify.com/artist/6s0a6m3hC0R9lJkQz8ZqYF" target="_blank" class="btn full music-btn">
+        <a href="https://open.spotify.com/artist/6s0a" target="_blank" class="btn full music-btn">
             <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.524-1.543-5.701-1.892-9.444-1.038-.405.093-.811-.158-.904-.562-.093-.405.158-.812.562-.904 4.1-.937 7.62-.533 10.463 1.203.354.216.465.674.249 1.029zm1.441-3.259c-.272.441-.848.583-1.288.311-2.889-1.775-7.301-2.285-10.72-1.248-.498.151-1.023-.131-1.173-.629-.151-.498.131-1.023.629-1.173 3.905-1.185 8.784-.616 12.126 1.435.441.272.583.848.311 1.288zm.107-3.348c-3.465-2.058-9.176-2.248-12.482-1.246-.532.161-1.096-.14-1.257-.672-.161-.532.14-1.096.672-1.257 3.8-1.152 10.103-.929 14.12 1.455.479.284.636.899.352 1.378-.284.479-.899.636-1.378.352z"/></svg>
             <span>Spotify</span>
         </a>
@@ -194,8 +222,39 @@
         </a>
     </div>
 
+    <div class="horoscope-card">
+        <h3>Водолей • Сегодня</h3>
+        <div id="horoscope" class="horoscope-text">Сверяюсь со звездами...</div>
+    </div>
+
     <div class="footer">© 2026 BULAVIN SYSTEM</div>
 </div>
+
+<script>
+    // Скрипт для получения гороскопа
+    async function getHoroscope() {
+        const sign = 'aquarius';
+        const proxyUrl = 'https://api.allorigins.win/get?url=';
+        const targetUrl = encodeURIComponent(`https://ignio.com/r/export/utf/xml/daily/com.xml`);
+
+        try {
+            const response = await fetch(proxyUrl + targetUrl);
+            const data = await response.json();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+            
+            // Ищем текст именно для Водолея (aquarius)
+            const todayText = xmlDoc.getElementsByTagName(sign)[0].getElementsByTagName('today')[0].textContent;
+            
+            document.getElementById('horoscope').innerText = todayText.trim();
+        } catch (error) {
+            document.getElementById('horoscope').innerText = "Звезды сегодня молчат, но день обещает быть продуктивным.";
+            console.error('Ошибка гороскопа:', error);
+        }
+    }
+
+    getHoroscope();
+</script>
 
 </body>
 </html>
