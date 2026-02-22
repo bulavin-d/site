@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BULAVIN | Official</title>
+    <title>BULAVIN</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="BULAVIN">
+    <meta property="og:description" content="Проводник в мир BULAVIN`a...">
+    <meta property="og:image" content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
+
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.05);
@@ -40,7 +48,6 @@
             z-index: 5;
         }
 
-        /* Карточка профиля */
         .profile-card {
             background: var(--glass);
             backdrop-filter: blur(30px);
@@ -73,7 +80,6 @@
         
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
 
-        /* Кнопки */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         
         .btn {
@@ -86,7 +92,7 @@
             text-decoration: none; color: #fff;
             font-size: 13px; font-weight: 600;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s ease; opacity: 0;
+            transition: 0.3s ease; opacity: 1; /* Оставил видимыми сразу для надежности */
         }
 
         .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
@@ -99,7 +105,6 @@
 
         .full { grid-column: span 2; }
 
-        /* Блок Предсказания */
         .prediction-wrapper { position: relative; width: 100%; margin-top: 20px; }
 
         .prediction-card {
@@ -132,7 +137,6 @@
             margin: 0 auto;
         }
 
-        /* Магические частицы (Canvas) */
         #magic-canvas {
             position: absolute;
             top: 50%; left: 50%;
@@ -142,18 +146,6 @@
             pointer-events: none;
         }
 
-        /* Анимации */
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); filter: blur(10px); }
-            to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        .music-btn { animation: slideIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-        .music-btn:nth-child(1) { animation-delay: 0.1s; }
-        .music-btn:nth-child(2) { animation-delay: 0.2s; }
-        .music-btn:nth-child(3) { animation-delay: 0.3s; }
-
-        .social-btn { opacity: 1; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
 </head>
@@ -174,23 +166,23 @@
     </div>
 
     <div class="grid">
-        <a href="https://t.me/imbulavin" target="_blank" class="btn social-btn"><span>Telegram</span></a>
-        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn social-btn"><span>Instagram</span></a>
+        <a href="https://t.me/imbulavin" target="_blank" class="btn"><span>Telegram</span></a>
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn"><span>Instagram</span></a>
     </div>
 
     <div class="divider">Слушать музыку</div>
 
     <div class="grid">
-        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full music-btn"><span>Yandex Music</span></a>
-        <a href="https://open.spotify.com/artist/7" target="_blank" class="btn full music-btn"><span>Spotify</span></a>
-        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full music-btn"><span>Apple Music</span></a>
+        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full"><span>Yandex Music</span></a>
+        <a href="https://open.spotify.com/artist/7" target="_blank" class="btn full"><span>Spotify</span></a>
+        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full"><span>Apple Music</span></a>
     </div>
 
     <div class="prediction-wrapper">
         <canvas id="magic-canvas"></canvas>
         <div class="prediction-card">
             <div class="prediction-header">BULAVIN SYSTEM • БАЗА ДНЯ</div>
-            <div id="prediction" class="prediction-text">Подключаюсь к инфополю...</div>
+            <div id="prediction" class="prediction-text">Подключаюсь...</div>
         </div>
     </div>
 
@@ -206,19 +198,17 @@
             const advice = JSON.parse(data.contents);
             textEl.innerText = advice.text;
         } catch (e) {
-            textEl.innerText = "Делай то, что любишь.";
+            textEl.innerText = "Делай то, что любишь. Остальное подтянется.";
         }
     }
 
     const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-
     function initCanvas() {
         canvas.width = canvas.offsetWidth;
         canvas.height = canvas.offsetHeight;
     }
-
     class Particle {
         constructor() {
             this.x = Math.random() * canvas.width;
@@ -229,33 +219,25 @@
             this.opacity = Math.random() * 0.5;
         }
         update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.x < 0) this.x = canvas.width;
-            if (this.y > canvas.height) this.y = 0;
-            if (this.y < 0) this.y = canvas.height;
+            this.x += this.speedX; this.y += this.speedY;
+            if (this.x > canvas.width) this.x = 0; if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
         }
         draw() {
             ctx.fillStyle = `rgba(0, 149, 246, ${this.opacity})`;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
         }
     }
-
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animate);
     }
-
     window.addEventListener('resize', initCanvas);
     initCanvas();
     for(let i=0; i<40; i++) particles.push(new Particle());
     animate();
     fetchPrediction();
 </script>
-
 </body>
 </html>
