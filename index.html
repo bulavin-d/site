@@ -30,12 +30,12 @@
             overflow-x: hidden;
         }
 
-        /* НОВЫЙ ИНТЕРАКТИВНЫЙ ФОН */
+        /* ГЛОБАЛЬНЫЙ ИНТЕРАКТИВНЫЙ ФОН */
         #global-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: -1; /* Перед dynamic-bg, но за контентом */
+            z-index: -1;
             pointer-events: none;
         }
 
@@ -44,7 +44,7 @@
             background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center;
             background-size: cover;
             filter: blur(80px) brightness(0.2);
-            transform: scale(1.1); z-index: -2; /* Глубже всех */
+            transform: scale(1.1); z-index: -2;
         }
 
         .container {
@@ -107,27 +107,70 @@
             overflow: hidden;
         }
 
-        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
-        .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
+        .btn i {
+            font-size: 18px;
+            width: 25px;
+            margin-right: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn span {
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 25px; /* Компенсация иконки для центровки текста */
+        }
+
+        /* Исправленный блок контента для кнопки с дымом */
+        .btn-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            pointer-events: none;
+        }
 
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
-        .music-trigger { margin-top: 5px; letter-spacing: 2px; }
+        .music-trigger {
+            margin-top: 5px;
+            letter-spacing: 2px;
+        }
 
         #smoke-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1; opacity: 0.6; filter: blur(12px);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+            filter: blur(12px);
+            -webkit-filter: blur(12px);
         }
 
         .music-collapse-wrapper {
-            display: grid; grid-template-rows: 0fr;
+            display: grid;
+            grid-template-rows: 0fr;
             transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
 
-        .music-collapse-wrapper.show { grid-template-rows: 1fr; }
-        .music-list { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
-        .music-list .btn:first-child { margin-top: 10px; }
+        .music-collapse-wrapper.show {
+            grid-template-rows: 1fr;
+        }
+
+        .music-list {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .music-list .btn:first-child {
+            margin-top: 10px; 
+        }
 
         .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
         .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
@@ -227,12 +270,11 @@
 </div>
 
 <script>
-    // --- ОСНОВНАЯ ЛОГИКА ---
     const musicBtn = document.getElementById('music-btn');
     const musicWrapper = document.getElementById('music-wrapper');
     musicBtn.addEventListener('click', () => { musicWrapper.classList.toggle('show'); });
 
-    // --- НОВЫЙ ГЛОБАЛЬНЫЙ ХОЛСТ (ЗВЕЗДЫ) ---
+    // ГЛОБАЛЬНЫЙ ХОЛСТ (ЗВЕЗДЫ)
     const globalCanvas = document.getElementById('global-canvas');
     const gCtx = globalCanvas.getContext('2d');
     let gParticles = [];
@@ -262,15 +304,10 @@
             this.x += this.vx; this.y += this.vy;
             if (this.x < 0 || this.x > globalCanvas.width) this.vx *= -1;
             if (this.y < 0 || this.y > globalCanvas.height) this.vy *= -1;
-
             if (mouse.x != null) {
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
+                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
                 let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < mouse.radius) {
-                    this.x -= dx * 0.01;
-                    this.y -= dy * 0.01;
-                }
+                if (dist < mouse.radius) { this.x -= dx * 0.01; this.y -= dy * 0.01; }
             }
         }
         draw() {
@@ -286,10 +323,8 @@
                 if (dist < 150) {
                     gCtx.strokeStyle = `rgba(0, 149, 246, ${0.15 * (1 - dist/150)})`;
                     gCtx.lineWidth = 1;
-                    gCtx.beginPath();
-                    gCtx.moveTo(gParticles[a].x, gParticles[a].y);
-                    gCtx.lineTo(gParticles[b].x, gParticles[b].y);
-                    gCtx.stroke();
+                    gCtx.beginPath(); gCtx.moveTo(gParticles[a].x, gParticles[a].y);
+                    gCtx.lineTo(gParticles[b].x, gParticles[b].y); gCtx.stroke();
                 }
             }
         }
@@ -304,7 +339,7 @@
     window.addEventListener('resize', initGlobalCanvas);
     initGlobalCanvas(); animateGlobal();
 
-    // --- ДЫМ НА КНОПКЕ (ТВОЙ КОД) ---
+    // ДЫМ НА КНОПКЕ
     const sCanvas = document.getElementById('smoke-canvas');
     const sCtx = sCanvas.getContext('2d');
     let smokeParticles = [];
@@ -339,7 +374,7 @@
     for(let i=0; i<15; i++) smokeParticles.push(new SmokeParticle());
     animateSmoke();
 
-    // --- ПРЕДСКАЗАНИЯ (ТВОЙ КОД) ---
+    // ПРЕДСКАЗАНИЯ
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
@@ -351,7 +386,7 @@
     }
     fetchPrediction();
 
-    // --- МАГИЧЕСКИЙ ХОЛСТ ПОД СОВЕТАМИ (ТВОЙ КОД) ---
+    // МАГИЧЕСКИЙ ХОЛСТ (ПОД СОВЕТАМИ)
     const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
