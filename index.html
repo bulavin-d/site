@@ -13,16 +13,14 @@
     <meta property="og:title" content="BULAVIN">
     <meta property="og:description" content="Проводник в мир BULAVIN`a...">
     <meta property="og:image" content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
 
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --verify-blue: #0095f6;
+            --fire-orange: #ff4d00;
             
-            /* Цвета площадок */
             --yandex-color: #ffcc00;
             --vk-color: #0077ff;
             --spotify-color: #1ed760;
@@ -87,7 +85,6 @@
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
 
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
-        
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -103,54 +100,57 @@
             font-size: 13px; font-weight: 600;
             display: flex; align-items: center; justify-content: center;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            overflow: hidden;
         }
 
-        .btn i { 
-            position: absolute;
-            left: 20px;
-            font-size: 18px; 
-        }
+        .btn i { position: absolute; left: 20px; font-size: 18px; }
 
         .btn:hover { 
             transform: translateY(-3px);
             border-color: rgba(255,255,255,0.3);
         }
 
-        /* Индивидуальные стили свечения */
-        .btn-yandex:hover { 
-            background: rgba(255, 204, 0, 0.15); 
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
-            color: var(--yandex-color);
+        /* Кнопка Огня */
+        .fire-trigger {
+            background: rgba(255, 77, 0, 0.1);
+            border: 1px solid rgba(255, 77, 0, 0.3);
+            letter-spacing: 2px;
+            margin: 10px 0;
+            z-index: 10;
         }
-        .btn-vk:hover { 
-            background: rgba(0, 119, 255, 0.15); 
-            box-shadow: 0 0 20px rgba(0, 119, 255, 0.2);
-            color: var(--vk-color);
-        }
-        .btn-spotify:hover { 
-            background: rgba(30, 215, 96, 0.15); 
-            box-shadow: 0 0 20px rgba(30, 215, 96, 0.2);
-            color: var(--spotify-color);
-        }
-        .btn-apple:hover { 
-            background: rgba(252, 60, 68, 0.15); 
-            box-shadow: 0 0 20px rgba(252, 60, 68, 0.2);
-            color: var(--apple-color);
-        }
-        .btn-default:hover {
-            background: rgba(255, 255, 255, 0.1);
+        
+        #fire-canvas {
+            position: absolute;
+            top: -50%; left: -10%;
+            width: 120%; height: 200%;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .divider {
-            padding: 15px; text-align: center; font-size: 9px;
-            letter-spacing: 3px; color: rgba(255,255,255,0.3);
-            text-transform: uppercase; font-weight: 800;
+        /* Скрытый блок музыки */
+        #music-collapse {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            animation: slideDown 0.5s ease forwards;
         }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Индивидуальные стили свечения */
+        .btn-yandex:hover { background: rgba(255, 204, 0, 0.15); box-shadow: 0 0 20px rgba(255, 204, 0, 0.2); color: var(--yandex-color); }
+        .btn-vk:hover { background: rgba(0, 119, 255, 0.15); box-shadow: 0 0 20px rgba(0, 119, 255, 0.2); color: var(--vk-color); }
+        .btn-spotify:hover { background: rgba(30, 215, 96, 0.15); box-shadow: 0 0 20px rgba(30, 215, 96, 0.2); color: var(--spotify-color); }
+        .btn-apple:hover { background: rgba(252, 60, 68, 0.15); box-shadow: 0 0 20px rgba(252, 60, 68, 0.2); color: var(--apple-color); }
+        .btn-default:hover { background: rgba(255, 255, 255, 0.1); }
 
         .full { grid-column: span 2; }
 
         .prediction-wrapper { position: relative; width: 100%; margin-top: 20px; }
-
         .prediction-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
@@ -163,31 +163,16 @@
         }
 
         .prediction-header {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            color: var(--verify-blue);
-            font-weight: 800;
-            opacity: 0.8;
+            font-size: 9px; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 15px; color: var(--verify-blue); font-weight: 800; opacity: 0.8;
         }
 
-        .prediction-text {
-            font-size: 15px;
-            line-height: 1.6;
-            font-weight: 400;
-            color: #fff;
-            max-width: 100%;
-            margin: 0 auto;
-        }
+        .prediction-text { font-size: 15px; line-height: 1.6; font-weight: 400; color: #fff; }
 
         #magic-canvas {
-            position: absolute;
-            top: 50%; left: 50%;
+            position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 120%; height: 150%;
-            z-index: 1;
-            pointer-events: none;
+            width: 120%; height: 150%; z-index: 1; pointer-events: none;
         }
 
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
@@ -218,21 +203,26 @@
         </a>
     </div>
 
-    <div class="divider">Слушать музыку</div>
+    <div class="btn full fire-trigger" onclick="toggleMusic()">
+        <canvas id="fire-canvas"></canvas>
+        <i class="fa-solid fa-fire"></i><span>СЛУШАТЬ МУЗЫКУ</span>
+    </div>
 
-    <div class="grid">
-        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex">
-            <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
-        </a>
-        <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
-            <i class="fa-brands fa-vk"></i><span>VK Music</span>
-        </a>
-        <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify">
-            <i class="fa-brands fa-spotify"></i><span>Spotify</span>
-        </a>
-        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
-            <i class="fa-brands fa-apple"></i><span>Apple Music</span>
-        </a>
+    <div id="music-collapse">
+        <div class="grid">
+            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex">
+                <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
+            </a>
+            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
+                <i class="fa-brands fa-vk"></i><span>VK Music</span>
+            </a>
+            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify">
+                <i class="fa-brands fa-spotify"></i><span>Spotify</span>
+            </a>
+            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
+                <i class="fa-brands fa-apple"></i><span>Apple Music</span>
+            </a>
+        </div>
     </div>
 
     <div class="prediction-wrapper">
@@ -247,6 +237,63 @@
 </div>
 
 <script>
+    // Функция развертывания
+    function toggleMusic() {
+        const content = document.getElementById('music-collapse');
+        const isHidden = window.getComputedStyle(content).display === 'none';
+        content.style.display = isHidden ? 'flex' : 'none';
+    }
+
+    // Анимация огня под кнопкой
+    const fCanvas = document.getElementById('fire-canvas');
+    const fCtx = fCanvas.getContext('2d');
+    let sparks = [];
+
+    function resizeFire() {
+        fCanvas.width = fCanvas.offsetWidth;
+        fCanvas.height = fCanvas.offsetHeight;
+    }
+
+    class Spark {
+        constructor() {
+            this.init();
+        }
+        init() {
+            this.x = Math.random() * fCanvas.width;
+            this.y = fCanvas.height * 0.7;
+            this.size = Math.random() * 3 + 1;
+            this.speedY = Math.random() * -2 - 1;
+            this.speedX = (Math.random() - 0.5) * 1;
+            this.alpha = 1;
+            this.color = `rgba(255, ${Math.floor(Math.random() * 100 + 50)}, 0,`;
+        }
+        update() {
+            this.y += this.speedY;
+            this.x += this.speedX;
+            this.alpha -= 0.02;
+            if (this.alpha <= 0) this.init();
+        }
+        draw() {
+            fCtx.fillStyle = this.color + this.alpha + ')';
+            fCtx.beginPath();
+            fCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            fCtx.fill();
+        }
+    }
+
+    function animateFire() {
+        fCtx.clearRect(0, 0, fCanvas.width, fCanvas.height);
+        sparks.forEach(s => { s.update(); s.draw(); });
+        requestAnimationFrame(animateFire);
+    }
+
+    // Инициализация огня
+    window.addEventListener('resize', resizeFire);
+    resizeFire();
+    for(let i=0; i<30; i++) sparks.push(new Spark());
+    animateFire();
+
+    // Предсказания (твой старый код)
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
@@ -259,6 +306,7 @@
         }
     }
 
+    // Синие частицы фона (твой старый код)
     const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -297,7 +345,7 @@
     fetchPrediction();
 </script>
 
-<script type="text/javascript" >
+<script type="text/javascript">
    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
    m[i].l=1*new Date();
    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
@@ -311,6 +359,5 @@
         webvisor:true
    });
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </body>
 </html>
