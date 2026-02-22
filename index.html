@@ -99,11 +99,10 @@
         .btn i { position: absolute; left: 20px; font-size: 18px; }
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
-        /* Кнопка с дымом */
         .music-trigger {
             margin-top: 5px;
             letter-spacing: 2px;
-            z-index: 10; /* Выше всех, чтобы дым был виден */
+            z-index: 10;
         }
         
         #smoke-canvas {
@@ -115,12 +114,11 @@
             opacity: 0.4;
         }
 
-        /* Плавная обертка площадок через GRID ANIMATION */
         .music-collapse-wrapper {
             display: grid;
             grid-template-rows: 0fr;
             transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
+            overflow: hidden; /* Гарантирует скрытие контента */
         }
 
         .music-collapse-wrapper.show {
@@ -132,11 +130,14 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            padding-top: 5px; /* Дистанция от верхней кнопки */
-            padding-bottom: 5px;
+            /* Убрали padding-top, чтобы ничего не торчало */
         }
 
-        /* Ховеры без вылета за границы */
+        /* Добавляем отступ только при раскрытии через первую кнопку */
+        .music-list .btn:first-child {
+            margin-top: 10px; 
+        }
+
         .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
         .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
         .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
@@ -238,7 +239,6 @@
         musicWrapper.classList.toggle('show');
     });
 
-    // Дым (Canvas)
     const sCanvas = document.getElementById('smoke-canvas');
     const sCtx = sCanvas.getContext('2d');
     let smokeParticles = [];
@@ -281,7 +281,6 @@
     for(let i=0; i<12; i++) smokeParticles.push(new SmokeParticle());
     animateSmoke();
 
-    // Предсказания
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
@@ -294,7 +293,6 @@
         }
     }
 
-    // Фоновые частицы (синие)
     const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
