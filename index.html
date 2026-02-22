@@ -13,7 +13,6 @@
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --verify-blue: #0095f6;
-            
             --yandex-color: #ffcc00;
             --vk-color: #0077ff;
             --spotify-color: #1ed760;
@@ -91,21 +90,20 @@
             text-decoration: none; color: #fff;
             font-size: 13px; font-weight: 600;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             cursor: pointer;
-            overflow: hidden; /* Важно, чтобы свечение не вылазило */
+            overflow: hidden;
+            z-index: 2;
         }
 
         .btn i { position: absolute; left: 20px; font-size: 18px; }
-        .btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.3); }
+        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
-        /* Кнопка Музыки с дымом */
+        /* Кнопка с дымом */
         .music-trigger {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
+            margin-top: 5px;
             letter-spacing: 2px;
-            margin: 10px 0;
-            z-index: 10;
+            z-index: 10; /* Выше всех, чтобы дым был виден */
         }
         
         #smoke-canvas {
@@ -114,36 +112,39 @@
             width: 100%; height: 100%;
             pointer-events: none;
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
-        /* Список площадок */
-        #music-collapse {
-            max-height: 0;
-            opacity: 0;
+        /* Плавная обертка площадок через GRID ANIMATION */
+        .music-collapse-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+
+        .music-collapse-wrapper.show {
+            grid-template-rows: 1fr;
+        }
+
+        .music-list {
+            min-height: 0;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            padding-top: 5px; /* Дистанция от верхней кнопки */
+            padding-bottom: 5px;
         }
 
-        #music-collapse.show {
-            max-height: 500px;
-            opacity: 1;
-            margin-top: 5px; /* Убирает нахлест на верхнюю кнопку */
-            margin-bottom: 10px;
-        }
-
-        /* Исправленные ховеры площадок */
-        .btn-yandex:hover { background: rgba(255, 204, 0, 0.1); box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1); color: var(--yandex-color); }
-        .btn-vk:hover { background: rgba(0, 119, 255, 0.1); box-shadow: inset 0 0 15px rgba(0, 119, 255, 0.1); color: var(--vk-color); }
-        .btn-spotify:hover { background: rgba(30, 215, 96, 0.1); box-shadow: inset 0 0 15px rgba(30, 215, 96, 0.1); color: var(--spotify-color); }
-        .btn-apple:hover { background: rgba(252, 60, 68, 0.1); box-shadow: inset 0 0 15px rgba(252, 60, 68, 0.1); color: var(--apple-color); }
+        /* Ховеры без вылета за границы */
+        .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
+        .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
+        .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
+        .btn-apple:hover { color: var(--apple-color); box-shadow: inset 0 0 20px rgba(252, 60, 68, 0.15); }
 
         .full { grid-column: span 2; }
 
-        .prediction-wrapper { position: relative; width: 100%; margin-top: 20px; }
+        .prediction-wrapper { position: relative; width: 100%; margin-top: 15px; }
         .prediction-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
@@ -152,7 +153,7 @@
             backdrop-filter: blur(20px);
             text-align: center;
             position: relative;
-            z-index: 10;
+            z-index: 2;
         }
 
         .prediction-header {
@@ -188,10 +189,10 @@
     </div>
 
     <div class="grid">
-        <a href="https://t.me/imbulavin" target="_blank" class="btn btn-default">
+        <a href="https://t.me/imbulavin" target="_blank" class="btn">
             <i class="fa-brands fa-telegram"></i><span>Telegram</span>
         </a>
-        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn btn-default">
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn">
             <i class="fa-brands fa-instagram"></i><span>Instagram</span>
         </a>
     </div>
@@ -201,19 +202,21 @@
         <i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span>
     </div>
 
-    <div id="music-collapse">
-        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex">
-            <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
-        </a>
-        <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
-            <i class="fa-brands fa-vk"></i><span>VK Music</span>
-        </a>
-        <a href="https://spotify.com" target="_blank" class="btn full btn-spotify">
-            <i class="fa-brands fa-spotify"></i><span>Spotify</span>
-        </a>
-        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
-            <i class="fa-brands fa-apple"></i><span>Apple Music</span>
-        </a>
+    <div class="music-collapse-wrapper" id="music-wrapper">
+        <div class="music-list">
+            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex">
+                <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
+            </a>
+            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
+                <i class="fa-brands fa-vk"></i><span>VK Music</span>
+            </a>
+            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify">
+                <i class="fa-brands fa-spotify"></i><span>Spotify</span>
+            </a>
+            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
+                <i class="fa-brands fa-apple"></i><span>Apple Music</span>
+            </a>
+        </div>
     </div>
 
     <div class="prediction-wrapper">
@@ -229,13 +232,13 @@
 
 <script>
     const musicBtn = document.getElementById('music-btn');
-    const musicCollapse = document.getElementById('music-collapse');
+    const musicWrapper = document.getElementById('music-wrapper');
     
     musicBtn.addEventListener('click', () => {
-        musicCollapse.classList.toggle('show');
+        musicWrapper.classList.toggle('show');
     });
 
-    // Анимация ДЫМА
+    // Дым (Canvas)
     const sCanvas = document.getElementById('smoke-canvas');
     const sCtx = sCanvas.getContext('2d');
     let smokeParticles = [];
@@ -250,36 +253,32 @@
         init() {
             this.x = Math.random() * sCanvas.width;
             this.y = Math.random() * sCanvas.height;
-            this.size = Math.random() * 20 + 10;
-            this.opacity = Math.random() * 0.5;
-            this.vx = (Math.random() - 0.5) * 0.3;
-            this.vy = (Math.random() - 0.5) * 0.3;
+            this.size = Math.random() * 15 + 10;
+            this.opacity = Math.random() * 0.4;
+            this.vx = (Math.random() - 0.5) * 0.2;
+            this.vy = (Math.random() - 0.5) * 0.2;
         }
         update() {
-            this.x += this.vx;
-            this.y += this.vy;
+            this.x += this.vx; this.y += this.vy;
             if (this.x < 0 || this.x > sCanvas.width) this.vx *= -1;
             if (this.y < 0 || this.y > sCanvas.height) this.vy *= -1;
         }
         draw() {
             sCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-            sCtx.beginPath();
-            sCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            sCtx.fill();
+            sCtx.beginPath(); sCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); sCtx.fill();
         }
     }
 
     function animateSmoke() {
         sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
-        // Добавляем блюр программно для эффекта дыма
-        sCtx.filter = 'blur(15px)';
+        sCtx.filter = 'blur(10px)';
         smokeParticles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animateSmoke);
     }
 
     window.addEventListener('resize', resizeSmoke);
     resizeSmoke();
-    for(let i=0; i<15; i++) smokeParticles.push(new SmokeParticle());
+    for(let i=0; i<12; i++) smokeParticles.push(new SmokeParticle());
     animateSmoke();
 
     // Предсказания
@@ -295,7 +294,7 @@
         }
     }
 
-    // Фоновые частицы
+    // Фоновые частицы (синие)
     const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -308,9 +307,9 @@
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
             this.size = Math.random() * 2 + 0.5;
-            this.speedX = Math.random() * 0.4 - 0.2;
-            this.speedY = Math.random() * 0.4 - 0.2;
-            this.opacity = Math.random() * 0.4;
+            this.speedX = Math.random() * 0.3 - 0.15;
+            this.speedY = Math.random() * 0.3 - 0.15;
+            this.opacity = Math.random() * 0.3;
         }
         update() {
             this.x += this.speedX; this.y += this.speedY;
@@ -329,7 +328,7 @@
     }
     window.addEventListener('resize', initCanvas);
     initCanvas();
-    for(let i=0; i<40; i++) particles.push(new Particle());
+    for(let i=0; i<30; i++) particles.push(new Particle());
     animate();
     fetchPrediction();
 </script>
