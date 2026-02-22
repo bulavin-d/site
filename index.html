@@ -182,37 +182,34 @@
 
     <div class="grid">
         <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full music-btn"><span>Yandex Music</span></a>
-        <a href="#" target="_blank" class="btn full music-btn"><span>Spotify</span></a>
+        <a href="https://open.spotify.com/artist/7" target="_blank" class="btn full music-btn"><span>Spotify</span></a>
         <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full music-btn"><span>Apple Music</span></a>
     </div>
 
     <div class="prediction-wrapper">
         <canvas id="magic-canvas"></canvas>
         <div class="prediction-card">
-            <div class="prediction-header">BULAVIN SYSTEM • ПРЕДСКАЗАНИЕ НА ДЕНЬ</div>
+            <div class="prediction-header">BULAVIN SYSTEM • БАЗА ДНЯ</div>
             <div id="prediction" class="prediction-text">Подключаюсь к инфополю...</div>
         </div>
     </div>
 
-    <div class="footer">© 2026 BULAVIN SYSTEM</div>
+    <div class="footer">© 2026 BULAVIN</div>
 </div>
 
 <script>
-    // 1. Получение живого предсказания из сети
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
-            // Используем открытое API советов
             const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
             const data = await response.json();
             const advice = JSON.parse(data.contents);
             textEl.innerText = advice.text;
         } catch (e) {
-            textEl.innerText = "Делай то, что любишь. Остальное подтянется.";
+            textEl.innerText = "Делай то, что любишь.";
         }
     }
 
-    // 2. Магические частицы (Canvas Particle System)
     const canvas = document.getElementById('magic-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
