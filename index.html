@@ -19,6 +19,7 @@
             --yt-color: #ff0000; 
             --sc-color: #ff5500;
             --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            --red-accent: #ff4b2b;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
@@ -168,7 +169,7 @@
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
         .collapse-content > *:first-child { margin-top: 10px; }
 
-        /* Music Hover Effects (Fixed) */
+        /* Music Hover Effects */
         .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
         .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
         .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
@@ -176,37 +177,46 @@
         .btn-yt:hover { color: #ff4d4d; box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); }
         .btn-soundcloud:hover { color: var(--sc-color); box-shadow: inset 0 0 20px rgba(255, 85, 0, 0.15); }
 
-        /* Afisha Styles */
+        /* Afisha Styles (Fixed alignment) */
         .afisha-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
             border-radius: 25px;
             padding: 25px;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             backdrop-filter: blur(15px);
         }
-        .afisha-status { font-size: 14px; opacity: 0.8; margin-bottom: 15px; }
+        .afisha-status { 
+            font-size: 14px; 
+            opacity: 0.8; 
+            margin: 0 0 15px 0; 
+            line-height: 1.2;
+        }
         .organizer-link {
             display: inline-block;
-            color: var(--verify-blue);
+            color: var(--red-accent);
             text-decoration: none;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             padding: 8px 16px;
-            border: 1px solid rgba(0, 149, 246, 0.2);
+            border: 1px solid rgba(255, 75, 43, 0.2);
             border-radius: 12px;
             transition: all 0.3s ease;
-            animation: pulse-blue 2s infinite;
+            animation: pulse-red 3s infinite;
         }
-        @keyframes pulse-blue {
-            0% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(0, 149, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0); }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.3); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 75, 43, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); }
         }
         .organizer-link:hover {
-            background: rgba(0, 149, 246, 0.1);
+            background: rgba(255, 75, 43, 0.1);
+            border-color: var(--red-accent);
             transform: scale(1.05);
         }
 
@@ -278,7 +288,7 @@
             <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
                 <i class="fa-brands fa-vk"></i><span>VK Music</span>
             </a>
-            <a href="https://open.spotify.com/artist/5Hk6zP4iKx5B9G2D5m6PjD" target="_blank" class="btn full btn-spotify">
+            <a href="https://open.spotify.com/artist/2f9h7XyX4eQhU9mF6KjT6G" target="_blank" class="btn full btn-spotify">
                 <i class="fa-brands fa-spotify"></i><span>Spotify</span>
             </a>
             <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
@@ -320,7 +330,6 @@
 </div>
 
 <script>
-    // Фикс логики сворачивания
     function setupCollapse(btnId, wrapperId) {
         const btn = document.getElementById(btnId);
         const wrapper = document.getElementById(wrapperId);
@@ -333,7 +342,6 @@
     setupCollapse('music-btn', 'music-wrapper');
     setupCollapse('afisha-btn', 'afisha-wrapper');
 
-    // --- ИНТЕРАКТИВНЫЙ ФОН ---
     const globalCanvas = document.getElementById('global-canvas');
     const gCtx = globalCanvas.getContext('2d');
     let gParticles = [];
@@ -402,7 +410,6 @@
     window.addEventListener('resize', initGlobalCanvas);
     initGlobalCanvas(); animateGlobal();
 
-    // Предсказания
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
@@ -414,7 +421,6 @@
     }
     fetchPrediction();
 
-    // Магия под советом
     const mCanvas = document.getElementById('magic-canvas');
     const mCtx = mCanvas.getContext('2d');
     let mParticles = [];
