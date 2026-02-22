@@ -21,6 +21,12 @@
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --verify-blue: #0095f6;
+            
+            /* Цвета площадок */
+            --yandex-color: #ffcc00;
+            --vk-color: #0077ff;
+            --spotify-color: #1ed760;
+            --apple-color: #fc3c44;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
@@ -96,13 +102,44 @@
             text-decoration: none; color: #fff;
             font-size: 13px; font-weight: 600;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s ease;
-            gap: 10px; /* Расстояние между иконкой и текстом */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .btn i { font-size: 16px; width: 20px; text-align: center; }
+        .btn i { 
+            position: absolute;
+            left: 20px;
+            font-size: 18px; 
+        }
 
-        .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .btn:hover { 
+            transform: translateY(-3px);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        /* Индивидуальные стили свечения */
+        .btn-yandex:hover { 
+            background: rgba(255, 204, 0, 0.15); 
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+            color: var(--yandex-color);
+        }
+        .btn-vk:hover { 
+            background: rgba(0, 119, 255, 0.15); 
+            box-shadow: 0 0 20px rgba(0, 119, 255, 0.2);
+            color: var(--vk-color);
+        }
+        .btn-spotify:hover { 
+            background: rgba(30, 215, 96, 0.15); 
+            box-shadow: 0 0 20px rgba(30, 215, 96, 0.2);
+            color: var(--spotify-color);
+        }
+        .btn-apple:hover { 
+            background: rgba(252, 60, 68, 0.15); 
+            box-shadow: 0 0 20px rgba(252, 60, 68, 0.2);
+            color: var(--apple-color);
+        }
+        .btn-default:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
         .divider {
             padding: 15px; text-align: center; font-size: 9px;
@@ -173,10 +210,10 @@
     </div>
 
     <div class="grid">
-        <a href="https://t.me/imbulavin" target="_blank" class="btn">
+        <a href="https://t.me/imbulavin" target="_blank" class="btn btn-default">
             <i class="fa-brands fa-telegram"></i><span>Telegram</span>
         </a>
-        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn">
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn btn-default">
             <i class="fa-brands fa-instagram"></i><span>Instagram</span>
         </a>
     </div>
@@ -184,16 +221,16 @@
     <div class="divider">Слушать музыку</div>
 
     <div class="grid">
-        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full">
+        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex">
             <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
         </a>
-        <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full">
+        <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
             <i class="fa-brands fa-vk"></i><span>VK Music</span>
         </a>
-        <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full">
+        <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify">
             <i class="fa-brands fa-spotify"></i><span>Spotify</span>
         </a>
-        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full">
+        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
             <i class="fa-brands fa-apple"></i><span>Apple Music</span>
         </a>
     </div>
