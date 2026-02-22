@@ -93,7 +93,16 @@
             transition: all 0.3s ease;
             cursor: pointer;
             overflow: hidden;
-            z-index: 2;
+        }
+
+        .btn-content {
+            position: relative;
+            z-index: 2; /* Поверх канваса */
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Клик проходит сквозь на саму кнопку */
         }
 
         .btn i { position: absolute; left: 20px; font-size: 18px; }
@@ -102,22 +111,15 @@
         .music-trigger {
             margin-top: 5px;
             letter-spacing: 2px;
-            z-index: 10;
         }
 
-        .music-trigger span, .music-trigger i {
-            position: relative;
-            z-index: 3; /* Текст выше дыма */
-        }
-        
         #smoke-canvas {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.5;
-            /* Блюр через CSS для стабильности на мобилах */
+            opacity: 0.6;
             filter: blur(12px);
             -webkit-filter: blur(12px);
             transform: translate3d(0,0,0); 
@@ -207,7 +209,10 @@
 
     <div class="btn full music-trigger" id="music-btn">
         <canvas id="smoke-canvas"></canvas>
-        <i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span>
+        <div class="btn-content">
+            <i class="fa-solid fa-headphones"></i>
+            <span>СЛУШАТЬ МУЗЫКУ</span>
+        </div>
     </div>
 
     <div class="music-collapse-wrapper" id="music-wrapper">
@@ -260,15 +265,15 @@
         init() {
             this.x = Math.random() * sCanvas.width;
             this.y = Math.random() * sCanvas.height;
-            this.size = Math.random() * 20 + 10;
-            this.opacity = Math.random() * 0.5;
+            this.size = Math.random() * 25 + 15;
+            this.opacity = Math.random() * 0.4;
             this.vx = (Math.random() - 0.5) * 0.3;
             this.vy = (Math.random() - 0.5) * 0.3;
         }
         update() {
             this.x += this.vx; this.y += this.vy;
-            if (this.x < -20 || this.x > sCanvas.width + 20) this.vx *= -1;
-            if (this.y < -20 || this.y > sCanvas.height + 20) this.vy *= -1;
+            if (this.x < -30 || this.x > sCanvas.width + 30) this.vx *= -1;
+            if (this.y < -30 || this.y > sCanvas.height + 30) this.vy *= -1;
         }
         draw() {
             sCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
@@ -278,7 +283,6 @@
 
     function animateSmoke() {
         sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
-        // Блюр теперь в CSS, тут он не нужен
         smokeParticles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(animateSmoke);
     }
