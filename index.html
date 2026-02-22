@@ -40,7 +40,7 @@
             width: 100%; height: 100%;
             z-index: -1;
             filter: grayscale(1) brightness(0.6) blur(1px);
-            pointer-events: none; /* Чтобы не мешал тапам */
+            pointer-events: none;
         }
 
         .dynamic-bg {
@@ -104,6 +104,8 @@
             to { transform: rotate(360deg); }
         }
 
+        .avatar-link:hover { transform: scale(1.08); }
+
         .name-wrapper {
             display: flex; align-items: center; justify-content: center;
             gap: 6px; margin-bottom: 8px;
@@ -115,6 +117,7 @@
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
+        /* Кнопки и ховеры */
         .btn {
             position: relative;
             background: var(--glass);
@@ -132,8 +135,17 @@
 
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
+        /* Цвета музыкальных кнопок */
+        .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
+        .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
+        .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
+        .btn-apple:hover { border-color: rgba(255, 255, 255, 0.4); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1); }
+        .btn-yt:hover { color: var(--yt-color); box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); }
+        .btn-soundcloud:hover { color: var(--sc-color); box-shadow: inset 0 0 20px rgba(255, 85, 0, 0.15); }
+
+        /* Аккордеон */
         .collapse-wrapper {
             display: grid; grid-template-rows: 0fr;
             transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -143,6 +155,7 @@
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
         .collapse-content > *:first-child { margin-top: 10px; }
 
+        /* Афиша */
         .afisha-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
@@ -152,13 +165,23 @@
             backdrop-filter: blur(15px); text-align: center;
         }
         .afisha-status { font-size: 12px; opacity: 0.7; margin-bottom: 15px; white-space: nowrap; }
+        
         .organizer-link {
             display: inline-flex; align-items: center; justify-content: center;
             color: var(--red-accent); text-decoration: none;
             font-size: 11px; font-weight: 800; text-transform: uppercase;
             letter-spacing: 1.5px; padding: 10px 24px;
             border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px;
+            transition: all 0.3s ease;
             animation: pulse-red 3s infinite;
+            cursor: pointer;
+        }
+
+        .organizer-link:hover {
+            background: rgba(255, 75, 43, 0.15);
+            border-color: var(--red-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 75, 43, 0.2);
         }
 
         @keyframes pulse-red {
@@ -177,6 +200,7 @@
         .prediction-header { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; color: var(--verify-blue); font-weight: 800; }
         .prediction-text { font-size: 15px; line-height: 1.6; }
 
+        .full { grid-column: span 2; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
 </head>
@@ -259,17 +283,19 @@
 </div>
 
 <script>
+    // Фикс логики сворачивания
     function setupCollapse(btnId, wrapperId) {
         const btn = document.getElementById(btnId);
         const wrapper = document.getElementById(wrapperId);
-        btn.addEventListener('click', () => {
+        btn.onclick = () => {
             wrapper.classList.toggle('show');
-        });
+        };
     }
 
     setupCollapse('music-btn', 'music-wrapper');
     setupCollapse('afisha-btn', 'afisha-wrapper');
 
+    // Эмодзи на фоне
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
@@ -321,7 +347,6 @@
         requestAnimationFrame(animate);
     }
 
-    // Умный ресайз без сброса позиций
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
