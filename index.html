@@ -168,10 +168,13 @@
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
         .collapse-content > *:first-child { margin-top: 10px; }
 
-        .btn-yandex:hover { color: var(--yandex-color); }
-        .btn-vk:hover { color: var(--vk-color); }
-        .btn-spotify:hover { color: var(--spotify-color); }
-        .btn-apple:hover { border-color: rgba(255, 255, 255, 0.4); }
+        /* Music Hover Effects (Fixed) */
+        .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
+        .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
+        .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
+        .btn-apple:hover { border-color: rgba(255, 255, 255, 0.4); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1); }
+        .btn-yt:hover { color: #ff4d4d; box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); }
+        .btn-soundcloud:hover { color: var(--sc-color); box-shadow: inset 0 0 20px rgba(255, 85, 0, 0.15); }
 
         /* Afisha Styles */
         .afisha-card {
@@ -275,11 +278,17 @@
             <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
                 <i class="fa-brands fa-vk"></i><span>VK Music</span>
             </a>
+            <a href="https://open.spotify.com/artist/5Hk6zP4iKx5B9G2D5m6PjD" target="_blank" class="btn full btn-spotify">
+                <i class="fa-brands fa-spotify"></i><span>Spotify</span>
+            </a>
             <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
                 <i class="fa-brands fa-apple"></i><span>Apple Music</span>
             </a>
             <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn full btn-yt">
                 <i class="fa-brands fa-youtube"></i><span>YouTube Music</span>
+            </a>
+            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn full btn-soundcloud">
+                <i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span>
             </a>
         </div>
     </div>
@@ -292,7 +301,7 @@
         <div class="collapse-content">
             <div class="afisha-card">
                 <p class="afisha-status">На данный момент выступлений не запланировано</p>
-                <a href="https://t.me/lu4danya" target="_blank" class="organizer-link">
+                <a href="https://t.me/imbulavin" target="_blank" class="organizer-link">
                     <i class="fa-solid fa-envelope-open-text" style="margin-right: 8px;"></i>Я организатор
                 </a>
             </div>
@@ -311,7 +320,7 @@
 </div>
 
 <script>
-    // Универсальная функция для раскрытия списков
+    // Фикс логики сворачивания
     function setupCollapse(btnId, wrapperId) {
         const btn = document.getElementById(btnId);
         const wrapper = document.getElementById(wrapperId);
