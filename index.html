@@ -32,12 +32,13 @@
             overflow-x: hidden;
         }
 
+        /* Добавили блюр на весь фон с частицами */
         #global-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            /* Убрали pointer-events: none, чтобы мышка работала */
+            filter: blur(2px); /* Тот самый блюр */
         }
 
         .dynamic-bg {
@@ -56,7 +57,6 @@
             flex-direction: column;
             gap: 12px;
             z-index: 5;
-            pointer-events: auto; /* Чтобы кнопки работали */
         }
 
         .profile-card {
@@ -278,16 +278,15 @@
 </div>
 
 <script>
-    // Раскрытие списка музыки
     const musicBtn = document.getElementById('music-btn');
     const musicWrapper = document.getElementById('music-wrapper');
     musicBtn.addEventListener('click', () => { musicWrapper.classList.toggle('show'); });
 
-    // --- ИНТЕРАКТИВНЫЙ ФОН (ЧАСТИЦЫ + МЫШКА + ПОЛОСКИ) ---
+    // --- ИНТЕРАКТИВНЫЙ ФОН (ЗАМЕДЛЕННЫЙ + БЛЮР) ---
     const globalCanvas = document.getElementById('global-canvas');
     const gCtx = globalCanvas.getContext('2d');
     let gParticles = [];
-    const mouse = { x: null, y: null, radius: 150 };
+    const mouse = { x: null, y: null, radius: 170 };
 
     window.addEventListener('mousemove', (e) => {
         mouse.x = e.x;
@@ -298,48 +297,44 @@
         globalCanvas.width = window.innerWidth;
         globalCanvas.height = window.innerHeight;
         gParticles = [];
-        let count = (globalCanvas.width * globalCanvas.height) / 9000;
-        for (let i = 0; i < Math.min(count, 120); i++) { gParticles.push(new GlobalParticle()); }
+        let count = (globalCanvas.width * globalCanvas.height) / 9500;
+        for (let i = 0; i < Math.min(count, 100); i++) { gParticles.push(new GlobalParticle()); }
     }
 
     class GlobalParticle {
         constructor() {
             this.x = Math.random() * globalCanvas.width;
             this.y = Math.random() * globalCanvas.height;
-            this.size = Math.random() * 2 + 1;
-            this.baseX = this.x;
-            this.baseY = this.y;
-            this.vx = (Math.random() - 0.5) * 0.8;
-            this.vy = (Math.random() - 0.5) * 0.8;
-            this.density = (Math.random() * 30) + 1;
+            this.size = Math.random() * 1.5 + 1;
+            // Снизили скорость vx и vy в 2 раза
+            this.vx = (Math.random() - 0.5) * 0.35; 
+            this.vy = (Math.random() - 0.5) * 0.35;
+            this.density = (Math.random() * 20) + 1;
         }
         update() {
-            // Движение по холсту
             this.x += this.vx;
             this.y += this.vy;
 
-            // Отскок от краев
             if (this.x < 0 || this.x > globalCanvas.width) this.vx *= -1;
             if (this.y < 0 || this.y > globalCanvas.height) this.vy *= -1;
 
-            // Взаимодействие с мышкой
             let dx = mouse.x - this.x;
             let dy = mouse.y - this.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
-            let forceDirectionX = dx / distance;
-            let forceDirectionY = dy / distance;
-            let maxDistance = mouse.radius;
-            let force = (maxDistance - distance) / maxDistance;
-            let directionX = forceDirectionX * force * this.density;
-            let directionY = forceDirectionY * force * this.density;
-
+            
             if (distance < mouse.radius) {
+                let forceDirectionX = dx / distance;
+                let forceDirectionY = dy / distance;
+                let maxDistance = mouse.radius;
+                let force = (maxDistance - distance) / maxDistance;
+                let directionX = forceDirectionX * force * this.density * 0.6;
+                let directionY = forceDirectionY * force * this.density * 0.6;
                 this.x -= directionX;
                 this.y -= directionY;
             }
         }
         draw() {
-            gCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            gCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
             gCtx.beginPath(); gCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); gCtx.fill();
         }
     }
@@ -351,9 +346,9 @@
                 let dy = gParticles[a].y - gParticles[b].y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < 150) {
-                    let opacity = 1 - (distance / 150);
-                    gCtx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.2})`;
+                if (distance < 160) {
+                    let opacity = 1 - (distance / 160);
+                    gCtx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.15})`;
                     gCtx.lineWidth = 1;
                     gCtx.beginPath();
                     gCtx.moveTo(gParticles[a].x, gParticles[a].y);
@@ -378,7 +373,7 @@
     initGlobalCanvas(); 
     animateGlobal();
 
-    // Предсказания
+    // Остальные функции (предсказания и магия под советом) без изменений
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
@@ -390,7 +385,6 @@
     }
     fetchPrediction();
 
-    // Магия под советом (синие искры)
     const mCanvas = document.getElementById('magic-canvas');
     const mCtx = mCanvas.getContext('2d');
     let mParticles = [];
