@@ -17,8 +17,8 @@
             --vk-color: #0077ff;
             --spotify-color: #1ed760;
             --apple-color: #fc3c44;
-            --sc-color: #ff5500; /* SoundCloud Orange */
-            --glow-color: rgba(0, 149, 246, 0.4);
+            --sc-color: #ff5500;
+            --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
@@ -69,35 +69,58 @@
             margin-bottom: 10px;
         }
 
+        /* ИНСТА-АВАТАРКА */
         .avatar-link {
             display: block;
-            width: 100px; height: 100px;
+            width: 110px; height: 110px;
             margin: 0 auto 20px;
             text-decoration: none;
             position: relative;
-        }
-
-        .avatar-wrapper {
-            width: 100%; height: 100%;
+            padding: 4px; /* Отступ для кольца */
+            background: var(--insta-gradient);
             border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.2);
-            padding: 2px;
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 15px var(--glow-color);
-            animation: pulse-glow 3s infinite alternate;
+            animation: rotate-gradient 4s linear infinite;
         }
 
-        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+        .avatar-inner-border {
+            width: 100%; height: 100%;
+            background: #111; /* Цвет фона под картинкой, чтобы отделить от градиента */
+            border-radius: 50%;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        .avatar-link:hover .avatar-wrapper {
+        .avatar { 
+            width: 100%; height: 100%; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            display: block; 
+        }
+
+        /* Анимация вращения градиента (опционально, для стиля) */
+        @keyframes rotate-gradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .avatar-link:hover {
+            animation-duration: 1.5s; /* Ускоряем при наведении */
             transform: scale(1.05);
-            border-color: var(--verify-blue);
-            box-shadow: 0 0 25px var(--verify-blue);
+            transition: transform 0.3s ease;
         }
-
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 10px var(--glow-color); }
-            100% { box-shadow: 0 0 20px rgba(0, 149, 246, 0.1); }
+        
+        /* Чтобы картинка не крутилась вместе с рамкой */
+        .avatar-link:hover .avatar, .avatar-link:hover .avatar-inner-border {
+            animation: reverse-rotate 1.5s linear infinite;
+        }
+        .avatar, .avatar-inner-border {
+            animation: reverse-rotate 4s linear infinite;
+        }
+        @keyframes reverse-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
         }
 
         .name-wrapper {
@@ -132,12 +155,6 @@
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
 
-        .btn-content {
-            position: relative; z-index: 2; width: 100%;
-            display: flex; align-items: center; justify-content: flex-start;
-            pointer-events: none;
-        }
-
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
         .music-trigger { margin-top: 5px; letter-spacing: 2px; }
@@ -145,7 +162,7 @@
         #smoke-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 1; opacity: 0.6;
-            filter: blur(12px); -webkit-filter: blur(12px);
+            filter: blur(12px);
         }
 
         .music-collapse-wrapper {
@@ -201,7 +218,7 @@
 <div class="container">
     <div class="profile-card">
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
-            <div class="avatar-wrapper">
+            <div class="avatar-inner-border">
                 <img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" alt="BULAVIN" class="avatar">
             </div>
         </a>
@@ -223,7 +240,7 @@
 
     <div class="btn full music-trigger" id="music-btn">
         <canvas id="smoke-canvas"></canvas>
-        <div class="btn-content">
+        <div class="btn-content" style="position: relative; z-index: 2; width: 100%; display: flex; align-items: center;">
             <i class="fa-solid fa-headphones"></i>
             <span>СЛУШАТЬ МУЗЫКУ</span>
         </div>
@@ -265,16 +282,10 @@
     const musicWrapper = document.getElementById('music-wrapper');
     musicBtn.addEventListener('click', () => { musicWrapper.classList.toggle('show'); });
 
-    // ГЛОБАЛЬНЫЙ ХОЛСТ (ЗВЕЗДЫ)
+    // Звезды на фоне
     const globalCanvas = document.getElementById('global-canvas');
     const gCtx = globalCanvas.getContext('2d');
     let gParticles = [];
-    let mouse = { x: null, y: null, radius: 100 };
-
-    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-    window.addEventListener('touchstart', (e) => { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; });
-    window.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
-
     function initGlobalCanvas() {
         globalCanvas.width = window.innerWidth;
         globalCanvas.height = window.innerHeight;
@@ -282,7 +293,6 @@
         let count = (globalCanvas.width * globalCanvas.height) / 10000;
         for (let i = 0; i < Math.min(count, 100); i++) { gParticles.push(new GlobalParticle()); }
     }
-
     class GlobalParticle {
         constructor() {
             this.x = Math.random() * globalCanvas.width;
@@ -295,42 +305,21 @@
             this.x += this.vx; this.y += this.vy;
             if (this.x < 0 || this.x > globalCanvas.width) this.vx *= -1;
             if (this.y < 0 || this.y > globalCanvas.height) this.vy *= -1;
-            if (mouse.x != null) {
-                let dx = mouse.x - this.x; let dy = mouse.y - this.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < mouse.radius) { this.x -= dx * 0.01; this.y -= dy * 0.01; }
-            }
         }
         draw() {
             gCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
             gCtx.beginPath(); gCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); gCtx.fill();
         }
     }
-
-    function connectParticles() {
-        for (let a = 0; a < gParticles.length; a++) {
-            for (let b = a; b < gParticles.length; b++) {
-                let dist = Math.sqrt((gParticles[a].x - gParticles[b].x)**2 + (gParticles[a].y - gParticles[b].y)**2);
-                if (dist < 150) {
-                    gCtx.strokeStyle = `rgba(0, 149, 246, ${0.15 * (1 - dist/150)})`;
-                    gCtx.lineWidth = 1;
-                    gCtx.beginPath(); gCtx.moveTo(gParticles[a].x, gParticles[a].y);
-                    gCtx.lineTo(gParticles[b].x, gParticles[b].y); gCtx.stroke();
-                }
-            }
-        }
-    }
-
     function animateGlobal() {
         gCtx.clearRect(0, 0, globalCanvas.width, globalCanvas.height);
         gParticles.forEach(p => { p.update(); p.draw(); });
-        connectParticles();
         requestAnimationFrame(animateGlobal);
     }
     window.addEventListener('resize', initGlobalCanvas);
     initGlobalCanvas(); animateGlobal();
 
-    // ДЫМ НА КНОПКЕ
+    // Дым
     const sCanvas = document.getElementById('smoke-canvas');
     const sCtx = sCanvas.getContext('2d');
     let smokeParticles = [];
@@ -365,7 +354,7 @@
     for(let i=0; i<15; i++) smokeParticles.push(new SmokeParticle());
     animateSmoke();
 
-    // ПРЕДСКАЗАНИЯ
+    // Предсказания
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
@@ -377,48 +366,38 @@
     }
     fetchPrediction();
 
-    // МАГИЧЕСКИЙ ХОЛСТ (ПОД СОВЕТАМИ)
-    const canvas = document.getElementById('magic-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    function initCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
-    class Particle {
+    // Магия под советом
+    const mCanvas = document.getElementById('magic-canvas');
+    const mCtx = mCanvas.getContext('2d');
+    let mParticles = [];
+    function initMCanvas() { mCanvas.width = mCanvas.offsetWidth; mCanvas.height = mCanvas.offsetHeight; }
+    class MParticle {
         constructor() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = Math.random() * 0.3 - 0.15;
-            this.speedY = Math.random() * 0.3 - 0.15;
-            this.opacity = Math.random() * 0.3;
+            this.x = Math.random() * mCanvas.width;
+            this.y = Math.random() * mCanvas.height;
+            this.size = Math.random() * 2;
+            this.sx = Math.random() * 0.4 - 0.2;
+            this.sy = Math.random() * 0.4 - 0.2;
         }
         update() {
-            this.x += this.speedX; this.y += this.speedY;
-            if (this.x > canvas.width) this.x = 0; if (this.x < 0) this.x = canvas.width;
-            if (this.y > canvas.height) this.y = 0; if (this.y < 0) this.y = canvas.height;
+            this.x += this.sx; this.y += this.sy;
+            if (this.x < 0 || this.x > mCanvas.width) this.sx *= -1;
+            if (this.y < 0 || this.y > mCanvas.height) this.sy *= -1;
         }
         draw() {
-            ctx.fillStyle = `rgba(0, 149, 246, ${this.opacity})`;
-            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            mCtx.fillStyle = 'rgba(0, 149, 246, 0.3)';
+            mCtx.beginPath(); mCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); mCtx.fill();
         }
     }
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        requestAnimationFrame(animate);
+    function animateM() {
+        mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
+        mParticles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animateM);
     }
-    window.addEventListener('resize', initCanvas);
-    initCanvas();
-    for(let i=0; i<30; i++) particles.push(new Particle());
-    animate();
-</script>
-
-<script type="text/javascript">
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();
-   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-   })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637', 'ym');
-   ym(106955637, 'init', { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true });
+    window.addEventListener('resize', initMCanvas);
+    initMCanvas();
+    for(let i=0; i<30; i++) mParticles.push(new MParticle());
+    animateM();
 </script>
 
 </body>
