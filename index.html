@@ -8,13 +8,13 @@
         :root {
             --glass: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --bg-dark: #000000;
+            --verify-blue: #0095f6;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
 
         body {
-            background: var(--bg-dark);
+            background: #000;
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -22,6 +22,7 @@
             overflow-x: hidden;
         }
 
+        /* Текстура шума */
         body::before {
             content: "";
             position: fixed; inset: 0;
@@ -29,18 +30,19 @@
             opacity: 0.05; pointer-events: none; z-index: 2;
         }
 
+        /* Задний фон (блюр из фото) */
         .dynamic-bg {
             position: fixed; inset: 0;
             background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center;
             background-size: cover;
-            filter: blur(80px) brightness(0.25);
+            filter: blur(80px) brightness(0.2);
             transform: scale(1.1); z-index: -1;
         }
 
         .container {
             width: 100%;
             max-width: 420px;
-            padding: 60px 20px;
+            padding: 50px 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -53,27 +55,45 @@
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
             border-radius: 40px;
-            padding: 40px 25px;
+            padding: 35px 20px;
             text-align: center;
             margin-bottom: 10px;
         }
 
         .avatar-wrapper {
-            width: 130px; height: 130px;
-            margin: 0 auto 25px;
+            width: 120px; height: 120px;
+            margin: 0 auto 20px;
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.1);
             padding: 4px;
         }
 
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        .profile-card h1 { 
-            font-size: 28px; letter-spacing: 5px; text-transform: uppercase; 
-            font-weight: 900; margin-bottom: 12px; 
+        /* Имя и синяя галочка */
+        .name-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        h1 { font-size: 26px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
+
+        .verify-icon {
+            width: 20px; height: 20px;
+            fill: var(--verify-blue);
+            filter: drop-shadow(0 0 5px rgba(0, 149, 246, 0.4));
         }
         
-        .profile-card p { font-size: 13px; opacity: 0.5; line-height: 1.6; }
+        /* БИО В ОДНУ СТРОКУ */
+        .bio { 
+            font-size: 12px; 
+            opacity: 0.6; 
+            white-space: nowrap; 
+            letter-spacing: 0.5px;
+        }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         
@@ -83,8 +103,8 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            padding: 20px;
-            border-radius: 22px;
+            padding: 18px;
+            border-radius: 20px;
             text-decoration: none;
             color: #fff;
             font-size: 13px;
@@ -92,42 +112,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.3s ease;
         }
 
         .btn-icon {
-            position: absolute; left: 20px;
-            width: 20px; height: 20px;
-            fill: #fff; opacity: 0.8;
+            position: absolute; left: 18px;
+            width: 18px; height: 18px;
+            fill: #fff;
         }
 
-        .btn:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn:active { transform: scale(0.97); }
+        .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
 
         .divider {
-            padding: 15px;
-            text-align: center;
-            font-size: 9px;
-            letter-spacing: 4px;
-            color: rgba(255,255,255,0.25);
-            text-transform: uppercase;
-            font-weight: 700;
+            padding: 10px; text-align: center; font-size: 9px;
+            letter-spacing: 3px; color: rgba(255,255,255,0.2);
+            text-transform: uppercase; font-weight: 800;
         }
 
         .full { grid-column: span 2; }
-
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 40px; letter-spacing: 2px; }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .container > * { animation: fadeInUp 0.6s ease forwards; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -139,8 +142,11 @@
         <div class="avatar-wrapper">
             <img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" alt="BULAVIN" class="avatar">
         </div>
-        <h1>BULAVIN</h1>
-        <p>Казахстанский исполнитель и музыкальный продюсер.</p>
+        <div class="name-wrapper">
+            <h1>BULAVIN</h1>
+            <svg class="verify-icon" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/></svg>
+        </div>
+        <p class="bio">Казахстанский исполнитель и музыкальный продюсер.</p>
     </div>
 
     <div class="grid">
@@ -161,7 +167,7 @@
             <svg class="btn-icon" viewBox="0 0 100 100"><path d="M53.1,1.9L46.8,31C35,31.7,1.8,26,1.8,26l24.9,16.4L1.8,65l31.1-4.2l6.3,29l6.3-27.9l31.1,4.2L68.4,49.1L93.3,65l-24.9-16.4L93.3,32.2L68.4,36.4L53.1,1.9z"/></svg>
             <span>Yandex Music</span>
         </a>
-        <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq?si=uvcGCLDlSvehwfHRToZ-DQ" target="_blank" class="btn full">
+        <a href="https://open.spotify.com/artist/6s0arXmGfVf4TclN9W0T79" target="_blank" class="btn full">
             <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.508 17.302c-.216.354-.674.464-1.028.248-2.524-1.543-5.701-1.892-9.444-1.038-.405.093-.811-.158-.904-.562-.093-.405.158-.812.562-.904 4.1-.937 7.62-.533 10.463 1.203.354.216.465.674.249 1.029zm1.441-3.259c-.272.441-.848.583-1.288.311-2.889-1.775-7.301-2.285-10.72-1.248-.498.151-1.023-.131-1.173-.629-.151-.498.131-1.023.629-1.173 3.905-1.185 8.784-.616 12.126 1.435.441.272.583.848.311 1.288zm.107-3.348c-3.465-2.058-9.176-2.248-12.482-1.246-.532.161-1.096-.14-1.257-.672-.161-.532.14-1.096.672-1.257 3.8-1.152 10.103-.929 14.12 1.455.479.284.636.899.352 1.378-.284.479-.899.636-1.378.352z"/></svg>
             <span>Spotify</span>
         </a>
@@ -175,7 +181,7 @@
         </a>
     </div>
 
-    <div class="footer">© <script>document.write(new Date().getFullYear())</script> BULAVIN SYSTEM</div>
+    <div class="footer">© 2026 BULAVIN SYSTEM</div>
 </div>
 
 </body>
