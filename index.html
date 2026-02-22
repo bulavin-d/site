@@ -17,6 +17,7 @@
             --vk-color: #0077ff;
             --spotify-color: #1ed760;
             --apple-color: #fc3c44;
+            --glow-color: rgba(0, 149, 246, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
@@ -30,7 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* ГЛОБАЛЬНЫЙ ИНТЕРАКТИВНЫЙ ФОН */
         #global-canvas {
             position: fixed;
             top: 0; left: 0;
@@ -68,15 +68,37 @@
             margin-bottom: 10px;
         }
 
-        .avatar-wrapper {
+        /* АВАТАРКА С ГЛОУ-ЭФФЕКТОМ */
+        .avatar-link {
+            display: block;
             width: 100px; height: 100px;
             margin: 0 auto 20px;
-            border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 4px;
+            text-decoration: none;
+            position: relative;
         }
 
-        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .avatar-wrapper {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            padding: 2px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px var(--glow-color);
+            animation: pulse-glow 3s infinite alternate;
+        }
+
+        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+
+        .avatar-link:hover .avatar-wrapper {
+            transform: scale(1.05);
+            border-color: var(--verify-blue);
+            box-shadow: 0 0 25px var(--verify-blue);
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 10px var(--glow-color); }
+            100% { box-shadow: 0 0 20px rgba(0, 149, 246, 0.1); }
+        }
 
         .name-wrapper {
             display: flex; align-items: center; justify-content: center;
@@ -107,70 +129,34 @@
             overflow: hidden;
         }
 
-        .btn i {
-            font-size: 18px;
-            width: 25px;
-            margin-right: 15px;
-            display: flex;
-            justify-content: center;
-        }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
+        .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
 
-        .btn span {
-            flex-grow: 1;
-            text-align: center;
-            margin-right: 25px; /* Компенсация иконки для центровки текста */
-        }
-
-        /* Исправленный блок контента для кнопки с дымом */
         .btn-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
+            position: relative; z-index: 2; width: 100%;
+            display: flex; align-items: center; justify-content: flex-start;
             pointer-events: none;
         }
 
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
-        .music-trigger {
-            margin-top: 5px;
-            letter-spacing: 2px;
-        }
+        .music-trigger { margin-top: 5px; letter-spacing: 2px; }
 
         #smoke-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.6;
-            filter: blur(12px);
-            -webkit-filter: blur(12px);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; opacity: 0.6;
+            filter: blur(12px); -webkit-filter: blur(12px);
         }
 
         .music-collapse-wrapper {
-            display: grid;
-            grid-template-rows: 0fr;
+            display: grid; grid-template-rows: 0fr;
             transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
 
-        .music-collapse-wrapper.show {
-            grid-template-rows: 1fr;
-        }
-
-        .music-list {
-            min-height: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .music-list .btn:first-child {
-            margin-top: 10px; 
-        }
+        .music-collapse-wrapper.show { grid-template-rows: 1fr; }
+        .music-list { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+        .music-list .btn:first-child { margin-top: 10px; }
 
         .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
         .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
@@ -187,8 +173,7 @@
             padding: 30px 25px;
             backdrop-filter: blur(20px);
             text-align: center;
-            position: relative;
-            z-index: 2;
+            position: relative; z-index: 2;
         }
 
         .prediction-header {
@@ -214,9 +199,11 @@
 
 <div class="container">
     <div class="profile-card">
-        <div class="avatar-wrapper">
-            <img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" alt="BULAVIN" class="avatar">
-        </div>
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
+            <div class="avatar-wrapper">
+                <img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" alt="BULAVIN" class="avatar">
+            </div>
+        </a>
         <div class="name-wrapper">
             <h1>BULAVIN</h1>
             <svg class="verify-icon" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/></svg>
