@@ -32,13 +32,12 @@
             overflow-x: hidden;
         }
 
-        /* Добавили блюр на весь фон с частицами */
         #global-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: -1;
-            filter: blur(2px); /* Тот самый блюр */
+            filter: blur(2px);
         }
 
         .dynamic-bg {
@@ -159,26 +158,54 @@
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
-        .music-collapse-wrapper {
+        /* Collapse Logic */
+        .collapse-wrapper {
             display: grid; grid-template-rows: 0fr;
             transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
         }
-        .music-collapse-wrapper.show { grid-template-rows: 1fr; }
-        .music-list { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
-        .music-list .btn:first-child { margin-top: 10px; }
+        .collapse-wrapper.show { grid-template-rows: 1fr; }
+        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+        .collapse-content > *:first-child { margin-top: 10px; }
 
-        .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
-        .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
-        .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
-        .btn-apple:hover { 
-            color: #fff; 
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1), 0 0 15px rgba(255, 255, 255, 0.05); 
-            border-color: rgba(255, 255, 255, 0.4);
+        .btn-yandex:hover { color: var(--yandex-color); }
+        .btn-vk:hover { color: var(--vk-color); }
+        .btn-spotify:hover { color: var(--spotify-color); }
+        .btn-apple:hover { border-color: rgba(255, 255, 255, 0.4); }
+
+        /* Afisha Styles */
+        .afisha-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(15px);
         }
-        .btn-yt:hover { color: #ff4d4d; box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); }
-        .btn-soundcloud:hover { color: var(--sc-color); box-shadow: inset 0 0 20px rgba(255, 85, 0, 0.15); }
+        .afisha-status { font-size: 14px; opacity: 0.8; margin-bottom: 15px; }
+        .organizer-link {
+            display: inline-block;
+            color: var(--verify-blue);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 8px 16px;
+            border: 1px solid rgba(0, 149, 246, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            animation: pulse-blue 2s infinite;
+        }
+        @keyframes pulse-blue {
+            0% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 149, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0); }
+        }
+        .organizer-link:hover {
+            background: rgba(0, 149, 246, 0.1);
+            transform: scale(1.05);
+        }
 
         .full { grid-column: span 2; }
 
@@ -236,23 +263,17 @@
         </a>
     </div>
 
-    <div class="btn full music-trigger" id="music-btn">
-        <div class="btn-content" style="position: relative; z-index: 2; width: 100%; display: flex; align-items: center;">
-            <i class="fa-solid fa-headphones"></i>
-            <span>СЛУШАТЬ МУЗЫКУ</span>
-        </div>
+    <div class="btn full" id="music-btn">
+        <i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span>
     </div>
 
-    <div class="music-collapse-wrapper" id="music-wrapper">
-        <div class="music-list">
+    <div class="collapse-wrapper" id="music-wrapper">
+        <div class="collapse-content">
             <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex">
                 <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
             </a>
             <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
                 <i class="fa-brands fa-vk"></i><span>VK Music</span>
-            </a>
-            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify">
-                <i class="fa-brands fa-spotify"></i><span>Spotify</span>
             </a>
             <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
                 <i class="fa-brands fa-apple"></i><span>Apple Music</span>
@@ -260,9 +281,21 @@
             <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn full btn-yt">
                 <i class="fa-brands fa-youtube"></i><span>YouTube Music</span>
             </a>
-            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn full btn-soundcloud">
-                <i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span>
-            </a>
+        </div>
+    </div>
+
+    <div class="btn full" id="afisha-btn">
+        <i class="fa-solid fa-calendar-check"></i><span>АФИША</span>
+    </div>
+
+    <div class="collapse-wrapper" id="afisha-wrapper">
+        <div class="collapse-content">
+            <div class="afisha-card">
+                <p class="afisha-status">На данный момент выступлений не запланировано</p>
+                <a href="https://t.me/lu4danya" target="_blank" class="organizer-link">
+                    <i class="fa-solid fa-envelope-open-text" style="margin-right: 8px;"></i>Я организатор
+                </a>
+            </div>
         </div>
     </div>
 
@@ -278,20 +311,26 @@
 </div>
 
 <script>
-    const musicBtn = document.getElementById('music-btn');
-    const musicWrapper = document.getElementById('music-wrapper');
-    musicBtn.addEventListener('click', () => { musicWrapper.classList.toggle('show'); });
+    // Универсальная функция для раскрытия списков
+    function setupCollapse(btnId, wrapperId) {
+        const btn = document.getElementById(btnId);
+        const wrapper = document.getElementById(wrapperId);
+        btn.addEventListener('click', () => {
+            wrapper.classList.toggle('show');
+            btn.style.transform = wrapper.classList.contains('show') ? 'scale(0.98)' : 'translateY(-2px)';
+        });
+    }
 
-    // --- ИНТЕРАКТИВНЫЙ ФОН (ЗАМЕДЛЕННЫЙ + БЛЮР) ---
+    setupCollapse('music-btn', 'music-wrapper');
+    setupCollapse('afisha-btn', 'afisha-wrapper');
+
+    // --- ИНТЕРАКТИВНЫЙ ФОН ---
     const globalCanvas = document.getElementById('global-canvas');
     const gCtx = globalCanvas.getContext('2d');
     let gParticles = [];
     const mouse = { x: null, y: null, radius: 170 };
 
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
-    });
+    window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
 
     function initGlobalCanvas() {
         globalCanvas.width = window.innerWidth;
@@ -306,31 +345,21 @@
             this.x = Math.random() * globalCanvas.width;
             this.y = Math.random() * globalCanvas.height;
             this.size = Math.random() * 1.5 + 1;
-            // Снизили скорость vx и vy в 2 раза
             this.vx = (Math.random() - 0.5) * 0.35; 
             this.vy = (Math.random() - 0.5) * 0.35;
             this.density = (Math.random() * 20) + 1;
         }
         update() {
-            this.x += this.vx;
-            this.y += this.vy;
-
+            this.x += this.vx; this.y += this.vy;
             if (this.x < 0 || this.x > globalCanvas.width) this.vx *= -1;
             if (this.y < 0 || this.y > globalCanvas.height) this.vy *= -1;
-
             let dx = mouse.x - this.x;
             let dy = mouse.y - this.y;
             let distance = Math.sqrt(dx * dx + dy * dy);
-            
             if (distance < mouse.radius) {
-                let forceDirectionX = dx / distance;
-                let forceDirectionY = dy / distance;
-                let maxDistance = mouse.radius;
-                let force = (maxDistance - distance) / maxDistance;
-                let directionX = forceDirectionX * force * this.density * 0.6;
-                let directionY = forceDirectionY * force * this.density * 0.6;
-                this.x -= directionX;
-                this.y -= directionY;
+                let force = (mouse.radius - distance) / mouse.radius;
+                this.x -= (dx / distance) * force * this.density * 0.6;
+                this.y -= (dy / distance) * force * this.density * 0.6;
             }
         }
         draw() {
@@ -345,15 +374,10 @@
                 let dx = gParticles[a].x - gParticles[b].x;
                 let dy = gParticles[a].y - gParticles[b].y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
-
                 if (distance < 160) {
-                    let opacity = 1 - (distance / 160);
-                    gCtx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.15})`;
+                    gCtx.strokeStyle = `rgba(255, 255, 255, ${(1 - distance/160) * 0.15})`;
                     gCtx.lineWidth = 1;
-                    gCtx.beginPath();
-                    gCtx.moveTo(gParticles[a].x, gParticles[a].y);
-                    gCtx.lineTo(gParticles[b].x, gParticles[b].y);
-                    gCtx.stroke();
+                    gCtx.beginPath(); gCtx.moveTo(gParticles[a].x, gParticles[a].y); gCtx.lineTo(gParticles[b].x, gParticles[b].y); gCtx.stroke();
                 }
             }
         }
@@ -361,19 +385,15 @@
 
     function animateGlobal() {
         gCtx.clearRect(0, 0, globalCanvas.width, globalCanvas.height);
-        for (let i = 0; i < gParticles.length; i++) {
-            gParticles[i].update();
-            gParticles[i].draw();
-        }
+        gParticles.forEach(p => { p.update(); p.draw(); });
         connect();
         requestAnimationFrame(animateGlobal);
     }
 
     window.addEventListener('resize', initGlobalCanvas);
-    initGlobalCanvas(); 
-    animateGlobal();
+    initGlobalCanvas(); animateGlobal();
 
-    // Остальные функции (предсказания и магия под советом) без изменений
+    // Предсказания
     async function fetchPrediction() {
         const textEl = document.getElementById('prediction');
         try {
@@ -385,6 +405,7 @@
     }
     fetchPrediction();
 
+    // Магия под советом
     const mCanvas = document.getElementById('magic-canvas');
     const mCtx = mCanvas.getContext('2d');
     let mParticles = [];
