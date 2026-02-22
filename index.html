@@ -7,6 +7,8 @@
 
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="BULAVIN">
     <meta property="og:description" content="Проводник в мир BULAVIN`a...">
@@ -94,8 +96,11 @@
             text-decoration: none; color: #fff;
             font-size: 13px; font-weight: 600;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.3s ease; opacity: 1;
+            transition: 0.3s ease;
+            gap: 10px; /* Расстояние между иконкой и текстом */
         }
+
+        .btn i { font-size: 16px; width: 20px; text-align: center; }
 
         .btn:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
 
@@ -168,16 +173,29 @@
     </div>
 
     <div class="grid">
-        <a href="https://t.me/imbulavin" target="_blank" class="btn"><span>Telegram</span></a>
-        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn"><span>Instagram</span></a>
+        <a href="https://t.me/imbulavin" target="_blank" class="btn">
+            <i class="fa-brands fa-telegram"></i><span>Telegram</span>
+        </a>
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn">
+            <i class="fa-brands fa-instagram"></i><span>Instagram</span>
+        </a>
     </div>
 
     <div class="divider">Слушать музыку</div>
 
     <div class="grid">
-        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full"><span>Yandex Music</span></a>
-        <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full"><span>Spotify</span></a>
-        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full"><span>Apple Music</span></a>
+        <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full">
+            <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
+        </a>
+        <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full">
+            <i class="fa-brands fa-vk"></i><span>VK Music</span>
+        </a>
+        <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full">
+            <i class="fa-brands fa-spotify"></i><span>Spotify</span>
+        </a>
+        <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full">
+            <i class="fa-brands fa-apple"></i><span>Apple Music</span>
+        </a>
     </div>
 
     <div class="prediction-wrapper">
