@@ -8,23 +8,14 @@
             for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
             k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
         })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637', 'ym');
-
-        ym(106955637, 'init', {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true,
-            webvisor:true,
-            ecommerce:"dataLayer"
-        });
+        ym(106955637, 'init', { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer" });
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BULAVIN</title>
-
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.05);
@@ -38,187 +29,54 @@
             --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
             --red-accent: #ff4b2b;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
-
-        body {
-            background: #000;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #global-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            filter: grayscale(1) brightness(0.6) blur(1px);
-            pointer-events: none;
-        }
-
-        .dynamic-bg {
-            position: fixed; inset: 0;
-            background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center;
-            background-size: cover;
-            filter: blur(80px) brightness(0.2);
-            transform: scale(1.1); z-index: -2;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            padding: 50px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 5;
-        }
-
-        .profile-card {
-            background: var(--glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            padding: 35px 20px;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .avatar-link {
-            display: block;
-            width: 110px; height: 110px;
-            margin: 0 auto 20px;
-            text-decoration: none;
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .avatar-link::before {
-            content: ''; position: absolute; inset: 0;
-            background: var(--insta-gradient);
-            border-radius: 50%;
-            animation: rotate-gradient 4s linear infinite;
-            z-index: -2;
-        }
-
-        .avatar-inner-border {
-            position: absolute; inset: 4px;
-            background: #000; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            padding: 3px;
-        }
-
+        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
+        .container { width: 100%; max-width: 420px; padding: 50px 20px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
+        .profile-card { background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 10px; }
+        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; text-decoration: none; position: relative; z-index: 1; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -2; }
+        .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-
-        @keyframes rotate-gradient {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
+        @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .avatar-link:hover { transform: scale(1.08); }
-
-        .name-wrapper {
-            display: flex; align-items: center; justify-content: center;
-            gap: 6px; margin-bottom: 8px;
-        }
-
+        .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
-
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-
-        .btn {
-            position: relative;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            padding: 18px 20px;
-            border-radius: 20px;
-            text-decoration: none; color: #fff;
-            font-size: 13px; font-weight: 600;
-            display: flex; align-items: center; justify-content: flex-start;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
+        .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: flex-start; transition: all 0.3s ease; cursor: pointer; }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
-
         .btn-yandex:hover { color: var(--yandex-color); box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.15); }
         .btn-vk:hover { color: var(--vk-color); box-shadow: inset 0 0 20px rgba(0, 119, 255, 0.15); }
         .btn-spotify:hover { color: var(--spotify-color); box-shadow: inset 0 0 20px rgba(30, 215, 96, 0.15); }
         .btn-yt:hover { color: var(--yt-color); box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.2); }
         .btn-soundcloud:hover { color: var(--sc-color); box-shadow: inset 0 0 20px rgba(255, 85, 0, 0.15); }
-
-        .collapse-wrapper {
-            display: grid; grid-template-rows: 0fr;
-            transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow: hidden;
-        }
+        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
         .collapse-wrapper.show { grid-template-rows: 1fr; }
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
         .collapse-content > *:first-child { margin-top: 10px; }
-
-        .afisha-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            padding: 25px 15px;
-            display: flex; flex-direction: column; align-items: center;
-            backdrop-filter: blur(15px); text-align: center;
-        }
+        .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px 15px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(15px); text-align: center; }
         .afisha-status { font-size: 12px; opacity: 0.7; margin-bottom: 15px; }
-        
-        .organizer-link {
-            display: inline-flex; align-items: center; justify-content: center;
-            color: var(--red-accent); text-decoration: none;
-            font-size: 11px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: 1.5px; padding: 10px 24px;
-            border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px;
-            transition: all 0.3s ease;
-            animation: pulse-red 3s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.3); }
-            70% { box-shadow: 0 0 0 8px rgba(255, 75, 43, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); }
-        }
-
-        .prediction-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px; padding: 30px 25px;
-            backdrop-filter: blur(20px); text-align: center;
-            margin-top: 15px;
-        }
+        .organizer-link { display: inline-flex; align-items: center; justify-content: center; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 10px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px; transition: all 0.3s ease; animation: pulse-red 3s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(255, 75, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); } }
+        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; backdrop-filter: blur(20px); text-align: center; margin-top: 15px; }
         .prediction-header { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; color: var(--verify-blue); font-weight: 800; }
         .prediction-text { font-size: 15px; line-height: 1.6; }
-
         .full { grid-column: span 2; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-
 <canvas id="global-canvas"></canvas>
 <div class="dynamic-bg"></div>
-
 <div class="container">
     <div class="profile-card">
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
-            <div class="avatar-inner-border">
-                <img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" alt="BULAVIN" class="avatar">
-            </div>
+            <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" alt="BULAVIN" class="avatar"></div>
         </a>
         <div class="name-wrapper">
             <h1>BULAVIN</h1>
@@ -226,73 +84,42 @@
         </div>
         <p class="bio">Казахстанский исполнитель и музыкальный продюсер.</p>
     </div>
-
     <div class="grid">
-        <a href="https://t.me/imbulavin" target="_blank" class="btn">
-            <i class="fa-brands fa-telegram"></i><span>Telegram</span>
-        </a>
-        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn">
-            <i class="fa-brands fa-instagram"></i><span>Instagram</span>
-        </a>
+        <a href="https://t.me/imbulavin" target="_blank" class="btn"><i class="fa-brands fa-telegram"></i><span>Telegram</span></a>
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
     </div>
-
-    <div class="btn full" id="music-btn">
-        <i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span>
-    </div>
-
+    <div class="btn full" id="music-btn"><i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span></div>
     <div class="collapse-wrapper" id="music-wrapper">
         <div class="collapse-content">
-            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex">
-                <i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span>
-            </a>
-            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk">
-                <i class="fa-brands fa-vk"></i><span>VK Music</span>
-            </a>
-            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify">
-                <i class="fa-brands fa-spotify"></i><span>Spotify</span>
-            </a>
-            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple">
-                <i class="fa-brands fa-apple"></i><span>Apple Music</span>
-            </a>
-            <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn full btn-yt">
-                <i class="fa-brands fa-youtube"></i><span>YouTube Music</span>
-            </a>
-            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn full btn-soundcloud">
-                <i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span>
-            </a>
+            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
+            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
+            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
+            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full btn-apple"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
+            <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn full btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
+            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn full btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
         </div>
     </div>
-
-    <div class="btn full" id="afisha-btn">
-        <i class="fa-solid fa-calendar-check"></i><span>АФИША</span>
-    </div>
-
+    <div class="btn full" id="afisha-btn"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
             <div class="afisha-card">
                 <p class="afisha-status">На данный момент выступлений не запланировано.</p>
-                <a href="https://t.me/imbulavin" target="_blank" class="organizer-link">
-                    <i class="fa-solid fa-envelope-open-text" style="margin-right: 8px;"></i>Я организатор
-                </a>
+                <a href="https://t.me/imbulavin" target="_blank" class="organizer-link"><i class="fa-solid fa-envelope-open-text" style="margin-right: 8px;"></i>Я организатор</a>
             </div>
         </div>
     </div>
-
     <div class="prediction-card">
         <div class="prediction-header">BULAVIN SYSTEM • БАЗА ДНЯ</div>
         <div id="prediction" class="prediction-text">Подключаюсь...</div>
     </div>
-
     <div class="footer">© 2026 BULAVIN</div>
 </div>
-
 <script>
     function setupCollapse(btnId, wrapperId) {
         const btn = document.getElementById(btnId);
         const wrapper = document.getElementById(wrapperId);
         btn.onclick = () => wrapper.classList.toggle('show');
     }
-
     setupCollapse('music-btn', 'music-wrapper');
     setupCollapse('afisha-btn', 'afisha-wrapper');
 
@@ -302,10 +129,10 @@
     const emojiList = ['🖤', '💼', '🎧'];
 
     class FloatingEmoji {
-        constructor() { this.init(); }
-        init() {
+        constructor() { this.init(true); }
+        init(firstTime = false) {
             this.x = Math.random() * window.innerWidth;
-            this.y = Math.random() * window.innerHeight;
+            this.y = firstTime ? Math.random() * window.innerHeight : (this.vy > 0 ? -50 : window.innerHeight + 50);
             this.emoji = emojiList[Math.floor(Math.random() * emojiList.length)];
             this.size = Math.random() * 20 + 20;
             this.vx = (Math.random() - 0.5) * 0.4;
@@ -316,25 +143,22 @@
         }
         update() {
             this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd;
-            if (this.x < -50 || this.x > window.innerWidth + 50 || this.y < -50 || this.y > window.innerHeight + 50) this.init();
+            if (this.x < -100 || this.x > window.innerWidth + 100 || this.y < -100 || this.y > window.innerHeight + 100) this.init();
         }
         draw() {
-            ctx.save();
-            ctx.translate(this.x, this.y);
-            ctx.rotate(this.rot);
-            ctx.globalAlpha = this.op;
-            ctx.font = `${this.size}px serif`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(this.emoji, 0, 0);
-            ctx.restore();
+            ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op;
+            ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(this.emoji, 0, 0); ctx.restore();
         }
     }
 
     function initCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        // Если эмодзи еще нет (первый запуск), создаем их
+        if (emojis.length === 0) {
+            emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        }
     }
 
     function animate() {
