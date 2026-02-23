@@ -37,31 +37,78 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* AUTH UI */
-        .auth-nav { position: fixed; top: 15px; right: 15px; z-index: 100; display: flex; gap: 8px; }
+        /* AUTH UI - FIXED POSITION */
+        .auth-nav { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 12px; }
         .btn-auth { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
             color: #fff; 
-            padding: 8px 14px; 
-            border-radius: 12px; 
+            padding: 10px 16px; 
+            border-radius: 14px; 
             font-size: 10px; 
             font-weight: 800; 
             cursor: pointer; 
             text-transform: uppercase; 
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             transition: all 0.3s ease;
         }
         .btn-auth:hover { 
             transform: scale(0.95); 
-            background: rgba(255,255,255,0.1);
-            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.4);
         }
 
-        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        /* MODAL & FORM BEAUTIFICATION */
+        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .auth-modal.show { display: flex; }
-        .auth-form { background: rgba(20,20,20,0.9); border: 1px solid var(--glass-border); padding: 30px; border-radius: 30px; width: 320px; text-align: center; }
-        .auth-form input { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 10px; outline: none; }
+        .auth-form { 
+            background: rgba(25, 25, 25, 0.8); 
+            border: 1px solid var(--glass-border); 
+            padding: 40px 30px; 
+            border-radius: 35px; 
+            width: 90%;
+            max-width: 340px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .auth-form h2 { font-size: 14px; letter-spacing: 5px; margin-bottom: 25px; color: #fff; opacity: 0.9; }
+        .auth-form input { 
+            width: 100%; 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--glass-border); 
+            padding: 16px; 
+            border-radius: 15px; 
+            color: #fff; 
+            margin-bottom: 15px; 
+            outline: none; 
+            font-size: 12px;
+            transition: border 0.3s ease;
+        }
+        .auth-form input:focus { border-color: rgba(255,255,255,0.3); }
+
+        /* REPLACED UGLY WHITE BUTTON */
+        .btn-confirm {
+            width: 100%;
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        .btn-confirm:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(0.98);
+        }
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
@@ -69,7 +116,6 @@
         .container { width: 100%; max-width: 420px; padding: 50px 20px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
         .profile-card { background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 10px; }
         
-        /* AVATAR ANIMATION RETURNED */
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; text-decoration: none; position: relative; z-index: 1; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .avatar-link:hover { transform: scale(1.08); }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -2; }
@@ -83,7 +129,6 @@
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
         
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 0px; }
-        
         .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: all 0.3s ease; cursor: pointer; }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
@@ -105,9 +150,6 @@
         
         .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px; text-align: center; }
         .organizer-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; padding: 10px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px; animation: pulse-red 3s infinite; transition: all 0.3s ease; }
-        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-2px); }
-        
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(255, 75, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); } }
         
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .full { grid-column: span 2; }
@@ -123,10 +165,10 @@
 
 <div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
     <div class="auth-form" onclick="event.stopPropagation()">
-        <h2 id="authTitle" style="font-size: 14px; letter-spacing: 3px; margin-bottom: 20px;">ВХОД</h2>
+        <h2 id="authTitle">ВХОД</h2>
         <input type="email" id="authEmail" placeholder="EMAIL">
         <input type="password" id="authPassword" placeholder="ПАРОЛЬ">
-        <button class="btn full" style="background: #fff; color: #000; justify-content: center;" onclick="executeAuth()">ПОДТВЕРДИТЬ</button>
+        <button class="btn-confirm" onclick="executeAuth()">ПОДТВЕРДИТЬ</button>
     </div>
 </div>
 
@@ -197,7 +239,11 @@
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let isLoginMode = true;
-    function openAuth(l) { isLoginMode = l; document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; document.getElementById('authModal').classList.add('show'); }
+    function openAuth(l) { 
+        isLoginMode = l; 
+        document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
+        document.getElementById('authModal').classList.add('show'); 
+    }
     function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
     async function executeAuth() {
@@ -210,7 +256,7 @@
         } else {
             const { error } = await _supabase.auth.signUp({ email, password });
             if (error) alert(error.message); 
-            else alert('Регистрация успешна! Теперь нажми ВХОД и войди.');
+            else alert('Регистрация успешна! Проверь почту (это может занять пару минут).');
         }
     }
 
