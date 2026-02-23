@@ -138,9 +138,11 @@
             <input type="password" id="authPassword" placeholder="ПАРОЛЬ">
             <button class="btn-action" id="authBtn" onclick="executeAuth()">ВОЙТИ</button>
         </div>
-        <div id="authSuccess" style="display: none; text-align: center;">
+        <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
             <i class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
-            <p style="font-size: 13px; line-height: 1.6; opacity: 0.9;">На твой Email отправлена ссылка для подтверждения.</p>
+            <p style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                На твой Email отправлена ссылка для подтверждения.
+            </p>
             <button class="btn-action" style="margin-top: 25px;" onclick="closeAuth()">ПОНЯТНО</button>
         </div>
     </div>
