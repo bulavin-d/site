@@ -1,37 +1,197 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637', 'ym');
+        ym(106955637, 'init', { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer" });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DASHBOARD | BULAVIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>BULAVIN | CABINET</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 40px; border-radius: 40px; text-align: center; border-left: 2px solid #0095f6; width: 90%; max-width: 300px; }
-        h1 { font-size: 18px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }
-        b { color: #0095f6; }
-        button { background: #fff; border: none; color: #000; padding: 14px 28px; border-radius: 15px; cursor: pointer; margin-top: 30px; font-weight: 900; text-transform: uppercase; }
+        :root {
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --verify-blue: #0095f6;
+            --red-accent: #ff4b2b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; }
+        
+        #global-canvas { position: fixed; inset: 0; z-index: -1; filter: grayscale(1) brightness(0.4); pointer-events: none; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(100px) brightness(0.1); z-index: -2; }
+
+        .container { width: 100%; max-width: 420px; padding: 40px 20px; z-index: 5; }
+
+        /* Шапка кабинета */
+        .header-box { 
+            background: var(--glass); 
+            backdrop-filter: blur(30px); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 35px; 
+            padding: 30px 20px; 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        
+        .user-email { font-size: 11px; opacity: 0.5; letter-spacing: 1px; margin-top: 5px; text-transform: uppercase; }
+        h2 { font-size: 20px; letter-spacing: 3px; font-weight: 900; margin-top: 10px; }
+
+        /* Блоки контента */
+        .content-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(20px);
+        }
+
+        .card-title { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: var(--verify-blue); margin-bottom: 15px; text-transform: uppercase; }
+        
+        .exclusive-list { display: flex; flex-direction: column; gap: 12px; }
+        .exclusive-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            text-decoration: none; 
+            color: #fff; 
+            padding: 10px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.03);
+            transition: 0.3s;
+        }
+        .exclusive-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+        .exclusive-item i { font-size: 20px; color: var(--verify-blue); }
+
+        .btn-logout {
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 75, 43, 0.3);
+            background: rgba(255, 75, 43, 0.05);
+            color: var(--red-accent);
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            margin-top: 20px;
+        }
+        .btn-logout:hover { background: var(--red-accent); color: #fff; }
+
+        .footer { text-align: center; font-size: 9px; opacity: 0.3; margin-top: 30px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-    <div class="glass">
-        <h1>СЕКРЕТНАЯ ЗОНА</h1>
-        <p>Доступ разрешен:<br><b id="user-mail">загрузка...</b></p>
-        <button onclick="logout()">ВЫЙТИ</button>
+
+<canvas id="global-canvas"></canvas>
+<div class="dynamic-bg"></div>
+
+<div class="container">
+    <div class="header-box">
+        <div class="user-email" id="userEmail">ЗАГРУЗКА...</div>
+        <h2>ЛИЧНЫЙ КАБИНЕТ</h2>
     </div>
 
-    <script>
-        const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div class="content-card">
+        <div class="card-title">ЭКСКЛЮЗИВ ДЛЯ СВОИХ</div>
+        <div class="exclusive-list">
+            <a href="#" class="exclusive-item">
+                <i class="fa-solid fa-circle-play"></i>
+                <div>
+                    <div style="font-size: 13px; font-weight: 600;">DEMO: Название трека</div>
+                    <div style="font-size: 10px; opacity: 0.5;">Слушать черновик (2026)</div>
+                </div>
+            </a>
+            <a href="#" class="exclusive-item">
+                <i class="fa-solid fa-file-pdf"></i>
+                <div>
+                    <div style="font-size: 13px; font-weight: 600;">ТЕКСТЫ И СМЫСЛЫ</div>
+                    <div style="font-size: 10px; opacity: 0.5;">Разбор нового релиза</div>
+                </div>
+            </a>
+        </div>
+    </div>
 
-        async function checkUser() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) { window.location.href = '/'; } 
-            else { document.getElementById('user-mail').innerText = session.user.email; }
+    <div class="content-card">
+        <div class="card-title">ИНФО</div>
+        <p style="font-size: 12px; opacity: 0.7; line-height: 1.6;">Скоро здесь появятся ссылки на закрытый Telegram-канал и секретный мерч.</p>
+    </div>
+
+    <button class="btn-logout" onclick="logout()">ВЫЙТИ ИЗ АККАУНТА</button>
+
+    <div class="footer">BULAVIN SYSTEM v1.0</div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // Проверка авторизации при загрузке
+    async function checkUser() {
+        const { data: { session } } = await _supabase.auth.getSession();
+        if (!session) {
+            // Если не вошел — кидаем обратно на главную
+            window.location.href = 'index.html'; 
+        } else {
+            document.getElementById('userEmail').innerText = session.user.email;
         }
-        async function logout() { await _supabase.auth.signOut(); window.location.href = '/'; }
-        checkUser();
-    </script>
+    }
+    checkUser();
+
+    // Функция выхода
+    async function logout() {
+        await _supabase.auth.signOut();
+        window.location.href = 'index.html';
+    }
+
+    /* --- АНИМАЦИЯ ФОНА (ТА ЖЕ) --- */
+    const canvas = document.getElementById('global-canvas');
+    const ctx = canvas.getContext('2d');
+    let emojis = [];
+    class FloatingEmoji {
+        constructor() { this.init(true); }
+        init(f) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = f ? Math.random() * window.innerHeight : -50;
+            this.emoji = ['🖤', '🎧', '✨'][Math.floor(Math.random() * 3)];
+            this.size = Math.random() * 20 + 20;
+            this.vx = (Math.random() - 0.5) * 0.3;
+            this.vy = (Math.random() - 0.5) * 0.3;
+            this.op = Math.random() * 0.2 + 0.05;
+        }
+        update() { 
+            this.x += this.vx; this.y += this.vy;
+            if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false); 
+        }
+        draw() { ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.fillText(this.emoji, this.x, this.y); }
+    }
+    function initCanvas() {
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        emojis = Array.from({length: 15}, () => new FloatingEmoji());
+    }
+    function anim() { 
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+        emojis.forEach(e => { e.update(); e.draw(); }); 
+        requestAnimationFrame(anim); 
+    }
+    window.addEventListener('resize', initCanvas);
+    initCanvas(); anim();
+</script>
 </body>
 </html>
