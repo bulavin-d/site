@@ -39,7 +39,7 @@
         
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
-        /* Навигация: Вход слева, Регистрация справа */
+        /* Навигация */
         .auth-nav { 
             position: absolute; 
             top: 15px; 
@@ -63,7 +63,6 @@
             backdrop-filter: blur(10px); 
             transition: all 0.2s ease;
         }
-        /* Анимация проваливания без свечения */
         .btn-auth:hover { transform: translateY(2px); background: rgba(255,255,255,0.12); }
         .btn-auth:active { transform: translateY(3px) scale(0.96); }
 
@@ -99,25 +98,71 @@
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
         
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
-        .btn:active { transform: scale(0.96); }
-
-        /* Чистое свечение площадок */
         .btn-yandex:hover { color: var(--yandex-color) !important; filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5)); }
         .btn-vk:hover { color: var(--vk-color) !important; filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.5)); }
         .btn-spotify:hover { color: var(--spotify-color) !important; filter: drop-shadow(0 0 8px rgba(30, 215, 96, 0.5)); }
         .btn-yt:hover { color: var(--yt-color) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
         .btn-soundcloud:hover { color: var(--sc-color) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        /* --- ОБНОВЛЕННЫЕ СТИЛИ МОДАЛКИ --- */
+        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
         .auth-modal.show { display: flex; }
-        .auth-form { 
-            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); padding: 40px 30px; border-radius: 35px; 
-            width: 90%; max-width: 340px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(25px);
-        }
-        .auth-form input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 16px; border-radius: 18px; color: #fff; margin-bottom: 12px; outline: none; font-size: 12px; }
         
-        .btn-action { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 11px; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
-        .btn-action:hover { background: #fff; color: #000; transform: scale(0.98); }
+        .auth-form { 
+            background: rgba(255, 255, 255, 0.04); 
+            border: 1px solid var(--glass-border); 
+            padding: 45px 30px; 
+            border-radius: 40px; 
+            width: 90%; 
+            max-width: 350px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        #authTitle { 
+            font-size: 22px; 
+            letter-spacing: 6px; 
+            font-weight: 900; 
+            margin-bottom: 35px; /* Отступ от текста до инпутов */
+            text-align: center;
+            width: 100%;
+            color: #fff;
+        }
+
+        .auth-form input { 
+            width: 100%; 
+            background: rgba(255,255,255,0.06); 
+            border: 1px solid var(--glass-border); 
+            padding: 18px; 
+            border-radius: 20px; 
+            color: #fff; 
+            margin-bottom: 15px; 
+            outline: none; 
+            font-size: 13px; 
+            transition: all 0.3s ease;
+        }
+        .auth-form input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+        
+        .btn-action { 
+            width: 100%; 
+            padding: 18px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            background: rgba(255,255,255,0.05); 
+            color: #fff; 
+            font-weight: 800; 
+            font-size: 12px; 
+            letter-spacing: 2px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            text-transform: uppercase; 
+            margin-top: 10px;
+        }
+        .btn-action:hover { background: #fff; color: #000; }
+        /* ------------------------------- */
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
@@ -143,7 +188,6 @@
         .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; position: relative; }
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
         
-        /* Кнопка организатора: стили */
         .organizer-link { 
             display: inline-flex; 
             align-items: center; 
