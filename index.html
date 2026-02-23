@@ -90,19 +90,19 @@
         
         /* GRID & BUTTONS */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); cursor: pointer; }
-        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; transition: transform 0.3s ease; }
-        .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
+        .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); cursor: pointer; overflow: hidden; }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; transition: transform 0.3s ease; z-index: 2; }
+        .btn span { flex-grow: 1; text-align: center; margin-right: 25px; z-index: 2; }
+        .btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); }
         .btn:hover i { transform: scale(1.1); }
         .full { grid-column: span 2; }
 
-        /* MUSIC GLOW EFFECTS */
-        .btn-yandex:hover { color: var(--yandex-color) !important; box-shadow: 0 0 20px rgba(255, 204, 0, 0.15); border-color: rgba(255, 204, 0, 0.4) !important; }
-        .btn-vk:hover { color: var(--vk-color) !important; box-shadow: 0 0 20px rgba(0, 119, 255, 0.15); border-color: rgba(0, 119, 255, 0.4) !important; }
-        .btn-spotify:hover { color: var(--spotify-color) !important; box-shadow: 0 0 20px rgba(30, 215, 96, 0.15); border-color: rgba(30, 215, 96, 0.4) !important; }
-        .btn-yt:hover { color: var(--yt-color) !important; box-shadow: 0 0 20px rgba(255, 0, 0, 0.15); border-color: rgba(255, 0, 0, 0.4) !important; }
-        .btn-soundcloud:hover { color: var(--sc-color) !important; box-shadow: 0 0 20px rgba(255, 85, 0, 0.15); border-color: rgba(255, 85, 0, 0.4) !important; }
+        /* FIXED MUSIC GLOW (No more rectangle bleeding) */
+        .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.5) !important; box-shadow: inset 0 0 15px rgba(255, 204, 0, 0.1), 0 0 15px rgba(255, 204, 0, 0.2); }
+        .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.5) !important; box-shadow: inset 0 0 15px rgba(0, 119, 255, 0.1), 0 0 15px rgba(0, 119, 255, 0.2); }
+        .btn-spotify:hover { color: var(--spotify-color) !important; border-color: rgba(30, 215, 96, 0.5) !important; box-shadow: inset 0 0 15px rgba(30, 215, 96, 0.1), 0 0 15px rgba(30, 215, 96, 0.2); }
+        .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.5) !important; box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.1), 0 0 15px rgba(255, 0, 0, 0.2); }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.5) !important; box-shadow: inset 0 0 15px rgba(255, 85, 0, 0.1), 0 0 15px rgba(255, 85, 0, 0.2); }
 
         /* COLLAPSE */
         .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -12px; }
