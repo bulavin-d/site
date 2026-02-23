@@ -14,11 +14,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BULAVIN</title>
+    <title>BULAVIN | SOON</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
@@ -35,14 +34,14 @@
             height: 100vh; 
             display: flex; 
             flex-direction: column;
-            justify-content: center; 
+            justify-content: space-between; 
             align-items: center; 
             overflow: hidden; 
             -webkit-tap-highlight-color: transparent;
         }
         
         #global-canvas { position: fixed; inset: 0; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.15); transform: scale(1.1); z-index: -2; }
 
         .container { 
             width: 100%; 
@@ -62,25 +61,24 @@
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
             border-radius: 40px;
-            padding: 50px 30px;
+            padding: 60px 20px;
             text-align: center;
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 35px;
+            gap: 40px;
         }
 
-        /* Сияющий SOON */
         .soon-accent {
-            font-size: 48px;
+            font-size: clamp(40px, 12vw, 56px);
             font-weight: 900;
             letter-spacing: 12px;
             color: var(--red-glow);
             text-shadow: 0 0 25px rgba(255, 75, 43, 0.7);
             animation: glow-pulse 2s infinite alternate;
             text-transform: uppercase;
-            margin-left: 12px; /* компенсация letter-spacing для центровки */
+            margin-left: 12px; /* центровка из-за letter-spacing */
         }
 
         @keyframes glow-pulse {
@@ -88,22 +86,17 @@
             to { opacity: 1; transform: scale(1); text-shadow: 0 0 40px rgba(255, 75, 43, 0.9); }
         }
 
-        /* Эффект прогрузки */
         .loader {
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             border: 2px solid rgba(255,255,255,0.05);
             border-top: 2px solid var(--red-glow);
             border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+            animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Кнопка назад */
         .btn-back {
             background: rgba(255,255,255,0.05);
             border: 1px solid var(--glass-border);
@@ -117,12 +110,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            width: 100%;
+            width: 80%;
         }
-        .btn-back:hover { background: #fff; color: #000; }
-        .btn-back:active { transform: scale(0.97); }
+        .btn-back:hover { background: #fff; color: #000; transform: translateY(-2px); }
+        .btn-back:active { transform: scale(0.95); }
 
-        /* Футер как на первой странице */
         .footer { 
             text-align: center; 
             font-size: 10px; 
@@ -130,6 +122,7 @@
             padding-bottom: 30px; 
             letter-spacing: 2px; 
             width: 100%;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -153,35 +146,36 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // Проверка сессии. Если её нет — сразу редирект.
+    // 1. Быстрая проверка авторизации
     async function checkAuth() {
         const { data: { session } } = await _supabase.auth.getSession();
         if (!session) {
-            window.location.replace('index.html');
+            window.location.replace('../'); 
         }
     }
     checkAuth();
 
-    // Жесткий логаут
-    document.getElementById('logoutBtn').onclick = async () => {
-        const btn = document.getElementById('logoutBtn');
+    // 2. Исправленный логаут (сначала выход, потом редирект)
+    document.getElementById('logoutBtn').onclick = async function() {
+        const btn = this;
         btn.innerText = 'ВЫХОД...';
         btn.disabled = true;
-        
-        await _supabase.auth.signOut();
-        // Очищаем всё на случай если supabase завис
-        localStorage.clear(); 
-        sessionStorage.clear();
-        
-        // Перенаправляем на главную
-        window.location.replace('index.html');
+
+        try {
+            await _supabase.auth.signOut();
+            localStorage.clear();
+            sessionStorage.clear();
+        } catch (e) {
+            console.log('Signout error, but redirecting anyway');
+        } finally {
+            window.location.replace('../');
+        }
     };
 
-    /* --- АНИМАЦИЯ ЭМОДЗИ (КОПИЯ С ГЛАВНОЙ) --- */
+    /* --- АНИМАЦИЯ ЭМОДЗИ (КАК НА ГЛАВНОЙ) --- */
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
-    let lastWidth = window.innerWidth;
 
     class FloatingEmoji {
         constructor() { this.init(true); }
@@ -215,12 +209,7 @@
         requestAnimationFrame(anim); 
     }
     
-    window.addEventListener('resize', () => {
-        if(Math.abs(lastWidth - window.innerWidth) > 50) {
-            initCanvas();
-            lastWidth = window.innerWidth;
-        }
-    });
+    window.addEventListener('resize', initCanvas);
     initCanvas(); anim();
 </script>
 </body>
