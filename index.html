@@ -39,14 +39,15 @@
         
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
-        /* Поправил позиционирование навигации */
+        /* Навигация: Вход слева, Регистрация справа */
         .auth-nav { 
             position: absolute; 
             top: 15px; 
+            left: 20px; 
             right: 20px; 
-            z-index: 20; 
+            z-index: 25; 
             display: flex; 
-            gap: 8px; 
+            justify-content: space-between; 
         }
 
         .btn-auth { 
@@ -60,23 +61,19 @@
             cursor: pointer; 
             text-transform: uppercase; 
             backdrop-filter: blur(10px); 
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.2s ease;
         }
-        .btn-auth:hover { 
-            background: rgba(255,255,255,0.15); 
-            border-color: rgba(255,255,255,0.3);
-            box-shadow: 0 0 15px rgba(255,255,255,0.1);
-        }
-        .btn-auth:active { transform: scale(0.92); }
+        /* Анимация проваливания без свечения */
+        .btn-auth:hover { transform: translateY(2px); background: rgba(255,255,255,0.12); }
+        .btn-auth:active { transform: translateY(3px) scale(0.96); }
 
-        /* Специфичные фиксы для карточки */
         .profile-card { 
             position: relative; 
             background: var(--glass); 
             backdrop-filter: blur(30px); 
             border: 1px solid var(--glass-border); 
             border-radius: 40px; 
-            padding: 55px 20px 35px; /* Увеличил верхний паддинг, чтобы кнопки не жали */
+            padding: 55px 20px 35px; 
             text-align: center; 
             margin-bottom: 5px; 
         }
@@ -94,30 +91,23 @@
             font-weight: 600; 
             display: flex; 
             align-items: center; 
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); 
             cursor: pointer;
             z-index: 10;
         }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
         
-        /* Анимация и свечение для всех кнопок */
-        .btn:hover { 
-            transform: translateY(-2px); 
-            border-color: rgba(255,255,255,0.4); 
-            background: rgba(255,255,255,0.08); 
-            box-shadow: 0 0 20px rgba(255,255,255,0.05);
-        }
-        .btn:active { transform: scale(0.95); }
+        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
+        .btn:active { transform: scale(0.96); }
 
-        /* Цветное свечение соцсетей */
-        .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.4) !important; filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.3)); }
-        .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.4) !important; filter: drop-shadow(0 0 10px rgba(0, 119, 255, 0.3)); }
-        .btn-spotify:hover { color: var(--spotify-color) !important; border-color: rgba(30, 215, 96, 0.4) !important; filter: drop-shadow(0 0 10px rgba(30, 215, 96, 0.3)); }
-        .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.4) !important; filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.3)); }
-        .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.4) !important; filter: drop-shadow(0 0 10px rgba(255, 85, 0, 0.3)); }
+        /* Чистое свечение площадок */
+        .btn-yandex:hover { color: var(--yandex-color) !important; filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5)); }
+        .btn-vk:hover { color: var(--vk-color) !important; filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.5)); }
+        .btn-spotify:hover { color: var(--spotify-color) !important; filter: drop-shadow(0 0 8px rgba(30, 215, 96, 0.5)); }
+        .btn-yt:hover { color: var(--yt-color) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        /* Остальные стили без изменений */
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .auth-modal.show { display: flex; }
         .auth-form { 
@@ -153,6 +143,25 @@
         .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; position: relative; }
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
         
+        /* Кнопка организатора: стили */
+        .organizer-link { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            color: var(--red-accent); 
+            text-decoration: none; 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            margin-top: 15px; 
+            padding: 10px 18px; 
+            border: 1px solid rgba(255, 75, 43, 0.2); 
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-1px); }
+
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
     </style>
@@ -201,7 +210,11 @@
         <div class="collapse-content">
             <div class="afisha-card">
                 <p style="font-size: 12px; opacity: 0.7; text-align: center;">На данный момент выступлений не запланировано.</p>
-                <div style="text-align: center;"><a href="https://t.me/imbulavin" target="_blank" style="color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-top: 15px; display: inline-block;">Я организатор</a></div>
+                <div style="text-align: center;">
+                    <a href="https://t.me/imbulavin" target="_blank" class="organizer-link">
+                        <i class="fa-solid fa-briefcase"></i> Я организатор
+                    </a>
+                </div>
             </div>
         </div>
     </div>
