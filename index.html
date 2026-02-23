@@ -37,84 +37,89 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* Исправленная навигация */
-        .auth-nav { position: absolute; top: 15px; right: 15px; z-index: 100; display: flex; gap: 8px; }
+        /* Навигация (фикс для мобил) */
+        .auth-nav { position: fixed; top: 15px; right: 15px; z-index: 100; display: flex; gap: 8px; }
         .btn-auth { 
-            background: var(--glass); border: 1px solid var(--glass-border); color: #fff; padding: 8px 12px; border-radius: 12px; 
-            font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; backdrop-filter: blur(15px); transition: all 0.3s ease;
+            background: var(--glass); border: 1px solid var(--glass-border); color: #fff; padding: 10px 14px; border-radius: 14px; 
+            font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; backdrop-filter: blur(15px); transition: all 0.3s ease;
         }
-        @media (max-width: 400px) { .auth-nav { top: 10px; right: 10px; } .btn-auth { padding: 6px 10px; font-size: 8px; } }
+        @media (max-width: 400px) { .auth-nav { top: 10px; right: 10px; } .btn-auth { padding: 8px 10px; font-size: 9px; } }
 
-        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
+        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .auth-modal.show { display: flex; }
-        .auth-form { background: rgba(20,20,20,0.6); border: 1px solid var(--glass-border); padding: 30px; border-radius: 30px; width: 90%; max-width: 340px; text-align: center; }
+        .auth-form { 
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); padding: 40px 30px; border-radius: 35px; 
+            width: 90%; max-width: 340px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(25px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .auth-form h2 { font-size: 13px; letter-spacing: 5px; margin-bottom: 25px; text-transform: uppercase; font-weight: 900; opacity: 0.9; }
+        .auth-form input { 
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 16px; 
+            border-radius: 18px; color: #fff; margin-bottom: 12px; outline: none; font-size: 12px;
+        }
 
-        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.5) blur(1px); pointer-events: none; }
+        .btn-action {
+            width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 11px;
+            letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;
+        }
+        .btn-action:hover { background: #fff; color: #000; transform: scale(0.98); }
+
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
         
-        .container { width: 100%; max-width: 420px; padding: 60px 20px 40px; display: flex; flex-direction: column; gap: 10px; z-index: 5; }
-        .profile-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; }
+        .container { width: 100%; max-width: 420px; padding: 70px 20px 40px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
+        .profile-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 10px; }
         
-        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; transition: transform 0.3s ease; }
-        .avatar-link:hover { transform: scale(1.05); }
-        .avatar-link::before { content: ''; position: absolute; inset: -3px; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; }
-        .avatar-inner-border { position: absolute; inset: 2px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
+        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 1; transition: transform 0.3s ease; }
+        .avatar-link:hover { transform: scale(1.08); }
+        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -2; }
+        .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        h1 { font-size: 22px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
+        h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
         .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
-        .verify-icon { width: 16px; height: 16px; fill: var(--verify-blue); }
-        .bio { font-size: 11px; opacity: 0.5; line-height: 1.4; }
+        .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
+        .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .btn { 
             position: relative; background: var(--glass); backdrop-filter: blur(20px); 
             border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; 
-            text-decoration: none; color: #fff; font-size: 12px; font-weight: 700; 
-            display: flex; align-items: center; transition: all 0.3s ease; 
-            cursor: pointer; width: 100%; z-index: 10;
+            text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; 
+            display: flex; align-items: center; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+            cursor: pointer;
         }
-        .btn i { font-size: 18px; width: 25px; margin-right: 12px; display: flex; justify-content: center; }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
-
-        /* Выездные списки */
-        .collapse-wrapper { 
-            max-height: 0; overflow: hidden; opacity: 0;
-            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-            margin-top: -10px;
-        }
-        .collapse-wrapper.show { opacity: 1; margin-top: 0; margin-bottom: 5px; }
-        .collapse-content { display: flex; flex-direction: column; gap: 8px; padding: 10px 0; }
-
-        /* Эффекты свечения площадок */
-        .btn-yandex:hover { color: var(--yandex-color); border-color: var(--yandex-color); box-shadow: 0 0 15px rgba(255,204,0,0.2); }
-        .btn-vk:hover { color: var(--vk-color); border-color: var(--vk-color); box-shadow: 0 0 15px rgba(0,119,255,0.2); }
-        .btn-spotify:hover { color: var(--spotify-color); border-color: var(--spotify-color); box-shadow: 0 0 15px rgba(30,215,96,0.2); }
-        .btn-yt:hover { color: var(--yt-color); border-color: var(--yt-color); box-shadow: 0 0 15px rgba(255,0,0,0.2); }
-        .btn-soundcloud:hover { color: var(--sc-color); border-color: var(--sc-color); box-shadow: 0 0 15px rgba(255,85,0,0.2); }
-
-        .anon-card, .afisha-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; z-index: 20; position: relative; }
-        .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 12px; font-size: 13px; }
+        .btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
         
-        .btn-action {
-            width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.08); color: #fff; font-weight: 800; font-size: 11px;
-            letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;
-        }
-        .btn-action:hover { background: #fff; color: #000; }
+        /* Свечение */
+        .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5)); }
+        .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.4) !important; filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.5)); }
+        .btn-spotify:hover { color: var(--spotify-color) !important; border-color: rgba(30, 215, 96, 0.4) !important; filter: drop-shadow(0 0 8px rgba(30, 215, 96, 0.5)); }
+        .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
+
+        /* Плавное раскрытие */
+        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -12px; }
+        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 12px; }
+        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
+
+        .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; z-index: 20; position: relative; }
+        .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
         
         .organizer-link { 
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
-            margin-top: 10px; color: var(--red-accent); text-decoration: none; font-size: 10px; font-weight: 800; 
-            padding: 12px 20px; border: 1px solid rgba(255, 75, 43, 0.3); border-radius: 15px; transition: all 0.3s ease;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
+            margin-top: 20px; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; 
+            padding: 12px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 15px; transition: all 0.3s ease; text-transform: uppercase;
+            position: relative; z-index: 30;
         }
-        .organizer-link:hover { background: rgba(255,75,43,0.1); border-color: var(--red-accent); }
+        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); border-color: var(--red-accent); transform: translateY(-2px); }
         
-        .prediction-card { background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 30px; padding: 25px; text-align: center; margin-top: 10px; }
-        .footer { text-align: center; font-size: 9px; opacity: 0.2; margin-top: 10px; letter-spacing: 2px; padding-bottom: 30px; }
+        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -125,11 +130,18 @@
 </div>
 
 <div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
-    <div class="auth-form" onclick="event.stopPropagation()">
-        <h2 id="authTitle" style="font-size: 14px; letter-spacing: 3px; margin-bottom: 20px;">ВХОД</h2>
-        <input type="email" id="authEmail" placeholder="EMAIL" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); padding:14px; border-radius:12px; color:#fff; margin-bottom:10px; outline:none;">
-        <input type="password" id="authPassword" placeholder="ПАРОЛЬ" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); padding:14px; border-radius:12px; color:#fff; margin-bottom:15px; outline:none;">
-        <button class="btn-action" onclick="alert('Система в режиме теста')">ПРОДОЛЖИТЬ</button>
+    <div class="auth-form" id="authForm" onclick="event.stopPropagation()">
+        <h2 id="authTitle">ВХОД</h2>
+        <div id="authInputs" style="width: 100%;">
+            <input type="email" id="authEmail" placeholder="EMAIL">
+            <input type="password" id="authPassword" placeholder="ПАРОЛЬ">
+            <button class="btn-action" id="authBtn" onclick="executeAuth()">ВОЙТИ</button>
+        </div>
+        <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
+            <i class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
+            <p style="font-size: 11px; opacity: 0.9; margin-bottom: 5px;">На твой Email отправлена ссылка для подтверждения.</p>
+            <button class="btn-action" style="margin-top: 20px;" onclick="closeAuth()">ПОНЯТНО</button>
+        </div>
     </div>
 </div>
 
@@ -138,9 +150,9 @@
 
 <div class="container">
     <div class="profile-card">
-        <div class="avatar-link">
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
-        </div>
+        </a>
         <div class="name-wrapper">
             <h1>BULAVIN</h1>
             <svg class="verify-icon" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/></svg>
@@ -153,7 +165,7 @@
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
     </div>
 
-    <div class="btn" onclick="toggleBlock('music-wrapper')"><i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span></div>
+    <div class="btn" id="music-btn"><i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span></div>
     <div class="collapse-wrapper" id="music-wrapper">
         <div class="collapse-content">
             <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
@@ -165,22 +177,22 @@
         </div>
     </div>
 
-    <div class="btn" onclick="toggleBlock('afisha-wrapper')"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
+    <div class="btn" id="afisha-btn"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
             <div class="afisha-card">
-                <p style="font-size: 11px; opacity: 0.6; text-align: center;">Концертов пока нет. Следи за новостями.</p>
-                <div style="text-align: center;"><a href="https://t.me/imbulavin" target="_blank" class="organizer-link"><i class="fa-solid fa-briefcase"></i>Я ОРГАНИЗАТОР</a></div>
+                <p style="font-size: 12px; opacity: 0.7; text-align: center;">На данный момент выступлений не запланировано.</p>
+                <div style="text-align: center;"><a href="https://t.me/imbulavin" target="_blank" class="organizer-link"><i class="fa-solid fa-briefcase"></i>Я организатор</a></div>
             </div>
         </div>
     </div>
 
-    <div class="btn" onclick="toggleBlock('anon-wrapper')"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
+    <div class="btn" id="anon-btn"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
     <div class="collapse-wrapper" id="anon-wrapper">
         <div class="collapse-content">
             <div class="anon-card">
-                <form id="anon-form">
-                    <textarea class="anon-textarea" name="message" rows="4" placeholder="Твой секрет..." required></textarea>
+                <form id="google-sheet-form">
+                    <textarea class="anon-textarea" id="message" name="message" rows="4" placeholder="Напиши что-нибудь анонимно..." required></textarea>
                     <button type="submit" class="btn-action" id="submit-btn">ОТПРАВИТЬ</button>
                 </form>
             </div>
@@ -188,92 +200,103 @@
     </div>
 
     <div class="prediction-card">
-        <div style="font-size: 8px; letter-spacing: 2px; color: var(--verify-blue); margin-bottom: 10px; font-weight: 800;">BULAVIN SYSTEM • БАЗА</div>
-        <div id="prediction" style="font-size: 13px; line-height: 1.4;">Загрузка мудрости...</div>
+        <div style="font-size: 9px; letter-spacing: 2px; color: var(--verify-blue); margin-bottom: 15px; font-weight: 800;">BULAVIN SYSTEM • БАЗА ДНЯ</div>
+        <div id="prediction">Подключаюсь...</div>
     </div>
-    
     <div class="footer">© 2026 BULAVIN</div>
 </div>
 
 <script>
-    // Плавное развертывание с расчетом высоты
-    function toggleBlock(id) {
-        const el = document.getElementById(id);
-        const isOpen = el.classList.contains('show');
-        
-        // Закрываем другие
-        document.querySelectorAll('.collapse-wrapper').forEach(w => {
-            if(w.id !== id) { w.classList.remove('show'); w.style.maxHeight = null; }
-        });
+    const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        if (isOpen) {
-            el.classList.remove('show');
-            el.style.maxHeight = null;
-        } else {
-            el.classList.add('show');
-            el.style.maxHeight = el.scrollHeight + "px";
-        }
-    }
-
-    // Модалка
+    let isLoginMode = true;
     function openAuth(l) { 
+        isLoginMode = l; 
         document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
+        document.getElementById('authBtn').innerText = l ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ';
+        document.getElementById('authInputs').style.display = 'block';
+        document.getElementById('authSuccess').style.display = 'none';
         document.getElementById('authModal').classList.add('show'); 
     }
     function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
-    // Канвас (эмодзи)
+    async function executeAuth() {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        const btn = document.getElementById('authBtn');
+        if(!email || !password) return alert('Заполни поля!');
+        btn.disabled = true; btn.innerText = 'ПОДОЖДИ...';
+        if (isLoginMode) {
+            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ВОЙТИ'; }
+            else window.location.href = '/dashboard/'; 
+        } else {
+            const { error } = await _supabase.auth.signUp({ email, password });
+            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ЗАРЕГИСТРИРОВАТЬСЯ'; }
+            else {
+                document.getElementById('authInputs').style.display = 'none';
+                document.getElementById('authSuccess').style.display = 'block';
+            }
+        }
+    }
+
+    function setupCollapse(btnId, wrapperId) {
+        document.getElementById(btnId).onclick = () => {
+            const el = document.getElementById(wrapperId);
+            const all = document.querySelectorAll('.collapse-wrapper');
+            all.forEach(w => { if(w.id !== wrapperId) w.classList.remove('show'); });
+            el.classList.toggle('show');
+        }
+    }
+    setupCollapse('music-btn', 'music-wrapper');
+    setupCollapse('afisha-btn', 'afisha-wrapper');
+    setupCollapse('anon-btn', 'anon-wrapper');
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6FqqfvQSiwbm-xmuo0-dFkvReYjjKsqyzEYojdO1tfigGVMz0nb93YpjO9fOZLvRLRQ/exec';
+    const form = document.getElementById('google-sheet-form');
+    const submitBtn = document.getElementById('submit-btn');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        submitBtn.disabled = true; submitBtn.innerText = 'ОТПРАВЛЯЮ...';
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(() => { submitBtn.innerText = 'ГОТОВО!'; form.reset(); setTimeout(() => { submitBtn.disabled = false; submitBtn.innerText = 'ОТПРАВИТЬ'; }, 3000); })
+            .catch(() => { submitBtn.innerText = 'ОШИБКА'; submitBtn.disabled = false; });
+    });
+
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
-    class Emoji {
-        constructor() { this.init(); }
-        init() {
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 20 + 15;
-            this.char = ['🖤', '🎧', '✨'][Math.floor(Math.random()*3)];
-            this.speed = Math.random() * 0.5 + 0.2;
-            this.op = Math.random() * 0.15 + 0.05;
+    class FloatingEmoji {
+        constructor() { this.init(true); }
+        init(f) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = f ? Math.random() * window.innerHeight : -50;
+            this.emoji = ['🖤', '💼', '🎧'][Math.floor(Math.random() * 3)];
+            this.size = Math.random() * 20 + 20;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.rot = Math.random() * Math.PI * 2;
+            this.rotSpd = (Math.random() - 0.5) * 0.01;
+            this.op = Math.random() * 0.2 + 0.1;
         }
-        draw() {
-            ctx.globalAlpha = this.op;
-            ctx.font = `${this.size}px serif`;
-            ctx.fillText(this.char, this.x, this.y);
-            this.y += this.speed;
-            if(this.y > canvas.height) this.y = -20;
-        }
+        update() { this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd; if (this.y > window.innerHeight + 50) this.init(); }
+        draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.fillText(this.emoji, 0, 0); ctx.restore(); }
     }
-    function setupCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        emojis = Array.from({length: 15}, () => new Emoji());
-    }
-    function loop() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        emojis.forEach(e => e.draw());
-        requestAnimationFrame(loop);
-    }
-    window.addEventListener('resize', setupCanvas);
-    setupCanvas(); loop();
+    function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; emojis = Array.from({length: 15}, () => new FloatingEmoji()); }
+    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); emojis.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(anim); }
+    window.addEventListener('resize', init);
+    init(); anim();
 
-    // Предсказание
-    async function getAdvice() {
+    async function fetchPrediction() {
         try {
-            const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
-            const data = await res.json();
-            document.getElementById('prediction').innerText = JSON.parse(data.contents).text;
-        } catch { document.getElementById('prediction').innerText = "Делай то, что должен."; }
+            const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
+            const d = await r.json();
+            document.getElementById('prediction').innerText = JSON.parse(d.contents).text;
+        } catch (e) { document.getElementById('prediction').innerText = "Продолжай делать своё дело."; }
     }
-    getAdvice();
-    
-    // Форма анонимки
-    document.getElementById('anon-form').onsubmit = (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('submit-btn');
-        btn.innerText = "УЛЕТЕЛО!";
-        setTimeout(() => { btn.innerText = "ОТПРАВИТЬ"; e.target.reset(); }, 2000);
-    };
+    fetchPrediction();
 </script>
 </body>
 </html>
