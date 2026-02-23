@@ -49,8 +49,18 @@
         .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: flex-start; transition: all 0.3s ease; cursor: pointer; }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
+        
+        /* ОБЩИЙ ЭФФЕКТ НАВЕДЕНИЯ */
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
         
+        /* ИСПРАВЛЕННЫЕ ЦВЕТНЫЕ ПОДСВЕТКИ */
+        .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.3) !important; }
+        .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.3) !important; }
+        .btn-spotify:hover { color: var(--spotify-color) !important; border-color: rgba(30, 215, 96, 0.3) !important; }
+        .btn-apple:hover { color: #fff !important; border-color: rgba(255, 255, 255, 0.5) !important; }
+        .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.3) !important; }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.3) !important; }
+
         .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
         .collapse-wrapper.show { grid-template-rows: 1fr; }
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -71,9 +81,6 @@
         .prediction-text { font-size: 15px; line-height: 1.6; }
         .full { grid-column: span 2; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
-        .btn-yandex:hover { color: var(--yandex-color); }
-        .btn-vk:hover { color: var(--vk-color); }
-        .btn-spotify:hover { color: var(--spotify-color); }
     </style>
 </head>
 <body>
@@ -144,7 +151,6 @@
     setupCollapse('afisha-btn', 'afisha-wrapper');
     setupCollapse('anon-btn', 'anon-wrapper');
 
-    // ТВОЯ НОВАЯ ССЫЛКА ОБНОВЛЕНА
     const scriptURL = 'https://script.google.com/macros/s/AKfycbz6FqqfvQSiwbm-xmuo0-dFkvReYjjKsqyzEYojdO1tfigGVMz0nb93YpjO9fOZLvRLRQ/exec';
     const form = document.getElementById('google-sheet-form');
     const submitBtn = document.getElementById('submit-btn');
