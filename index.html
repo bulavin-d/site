@@ -37,39 +37,34 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* Исправленная навигация */
+        /* Контейнер для центровки */
+        .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
+
+        /* Навигация внутри карточки (справа) */
         .auth-nav { 
-            position: fixed; 
-            top: 20px; 
-            right: 20px; 
-            z-index: 100; 
+            position: absolute; 
+            top: 25px; 
+            right: 25px; 
+            z-index: 10; 
             display: flex; 
-            gap: 10px; 
+            gap: 6px; 
         }
 
         .btn-auth { 
-            background: var(--glass); 
+            background: rgba(255,255,255,0.08); 
             border: 1px solid var(--glass-border); 
             color: #fff; 
-            padding: 10px 16px; 
-            border-radius: 14px; 
-            font-size: 10px; 
+            padding: 8px 12px; 
+            border-radius: 12px; 
+            font-size: 9px; 
             font-weight: 800; 
             cursor: pointer; 
             text-transform: uppercase; 
-            backdrop-filter: blur(15px); 
+            backdrop-filter: blur(10px); 
             transition: all 0.2s ease;
         }
-        
-        /* Эффект наведения и нажатия */
-        .btn-auth:hover { transform: translateY(-2px); background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+        .btn-auth:hover { background: rgba(255,255,255,0.15); }
         .btn-auth:active { transform: scale(0.92); }
-
-        /* Фикс для мобилок: убираем прилипание к краю и центруем по сетке */
-        @media (max-width: 480px) {
-            .auth-nav { top: 15px; right: 15px; gap: 8px; }
-            .btn-auth { padding: 8px 12px; font-size: 9px; }
-        }
 
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .auth-modal.show { display: flex; }
@@ -94,8 +89,7 @@
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
         
-        .container { width: 100%; max-width: 420px; padding: 80px 20px 40px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
-        .profile-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 10px; }
+        .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 45px 20px 35px; text-align: center; margin-bottom: 5px; }
         
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 1; transition: transform 0.3s ease; }
         .avatar-link:hover { transform: scale(1.08); }
@@ -109,7 +103,7 @@
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
         
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 0px; }
         .btn { 
             position: relative; background: var(--glass); backdrop-filter: blur(20px); 
             border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; 
@@ -119,8 +113,8 @@
         }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
-        .btn:active { transform: scale(0.98); }
+        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
+        .btn:active { transform: scale(0.96); }
 
         .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5)); }
         .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.4) !important; filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.5)); }
@@ -128,9 +122,9 @@
         .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
         .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -12px; }
-        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 12px; }
-        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
+        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -10px; }
+        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 10px; }
+        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }
 
         .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; z-index: 20; position: relative; }
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
@@ -139,42 +133,23 @@
             display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
             margin-top: 20px; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; 
             padding: 12px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 15px; transition: all 0.3s ease; text-transform: uppercase;
-            position: relative; z-index: 30;
         }
-        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); border-color: var(--red-accent); transform: translateY(-2px); }
         
-        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; }
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
+        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-
-<div class="auth-nav">
-    <button class="btn-auth" onclick="openAuth(true)">Вход</button>
-    <button class="btn-auth" onclick="openAuth(false)">Регистрация</button>
-</div>
-
-<div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
-    <div class="auth-form" id="authForm" onclick="event.stopPropagation()">
-        <h2 id="authTitle">ВХОД</h2>
-        <div id="authInputs" style="width: 100%;">
-            <input type="email" id="authEmail" placeholder="EMAIL">
-            <input type="password" id="authPassword" placeholder="ПАРОЛЬ">
-            <button class="btn-action" id="authBtn" onclick="executeAuth()">ВОЙТИ</button>
-        </div>
-        <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
-            <i class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
-            <p style="font-size: 11px; opacity: 0.9; margin-bottom: 5px;">На твой Email отправлена ссылка для подтверждения.</p>
-            <button class="btn-action" style="margin-top: 20px;" onclick="closeAuth()">ПОНЯТНО</button>
-        </div>
-    </div>
-</div>
 
 <canvas id="global-canvas"></canvas>
 <div class="dynamic-bg"></div>
 
 <div class="container">
     <div class="profile-card">
+        <div class="auth-nav">
+            <button class="btn-auth" onclick="openAuth(true)">Вход</button>
+            <button class="btn-auth" onclick="openAuth(false)">Регистрация</button>
+        </div>
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
         </a>
@@ -229,6 +204,22 @@
         <div id="prediction">Подключаюсь...</div>
     </div>
     <div class="footer">© 2026 BULAVIN</div>
+</div>
+
+<div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
+    <div class="auth-form" id="authForm" onclick="event.stopPropagation()">
+        <h2 id="authTitle">ВХОД</h2>
+        <div id="authInputs" style="width: 100%;">
+            <input type="email" id="authEmail" placeholder="EMAIL">
+            <input type="password" id="authPassword" placeholder="ПАРОЛЬ">
+            <button class="btn-action" id="authBtn" onclick="executeAuth()">ВОЙТИ</button>
+        </div>
+        <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
+            <i class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
+            <p style="font-size: 11px; opacity: 0.9; margin-bottom: 5px;">На твой Email отправлена ссылка для подтверждения.</p>
+            <button class="btn-action" style="margin-top: 20px;" onclick="closeAuth()">ПОНЯТНО</button>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -293,6 +284,8 @@
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
+    let lastWidth = window.innerWidth;
+
     class FloatingEmoji {
         constructor() { this.init(true); }
         init(f) {
@@ -306,13 +299,31 @@
             this.rotSpd = (Math.random() - 0.5) * 0.01;
             this.op = Math.random() * 0.2 + 0.1;
         }
-        update() { this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd; if (this.y > window.innerHeight + 50) this.init(); }
+        update() { 
+            this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd; 
+            if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false); 
+        }
         draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.fillText(this.emoji, 0, 0); ctx.restore(); }
     }
-    function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; emojis = Array.from({length: 15}, () => new FloatingEmoji()); }
-    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); emojis.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(anim); }
-    window.addEventListener('resize', init);
-    init(); anim();
+
+    function initCanvas() {
+        // Фикс бага с хаотичным поведением при скролле (только если реально изменилась ширина)
+        if(Math.abs(lastWidth - window.innerWidth) > 50 || emojis.length === 0) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            lastWidth = window.innerWidth;
+            emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        }
+    }
+
+    function anim() { 
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+        emojis.forEach(e => { e.update(); e.draw(); }); 
+        requestAnimationFrame(anim); 
+    }
+    
+    window.addEventListener('resize', initCanvas);
+    initCanvas(); anim();
 
     async function fetchPrediction() {
         try {
