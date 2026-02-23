@@ -37,30 +37,51 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* AUTH UI - АККУРАТНО ПОВЕРХ ДИЗАЙНА */
+        /* AUTH UI */
         .auth-nav { position: fixed; top: 15px; right: 15px; z-index: 100; display: flex; gap: 8px; }
-        .btn-auth { background: var(--glass); border: 1px solid var(--glass-border); color: #fff; padding: 6px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; backdrop-filter: blur(10px); }
+        .btn-auth { 
+            background: var(--glass); 
+            border: 1px solid var(--glass-border); 
+            color: #fff; 
+            padding: 8px 14px; 
+            border-radius: 12px; 
+            font-size: 10px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .btn-auth:hover { 
+            transform: scale(0.95); /* Эффект вгибания */
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.3);
+        }
+
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .auth-modal.show { display: flex; }
         .auth-form { background: rgba(20,20,20,0.9); border: 1px solid var(--glass-border); padding: 30px; border-radius: 30px; width: 320px; text-align: center; }
         .auth-form input { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 10px; outline: none; }
 
-        /* ТВОЙ ОРИГИНАЛЬНЫЙ СТИЛЬ */
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
+        
         .container { width: 100%; max-width: 420px; padding: 50px 20px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
         .profile-card { background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 10px; }
+        
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; text-decoration: none; position: relative; z-index: 1; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -2; }
         .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .avatar-link:hover { transform: scale(1.08); }
+        
         .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 0px; }
+        
         .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: all 0.3s ease; cursor: pointer; }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
@@ -72,19 +93,21 @@
         .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.3) !important; }
         .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.3) !important; }
 
-        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
-        .collapse-wrapper.show { grid-template-rows: 1fr; }
-        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 10px; }
+        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -12px; }
+        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 12px; }
+        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
 
         .anon-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; }
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 10px; }
         .anon-send-btn { width: 100%; padding: 12px; border-radius: 15px; border: none; background: #fff; color: #000; font-weight: 800; cursor: pointer; }
         
         .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px; text-align: center; }
-        .organizer-link { color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; padding: 10px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px; animation: pulse-red 3s infinite; }
+        .organizer-link { display: inline-block; margin-top: 15px; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; padding: 10px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px; animation: pulse-red 3s infinite; transition: all 0.3s ease; }
+        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-2px); }
+        
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(255, 75, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); } }
         
-        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 15px; }
+        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .full { grid-column: span 2; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
@@ -92,15 +115,15 @@
 <body>
 
 <div class="auth-nav">
-    <button class="btn-auth" onclick="openAuth(true)">Login</button>
-    <button class="btn-auth" onclick="openAuth(false)">Register</button>
+    <button class="btn-auth" onclick="openAuth(true)">Вход</button>
+    <button class="btn-auth" onclick="openAuth(false)">Регистрация</button>
 </div>
 
 <div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
     <div class="auth-form" onclick="event.stopPropagation()">
-        <h2 id="authTitle" style="font-size: 14px; letter-spacing: 3px; margin-bottom: 20px;">LOGIN</h2>
+        <h2 id="authTitle" style="font-size: 14px; letter-spacing: 3px; margin-bottom: 20px;">ВХОД</h2>
         <input type="email" id="authEmail" placeholder="EMAIL">
-        <input type="password" id="authPassword" placeholder="PASSWORD">
+        <input type="password" id="authPassword" placeholder="ПАРОЛЬ">
         <button class="btn full" style="background: #fff; color: #000; justify-content: center;" onclick="executeAuth()">ПОДТВЕРДИТЬ</button>
     </div>
 </div>
@@ -141,7 +164,7 @@
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
             <div class="afisha-card">
-                <p style="font-size: 12px; opacity: 0.7; margin-bottom: 15px;">На данный момент выступлений не запланировано.</p>
+                <p style="font-size: 12px; opacity: 0.7;">На данный момент выступлений не запланировано.</p>
                 <a href="https://t.me/imbulavin" target="_blank" class="organizer-link">Я организатор</a>
             </div>
         </div>
@@ -167,14 +190,12 @@
 </div>
 
 <script>
-    // КОНФИГ SUPABASE
     const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ЛОГИКА АВТОРИЗАЦИИ
     let isLoginMode = true;
-    function openAuth(l) { isLoginMode = l; document.getElementById('authTitle').innerText = l ? 'LOGIN' : 'REGISTER'; document.getElementById('authModal').classList.add('show'); }
+    function openAuth(l) { isLoginMode = l; document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; document.getElementById('authModal').classList.add('show'); }
     function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
     async function executeAuth() {
@@ -187,11 +208,10 @@
         } else {
             const { error } = await _supabase.auth.signUp({ email, password });
             if (error) alert(error.message); 
-            else alert('Регистрация успешна! Теперь нажми LOGIN и войди.');
+            else alert('Регистрация успешна! Теперь нажми ВХОД и войди.');
         }
     }
 
-    // ТВОИ СКРИПТЫ
     function setupCollapse(btnId, wrapperId) {
         document.getElementById(btnId).onclick = () => document.getElementById(wrapperId).classList.toggle('show');
     }
@@ -210,7 +230,6 @@
             .catch(() => { submitBtn.innerText = 'ОШИБКА'; submitBtn.disabled = false; });
     });
 
-    // КАНВАС С ЭМОДЗИ (Твой оригинальный)
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
