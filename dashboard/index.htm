@@ -1,93 +1,245 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637', 'ym');
+        ym(106955637, 'init', { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer" });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DASHBOARD | BULAVIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BULAVIN</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Inter', sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            overflow: hidden;
+        :root {
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --verify-blue: #0095f6;
+            --yandex-color: #ffcc00;
+            --vk-color: #0077ff;
+            --spotify-color: #1ed760;
+            --yt-color: #ff0000; 
+            --sc-color: #ff5500;
+            --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            --red-accent: #ff4b2b;
         }
-        .dynamic-bg { 
-            position: fixed; 
-            inset: 0; 
-            background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; 
-            background-size: cover; 
-            filter: blur(80px) brightness(0.2); 
-            z-index: -1; 
-        }
-        .glass { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            padding: 40px; 
-            border-radius: 40px; 
-            text-align: center; 
-            border-left: 2px solid #0095f6;
-            max-width: 300px;
-            width: 90%;
-        }
-        h1 { font-size: 18px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }
-        p { font-size: 14px; opacity: 0.7; line-height: 1.6; }
-        b { color: #0095f6; }
-        button { 
-            background: #fff; 
-            border: none; 
-            color: #000; 
-            padding: 14px 28px; 
-            border-radius: 15px; 
-            cursor: pointer; 
-            margin-top: 30px; 
-            font-weight: 900; 
-            font-size: 12px;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-        button:hover { transform: scale(1.05); opacity: 0.9; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        /* AUTH UI - СТИЛЬНО И НЕ МЕШАЕТ */
+        .auth-nav { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 8px; }
+        .btn-auth { background: var(--glass); border: 1px solid var(--glass-border); color: #fff; padding: 6px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; backdrop-filter: blur(10px); }
+        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .auth-modal.show { display: flex; }
+        .auth-form { background: rgba(20,20,20,0.9); border: 1px solid var(--glass-border); padding: 30px; border-radius: 30px; width: 320px; text-align: center; }
+        .auth-form input { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 10px; outline: none; }
+
+        /* ТВОЙ ДИЗАЙН */
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
+        .container { width: 100%; max-width: 420px; padding: 50px 20px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
+        .profile-card { background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 10px; }
+        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; text-decoration: none; position: relative; z-index: 1; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -2; }
+        .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
+        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
+        h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
+        .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
+        .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: all 0.3s ease; cursor: pointer; }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
+        .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
+        
+        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); }
+        .btn-yandex:hover { color: var(--yandex-color) !important; }
+        .btn-vk:hover { color: var(--vk-color) !important; }
+        .btn-spotify:hover { color: var(--spotify-color) !important; }
+        .btn-yt:hover { color: var(--yt-color) !important; }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; }
+
+        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s ease; overflow: hidden; }
+        .collapse-wrapper.show { grid-template-rows: 1fr; }
+        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 10px; }
+
+        .anon-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; }
+        .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 10px; }
+        .anon-send-btn { width: 100%; padding: 12px; border-radius: 15px; border: none; background: #fff; color: #000; font-weight: 800; cursor: pointer; }
+        
+        .afisha-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px; text-align: center; }
+        .organizer-link { color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; padding: 10px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 12px; animation: pulse-red 3s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(255, 75, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); } }
+        
+        .prediction-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 15px; }
+        .full { grid-column: span 2; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
-    <div class="dynamic-bg"></div>
-    <div class="glass">
-        <h1>ДОСТУП ОТКРЫТ</h1>
-        <p>Привет, артист!<br>Ты зашел под почтой:<br><b id="user-mail">загрузка...</b></p>
-        <button onclick="logout()">ВЫЙТИ ИЗ СИСТЕМЫ</button>
+
+<div class="auth-nav">
+    <button class="btn-auth" onclick="openAuth(true)">Login</button>
+    <button class="btn-auth" onclick="openAuth(false)">Register</button>
+</div>
+
+<div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
+    <div class="auth-form" onclick="event.stopPropagation()">
+        <h2 id="authTitle" style="font-size: 14px; letter-spacing: 3px; margin-bottom: 20px;">LOGIN</h2>
+        <input type="email" id="authEmail" placeholder="EMAIL">
+        <input type="password" id="authPassword" placeholder="PASSWORD">
+        <button class="btn full" style="background: #fff; color: #000; justify-content: center;" onclick="executeAuth()">ПОДТВЕРДИТЬ</button>
+    </div>
+</div>
+
+<canvas id="global-canvas"></canvas>
+<div class="dynamic-bg"></div>
+
+<div class="container">
+    <div class="profile-card">
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
+            <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
+        </a>
+        <div class="name-wrapper">
+            <h1>BULAVIN</h1>
+            <svg class="verify-icon" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/></svg>
+        </div>
+        <p class="bio">Казахстанский исполнитель и музыкальный продюсер.</p>
     </div>
 
-    <script>
-        // Твои данные Supabase
-        const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div class="grid">
+        <a href="https://t.me/imbulavin" target="_blank" class="btn"><i class="fa-brands fa-telegram"></i><span>Telegram</span></a>
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
+    </div>
 
-        // Проверка: залогинен ли юзер?
-        async function checkUser() {
-            const { data: { session } } = await _supabase.auth.getSession();
-            if (!session) {
-                // Если не залогинен — кидаем на главную
-                window.location.href = '/'; 
-            } else {
-                document.getElementById('user-mail').innerText = session.user.email;
-            }
+    <div class="btn full" id="music-btn"><i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span></div>
+    <div class="collapse-wrapper" id="music-wrapper">
+        <div class="collapse-content">
+            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
+            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
+            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
+            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
+            <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn full btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
+            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn full btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
+        </div>
+    </div>
+
+    <div class="btn full" id="afisha-btn"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
+    <div class="collapse-wrapper" id="afisha-wrapper">
+        <div class="collapse-content">
+            <div class="afisha-card">
+                <p style="font-size: 12px; opacity: 0.7; margin-bottom: 15px;">На данный момент выступлений не запланировано.</p>
+                <a href="https://t.me/imbulavin" target="_blank" class="organizer-link">Я организатор</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="btn full" id="anon-btn"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
+    <div class="collapse-wrapper" id="anon-wrapper">
+        <div class="collapse-content">
+            <div class="anon-card">
+                <form id="google-sheet-form">
+                    <textarea class="anon-textarea" id="message" name="message" rows="4" placeholder="Напиши что-нибудь анонимно..." required></textarea>
+                    <button type="submit" class="anon-send-btn" id="submit-btn">ОТПРАВИТЬ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="prediction-card">
+        <div style="font-size: 9px; letter-spacing: 2px; color: var(--verify-blue); margin-bottom: 15px; font-weight: 800;">BULAVIN SYSTEM • БАЗА ДНЯ</div>
+        <div id="prediction">Подключаюсь...</div>
+    </div>
+    <div class="footer">© 2026 BULAVIN</div>
+</div>
+
+<script>
+    // КОНФИГ SUPABASE
+    const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // ЛОГИКА АВТОРИЗАЦИИ
+    let isLoginMode = true;
+    function openAuth(l) { isLoginMode = l; document.getElementById('authTitle').innerText = l ? 'LOGIN' : 'REGISTER'; document.getElementById('authModal').classList.add('show'); }
+    function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
+
+    async function executeAuth() {
+        const email = document.getElementById('authEmail').value;
+        const password = document.getElementById('authPassword').value;
+        if (isLoginMode) {
+            const { error } = await _supabase.auth.signInWithPassword({ email, password });
+            if (error) alert(error.message); 
+            else window.location.href = '/dashboard/'; // ПЕРЕХОД В КРАСИВУЮ ПАПКУ
+        } else {
+            const { error } = await _supabase.auth.signUp({ email, password });
+            if (error) alert(error.message); 
+            else alert('Регистрация успешна! Теперь нажми LOGIN и войди.');
         }
+    }
 
-        // Выход
-        async function logout() {
-            await _supabase.auth.signOut();
-            window.location.href = '/';
+    // ТВОИ ОРИГИНАЛЬНЫЕ СКРИПТЫ
+    function setupCollapse(btnId, wrapperId) {
+        document.getElementById(btnId).onclick = () => document.getElementById(wrapperId).classList.toggle('show');
+    }
+    setupCollapse('music-btn', 'music-wrapper');
+    setupCollapse('afisha-btn', 'afisha-wrapper');
+    setupCollapse('anon-btn', 'anon-wrapper');
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6FqqfvQSiwbm-xmuo0-dFkvReYjjKsqyzEYojdO1tfigGVMz0nb93YpjO9fOZLvRLRQ/exec';
+    const form = document.getElementById('google-sheet-form');
+    const submitBtn = document.getElementById('submit-btn');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        submitBtn.disabled = true; submitBtn.innerText = 'ОТПРАВЛЯЮ...';
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(() => { submitBtn.innerText = 'ОТПРАВЛЕНО!'; form.reset(); setTimeout(() => { submitBtn.disabled = false; submitBtn.innerText = 'ОТПРАВИТЬ'; }, 3000); })
+            .catch(() => { submitBtn.innerText = 'ОШИБКА'; submitBtn.disabled = false; });
+    });
+
+    // КАНВАС
+    const canvas = document.getElementById('global-canvas');
+    const ctx = canvas.getContext('2d');
+    let emojis = [];
+    const emojiList = ['🖤', '💼', '🎧'];
+    class FloatingEmoji {
+        constructor() { this.init(true); }
+        init(f) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = f ? Math.random() * window.innerHeight : -50;
+            this.emoji = emojiList[Math.floor(Math.random() * emojiList.length)];
+            this.size = Math.random() * 20 + 20;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.op = Math.random() * 0.2 + 0.1;
         }
+        update() { this.x += this.vx; this.y += this.vy; if (this.y > window.innerHeight + 50) this.init(); }
+        draw() { ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.fillText(this.emoji, this.x, this.y); }
+    }
+    function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; emojis = Array.from({length: 15}, () => new FloatingEmoji()); }
+    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); emojis.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(anim); }
+    init(); anim();
 
-        checkUser();
-    </script>
+    async function fetchPrediction() {
+        try {
+            const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
+            const d = await r.json();
+            document.getElementById('prediction').innerText = JSON.parse(d.contents).text;
+        } catch (e) { document.getElementById('prediction').innerText = "Делай то, что любишь."; }
+    }
+    fetchPrediction();
+</script>
 </body>
 </html>
