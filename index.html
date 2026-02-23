@@ -15,9 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BULAVIN</title>
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
@@ -28,25 +26,21 @@
             --verify-blue: #0095f6;
             --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
-        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; }
         
-        /* КНОПКИ АВТОРИЗАЦИИ В УГЛУ */
+        /* Стили авторизации */
         .auth-nav { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 8px; }
-        .btn-auth { background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid var(--glass-border); color: #fff; padding: 8px 14px; border-radius: 12px; font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-auth:hover { border-color: var(--verify-blue); background: rgba(255,255,255,0.1); }
-
-        /* МОДАЛЬНОЕ ОКНО */
+        .btn-auth { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); color: #fff; padding: 8px 14px; border-radius: 12px; font-size: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .auth-modal.show { display: flex; }
-        .auth-form { background: rgba(20,20,20,0.8); border: 1px solid var(--glass-border); padding: 30px; border-radius: 30px; width: 90%; max-width: 320px; text-align: center; }
-        .auth-form h2 { font-size: 16px; letter-spacing: 3px; margin-bottom: 20px; color: var(--verify-blue); }
-        .auth-form input { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 14px; border-radius: 15px; color: #fff; margin-bottom: 12px; outline: none; }
-        
-        /* ТВОЙ ОРИГИНАЛЬНЫЙ СТИЛЬ */
-        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.4); pointer-events: none; }
+        .auth-form { background: rgba(20,20,20,0.9); border: 1px solid var(--glass-border); padding: 30px; border-radius: 30px; width: 320px; text-align: center; }
+        .auth-form input { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; color: #fff; margin-bottom: 10px; outline: none; }
+
+        /* Твой дизайн */
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.5); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); z-index: -2; }
-        .container { width: 100%; max-width: 420px; padding: 70px 20px 50px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
+        .container { width: 100%; max-width: 420px; padding: 80px 20px 40px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
         .profile-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; }
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
@@ -56,15 +50,13 @@
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); margin-left: 6px; }
         .btn { background: var(--glass); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: 0.3s; cursor: pointer; }
-        .btn i { font-size: 18px; width: 25px; margin-right: 15px; }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; text-align: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
         .full { grid-column: span 2; }
-        .anon-send-btn { width: 100%; padding: 14px; border-radius: 15px; border: none; background: #fff; color: #000; font-weight: 800; font-size: 12px; text-transform: uppercase; cursor: pointer; }
-        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s; overflow: hidden; }
+        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s ease; overflow: hidden; }
         .collapse-wrapper.show { grid-template-rows: 1fr; }
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 10px; }
-        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 25px; text-align: center; margin-top: 15px; }
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
+        .prediction-card { background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 25px; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -76,11 +68,10 @@
 
 <div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
     <div class="auth-form" onclick="event.stopPropagation()">
-        <h2 id="authTitle">LOGIN</h2>
+        <h2 id="authTitle" style="margin-bottom: 20px; letter-spacing: 2px;">LOGIN</h2>
         <input type="email" id="authEmail" placeholder="EMAIL">
         <input type="password" id="authPassword" placeholder="PASSWORD">
-        <button class="anon-send-btn" id="mainAuthBtn" onclick="executeAuth()">ПОДТВЕРДИТЬ</button>
-        <p style="font-size: 10px; opacity: 0.5; margin-top: 20px; cursor: pointer;" onclick="closeAuth()">ЗАКРЫТЬ</p>
+        <button class="btn full" style="background:#fff; color:#000; justify-content:center;" onclick="executeAuth()">ПОДТВЕРДИТЬ</button>
     </div>
 </div>
 
@@ -90,9 +81,7 @@
 <div class="container">
     <div class="profile-card">
         <div class="avatar-link">
-            <div class="avatar-inner-border">
-                <img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" alt="BULAVIN" class="avatar">
-            </div>
+            <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
         </div>
         <div style="display: flex; align-items: center; justify-content: center;">
             <h1>BULAVIN</h1>
@@ -101,7 +90,7 @@
         <p style="font-size: 12px; opacity: 0.6; margin-top: 10px;">Казахстанский исполнитель и музыкальный продюсер.</p>
     </div>
 
-    <div class="grid">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
         <a href="https://t.me/imbulavin" target="_blank" class="btn"><i class="fa-brands fa-telegram"></i><span>Telegram</span></a>
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
     </div>
@@ -109,93 +98,64 @@
     <div class="btn full" id="music-btn"><i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span></div>
     <div class="collapse-wrapper" id="music-wrapper">
         <div class="collapse-content">
-            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full">Yandex Music</a>
-            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full">VK Music</a>
-        </div>
-    </div>
-
-    <div class="btn full" id="anon-btn"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
-    <div class="collapse-wrapper" id="anon-wrapper">
-        <div class="collapse-content">
-            <div class="prediction-card">
-                <form id="google-sheet-form">
-                    <textarea style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; margin-bottom: 10px; outline: none;" id="message" name="message" rows="4" placeholder="Напиши что-нибудь..."></textarea>
-                    <button type="submit" class="anon-send-btn" id="submit-btn">ОТПРАВИТЬ</button>
-                </form>
-            </div>
+            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
+            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
+            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
+            <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn full"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
         </div>
     </div>
 
     <div class="prediction-card">
-        <div style="font-size: 9px; letter-spacing: 2px; color: var(--verify-blue); margin-bottom: 10px;">BULAVIN SYSTEM • БАЗА</div>
+        <div style="font-size: 9px; letter-spacing: 2px; color: var(--verify-blue); margin-bottom: 5px;">BULAVIN SYSTEM</div>
         <div id="prediction">Подключаюсь...</div>
     </div>
-    <div class="footer">© 2026 BULAVIN</div>
 </div>
 
 <script>
-    // --- SUPABASE DATA ---
-    const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co'; 
+    const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let isLoginMode = true;
-
-    function openAuth(isLogin) {
-        isLoginMode = isLogin;
-        document.getElementById('authTitle').innerText = isLogin ? 'LOGIN' : 'REGISTER';
-        document.getElementById('authModal').classList.add('show');
-    }
-
-    function closeAuth() {
-        document.getElementById('authModal').classList.remove('show');
-    }
+    function openAuth(l) { isLoginMode = l; document.getElementById('authTitle').innerText = l ? 'LOGIN' : 'REGISTER'; document.getElementById('authModal').classList.add('show'); }
+    function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
     async function executeAuth() {
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
-        const btn = document.getElementById('mainAuthBtn');
-        
-        if(!email || !password) return alert('Заполни поля!');
-        
-        btn.disabled = true;
-        btn.innerText = 'WAIT...';
-
         if (isLoginMode) {
             const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) alert(error.message);
-            else window.location.href = 'dashboard.html'; 
+            if (error) alert(error.message); else window.location.href = 'dashboard.html';
         } else {
             const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) alert(error.message);
-            else alert('Успешно! Теперь нажмите LOGIN и войдите.');
+            if (error) alert(error.message); else alert('Готово! Теперь нажми LOGIN и войди.');
         }
-        btn.disabled = false;
-        btn.innerText = 'ПОДТВЕРДИТЬ';
     }
 
-    // Твои функции сворачивания
-    function setupCollapse(btnId, wrapperId) {
-        const btn = document.getElementById(btnId);
-        const wrapper = document.getElementById(wrapperId);
-        if(btn) btn.onclick = () => wrapper.classList.toggle('show');
-    }
-    setupCollapse('music-btn', 'music-wrapper');
-    setupCollapse('anon-btn', 'anon-wrapper');
+    document.getElementById('music-btn').onclick = () => document.getElementById('music-wrapper').classList.toggle('show');
 
-    // Твой фон (упрощено)
+    // Эмодзи фон
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-    
-    async function fetchPrediction() {
-        try {
-            const r = await fetch('https://api.allorigins.win/get?url=https://fucking-great-advice.ru/api/random');
-            const d = await r.json();
-            document.getElementById('prediction').innerText = JSON.parse(d.contents).text;
-        } catch(e) { document.getElementById('prediction').innerText = "Живи моментом."; }
+    let particles = Array.from({length: 15}, () => ({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+        s: Math.random() * 20 + 10, v: Math.random() * 0.5 + 0.2,
+        e: ['🖤', '🎧', '🎸'][Math.floor(Math.random() * 3)]
+    }));
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        particles.forEach(p => {
+            ctx.globalAlpha = 0.2; ctx.font = p.s + "px serif"; ctx.fillText(p.e, p.x, p.y);
+            p.y += p.v; if(p.y > canvas.height) p.y = -20;
+        });
+        requestAnimationFrame(draw);
     }
-    fetchPrediction();
+    draw();
+
+    fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'))
+        .then(r => r.json()).then(d => { document.getElementById('prediction').innerText = JSON.parse(d.contents).text; })
+        .catch(() => { document.getElementById('prediction').innerText = "Делай музыку."; });
 </script>
 </body>
 </html>
