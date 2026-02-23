@@ -68,7 +68,7 @@
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
         
-        /* Сетка контейнера: gap 10px для всех элементов */
+        /* Устанавливаем единый отступ в 10px для всего */
         .container { width: 100%; max-width: 420px; padding: 50px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; }
         .profile-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 5px; }
         
@@ -91,7 +91,7 @@
             border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; 
             text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; 
             display: flex; align-items: center; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
-            cursor: pointer;
+            cursor: pointer; width: 100%;
         }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; transition: transform 0.3s ease; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
@@ -103,11 +103,9 @@
         .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
         .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        .full { grid-column: span 2; }
-
-        /* COLLAPSE ADJUSTMENTS */
-        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; }
-        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 5px; margin-top: -5px; }
+        /* Убираем лишние отступы у врапперов, чтобы кнопки стояли вплотную */
+        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin: 0; }
+        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 10px; }
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 10px; }
 
         .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; }
@@ -120,7 +118,7 @@
         }
         .organizer-link:hover { background: rgba(255, 75, 43, 0.1); border-color: var(--red-accent); transform: translateY(-2px); }
         
-        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
+        .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
     </style>
 </head>
@@ -169,19 +167,19 @@
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="btn"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
     </div>
 
-    <div class="btn full" id="music-btn"><i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span></div>
+    <div class="btn" id="music-btn"><i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span></div>
     <div class="collapse-wrapper" id="music-wrapper">
         <div class="collapse-content">
-            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn full btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
-            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn full btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
-            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn full btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
-            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn full"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
-            <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn full btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
-            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn full btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
+            <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
+            <a href="https://vk.com/artist/bulavin" target="_blank" class="btn btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
+            <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
+            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
+            <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
+            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
         </div>
     </div>
 
-    <div class="btn full" id="afisha-btn"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
+    <div class="btn" id="afisha-btn"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
             <div class="afisha-card">
@@ -191,7 +189,7 @@
         </div>
     </div>
 
-    <div class="btn full" id="anon-btn"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
+    <div class="btn" id="anon-btn"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
     <div class="collapse-wrapper" id="anon-wrapper">
         <div class="collapse-content">
             <div class="anon-card">
