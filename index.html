@@ -17,14 +17,13 @@
     <title>BULAVIN</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.12);
             --verify-blue: #0095f6;
             --yandex-color: #ffcc00;
             --vk-color: #0077ff;
@@ -34,6 +33,7 @@
             --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
             --red-accent: #ff4b2b;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
@@ -45,18 +45,20 @@
         }
         .btn-auth:hover { transform: scale(0.95); background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4); }
 
-        /* MODAL */
-        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(12px); }
+        /* GLASS MODAL */
+        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .auth-modal.show { display: flex; }
         .auth-form { 
-            background: rgba(25, 25, 25, 0.8); border: 1px solid var(--glass-border); padding: 40px 30px; border-radius: 35px; 
-            width: 90%; max-width: 340px; display: flex; flex-direction: column; align-items: center;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); padding: 40px 30px; border-radius: 35px; 
+            width: 90%; max-width: 340px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(25px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .auth-form h2 { font-size: 14px; letter-spacing: 5px; margin-bottom: 25px; text-transform: uppercase; }
+        .auth-form h2 { font-size: 13px; letter-spacing: 5px; margin-bottom: 25px; text-transform: uppercase; font-weight: 900; opacity: 0.9; }
         .auth-form input { 
-            width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 16px; 
-            border-radius: 15px; color: #fff; margin-bottom: 15px; outline: none; font-size: 12px;
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 16px; 
+            border-radius: 18px; color: #fff; margin-bottom: 12px; outline: none; font-size: 12px; transition: all 0.3s ease;
         }
+        .auth-form input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
 
         /* ACTIONS */
         .btn-action {
@@ -70,7 +72,7 @@
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
         
-        /* CONTAINER & CARDS */
+        /* CONTAINER */
         .container { width: 100%; max-width: 420px; padding: 50px 20px; display: flex; flex-direction: column; gap: 12px; z-index: 5; }
         .profile-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px 20px; text-align: center; margin-bottom: 10px; }
         
@@ -86,36 +88,34 @@
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
         
-        /* GRID & MAIN BUTTONS */
+        /* GRID & BUTTONS */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: all 0.3s ease; cursor: pointer; }
-        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
+        .btn { position: relative; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); cursor: pointer; }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; transition: transform 0.3s ease; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+        .btn:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
+        .btn:hover i { transform: scale(1.1); }
         .full { grid-column: span 2; }
 
-        /* MUSIC HOVERS (THE ONES I MISSED) */
-        .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.3) !important; }
-        .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.3) !important; }
-        .btn-spotify:hover { color: var(--spotify-color) !important; border-color: rgba(30, 215, 96, 0.3) !important; }
-        .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.3) !important; }
-        .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.3) !important; }
+        /* MUSIC GLOW EFFECTS */
+        .btn-yandex:hover { color: var(--yandex-color) !important; box-shadow: 0 0 20px rgba(255, 204, 0, 0.15); border-color: rgba(255, 204, 0, 0.4) !important; }
+        .btn-vk:hover { color: var(--vk-color) !important; box-shadow: 0 0 20px rgba(0, 119, 255, 0.15); border-color: rgba(0, 119, 255, 0.4) !important; }
+        .btn-spotify:hover { color: var(--spotify-color) !important; box-shadow: 0 0 20px rgba(30, 215, 96, 0.15); border-color: rgba(30, 215, 96, 0.4) !important; }
+        .btn-yt:hover { color: var(--yt-color) !important; box-shadow: 0 0 20px rgba(255, 0, 0, 0.15); border-color: rgba(255, 0, 0, 0.4) !important; }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; box-shadow: 0 0 20px rgba(255, 85, 0, 0.15); border-color: rgba(255, 85, 0, 0.4) !important; }
 
-        /* COLLAPSE LOGIC */
+        /* COLLAPSE */
         .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -12px; }
         .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 12px; }
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 10px; padding-top: 12px; }
 
-        /* ANON & AFISHA */
-        .anon-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; }
+        .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; }
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
-
-        .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 25px; text-align: center; }
+        
         .organizer-link { 
             display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
             margin-top: 20px; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; 
-            padding: 12px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 15px; 
-            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+            padding: 12px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 15px; transition: all 0.3s ease; text-transform: uppercase;
         }
         .organizer-link:hover { background: rgba(255, 75, 43, 0.1); border-color: var(--red-accent); transform: translateY(-2px); }
         
@@ -140,10 +140,10 @@
         </div>
         <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
             <i class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
-            <p style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            <p style="font-size: 11px; opacity: 0.9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 5px;">
                 На твой Email отправлена ссылка для подтверждения.
             </p>
-            <button class="btn-action" style="margin-top: 25px;" onclick="closeAuth()">ПОНЯТНО</button>
+            <button class="btn-action" style="margin-top: 20px;" onclick="closeAuth()">ПОНЯТНО</button>
         </div>
     </div>
 </div>
@@ -184,8 +184,8 @@
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
             <div class="afisha-card">
-                <p style="font-size: 12px; opacity: 0.7;">На данный момент выступлений не запланировано.</p>
-                <a href="https://t.me/imbulavin" target="_blank" class="organizer-link"><i class="fa-solid fa-briefcase"></i>Я организатор</a>
+                <p style="font-size: 12px; opacity: 0.7; text-align: center;">На данный момент выступлений не запланировано.</p>
+                <div style="text-align: center;"><a href="https://t.me/imbulavin" target="_blank" class="organizer-link"><i class="fa-solid fa-briefcase"></i>Я организатор</a></div>
             </div>
         </div>
     </div>
@@ -229,8 +229,8 @@
         const email = document.getElementById('authEmail').value;
         const password = document.getElementById('authPassword').value;
         const btn = document.getElementById('authBtn');
+        if(!email || !password) return alert('Заполни поля!');
         btn.disabled = true; btn.innerText = 'ПОДОЖДИ...';
-
         if (isLoginMode) {
             const { error } = await _supabase.auth.signInWithPassword({ email, password });
             if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ВОЙТИ'; }
@@ -285,6 +285,7 @@
     }
     function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; emojis = Array.from({length: 15}, () => new FloatingEmoji()); }
     function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); emojis.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(anim); }
+    window.addEventListener('resize', init);
     init(); anim();
 
     async function fetchPrediction() {
