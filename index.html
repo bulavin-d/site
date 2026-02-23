@@ -37,63 +37,104 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* Контейнер для центровки */
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
-        /* Навигация внутри карточки (справа) */
+        /* Поправил позиционирование навигации */
         .auth-nav { 
             position: absolute; 
-            top: 25px; 
-            right: 25px; 
-            z-index: 10; 
+            top: 15px; 
+            right: 20px; 
+            z-index: 20; 
             display: flex; 
-            gap: 6px; 
+            gap: 8px; 
         }
 
         .btn-auth { 
             background: rgba(255,255,255,0.08); 
             border: 1px solid var(--glass-border); 
             color: #fff; 
-            padding: 8px 12px; 
+            padding: 8px 14px; 
             border-radius: 12px; 
             font-size: 9px; 
             font-weight: 800; 
             cursor: pointer; 
             text-transform: uppercase; 
             backdrop-filter: blur(10px); 
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        .btn-auth:hover { background: rgba(255,255,255,0.15); }
+        .btn-auth:hover { 
+            background: rgba(255,255,255,0.15); 
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
         .btn-auth:active { transform: scale(0.92); }
 
+        /* Специфичные фиксы для карточки */
+        .profile-card { 
+            position: relative; 
+            background: var(--glass); 
+            backdrop-filter: blur(30px); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 40px; 
+            padding: 55px 20px 35px; /* Увеличил верхний паддинг, чтобы кнопки не жали */
+            text-align: center; 
+            margin-bottom: 5px; 
+        }
+
+        .btn { 
+            position: relative; 
+            background: var(--glass); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--glass-border); 
+            padding: 18px 20px; 
+            border-radius: 20px; 
+            text-decoration: none; 
+            color: #fff; 
+            font-size: 13px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
+            cursor: pointer;
+            z-index: 10;
+        }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
+        .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
+        
+        /* Анимация и свечение для всех кнопок */
+        .btn:hover { 
+            transform: translateY(-2px); 
+            border-color: rgba(255,255,255,0.4); 
+            background: rgba(255,255,255,0.08); 
+            box-shadow: 0 0 20px rgba(255,255,255,0.05);
+        }
+        .btn:active { transform: scale(0.95); }
+
+        /* Цветное свечение соцсетей */
+        .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.4) !important; filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.3)); }
+        .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.4) !important; filter: drop-shadow(0 0 10px rgba(0, 119, 255, 0.3)); }
+        .btn-spotify:hover { color: var(--spotify-color) !important; border-color: rgba(30, 215, 96, 0.4) !important; filter: drop-shadow(0 0 10px rgba(30, 215, 96, 0.3)); }
+        .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.4) !important; filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.3)); }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.4) !important; filter: drop-shadow(0 0 10px rgba(255, 85, 0, 0.3)); }
+
+        /* Остальные стили без изменений */
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .auth-modal.show { display: flex; }
         .auth-form { 
             background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); padding: 40px 30px; border-radius: 35px; 
             width: 90%; max-width: 340px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(25px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        .auth-form h2 { font-size: 13px; letter-spacing: 5px; margin-bottom: 25px; text-transform: uppercase; font-weight: 900; opacity: 0.9; }
-        .auth-form input { 
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 16px; 
-            border-radius: 18px; color: #fff; margin-bottom: 12px; outline: none; font-size: 12px;
-        }
-
-        .btn-action {
-            width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 11px;
-            letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;
-        }
+        .auth-form input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 16px; border-radius: 18px; color: #fff; margin-bottom: 12px; outline: none; font-size: 12px; }
+        
+        .btn-action { width: 100%; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 11px; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; }
         .btn-action:hover { background: #fff; color: #000; transform: scale(0.98); }
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
         
-        .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 45px 20px 35px; text-align: center; margin-bottom: 5px; }
-        
-        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 1; transition: transform 0.3s ease; }
+        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; }
         .avatar-link:hover { transform: scale(1.08); }
-        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -2; }
+        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
         .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -103,37 +144,14 @@
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
         .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
         
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 0px; }
-        .btn { 
-            position: relative; background: var(--glass); backdrop-filter: blur(20px); 
-            border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; 
-            text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; 
-            display: flex; align-items: center; transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); 
-            cursor: pointer;
-        }
-        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
-        .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
-        .btn:active { transform: scale(0.96); }
-
-        .btn-yandex:hover { color: var(--yandex-color) !important; border-color: rgba(255, 204, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5)); }
-        .btn-vk:hover { color: var(--vk-color) !important; border-color: rgba(0, 119, 255, 0.4) !important; filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.5)); }
-        .btn-spotify:hover { color: var(--spotify-color) !important; border-color: rgba(30, 215, 96, 0.4) !important; filter: drop-shadow(0 0 8px rgba(30, 215, 96, 0.5)); }
-        .btn-yt:hover { color: var(--yt-color) !important; border-color: rgba(255, 0, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
-        .btn-soundcloud:hover { color: var(--sc-color) !important; border-color: rgba(255, 85, 0, 0.4) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
-
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        
         .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -10px; }
         .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 10px; }
         .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }
 
-        .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; z-index: 20; position: relative; }
+        .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; position: relative; }
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
-        
-        .organizer-link { 
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
-            margin-top: 20px; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; 
-            padding: 12px 24px; border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 15px; transition: all 0.3s ease; text-transform: uppercase;
-        }
         
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
@@ -150,6 +168,7 @@
             <button class="btn-auth" onclick="openAuth(true)">Вход</button>
             <button class="btn-auth" onclick="openAuth(false)">Регистрация</button>
         </div>
+
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
         </a>
@@ -182,7 +201,7 @@
         <div class="collapse-content">
             <div class="afisha-card">
                 <p style="font-size: 12px; opacity: 0.7; text-align: center;">На данный момент выступлений не запланировано.</p>
-                <div style="text-align: center;"><a href="https://t.me/imbulavin" target="_blank" class="organizer-link"><i class="fa-solid fa-briefcase"></i>Я организатор</a></div>
+                <div style="text-align: center;"><a href="https://t.me/imbulavin" target="_blank" style="color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-top: 15px; display: inline-block;">Я организатор</a></div>
             </div>
         </div>
     </div>
@@ -216,7 +235,7 @@
         </div>
         <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
             <i class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
-            <p style="font-size: 11px; opacity: 0.9; margin-bottom: 5px;">На твой Email отправлена ссылка для подтверждения.</p>
+            <p style="font-size: 11px; opacity: 0.9;">Ссылка отправлена на почту.</p>
             <button class="btn-action" style="margin-top: 20px;" onclick="closeAuth()">ПОНЯТНО</button>
         </div>
     </div>
@@ -307,7 +326,6 @@
     }
 
     function initCanvas() {
-        // Фикс бага с хаотичным поведением при скролле (только если реально изменилась ширина)
         if(Math.abs(lastWidth - window.innerWidth) > 50 || emojis.length === 0) {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
