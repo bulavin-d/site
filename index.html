@@ -47,6 +47,29 @@
         .auth-menu-btn::after { content: ''; position: absolute; top: -1px; right: -1px; width: 12px; height: 12px; background: var(--verify-blue); border-radius: 50%; border: 2px solid #000; animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(0, 149, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0); } }
 
+        /* --- СТИЛИ ДЛЯ QR КОДА (НОВЫЕ) --- */
+        .qr-nav { position: absolute; top: 20px; left: 20px; z-index: 25; display: flex; align-items: flex-start; }
+        .qr-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .qr-btn i { font-size: 16px; }
+        .qr-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+        .qr-btn:active { transform: scale(0.95); }
+
+        .qr-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(25px); }
+        .qr-modal.show { display: flex; animation: qrFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        .qr-card { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 35px 30px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); }
+        .qr-image-wrapper { background: #fff; padding: 15px; border-radius: 25px; margin-bottom: 20px; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; }
+        .qr-image-wrapper img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .qr-title { font-size: 18px; letter-spacing: 5px; font-weight: 900; color: #fff; text-transform: uppercase; margin-bottom: 5px; text-align: center; }
+        .qr-subtitle { font-size: 10px; opacity: 0.5; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+
+        @keyframes qrFadeIn { 
+            0% { opacity: 0; transform: scale(0.9); } 
+            100% { opacity: 1; transform: scale(1); } 
+        }
+        /* --------------------------------- */
+
         .auth-dropdown { position: absolute; top: 48px; right: 0; background: rgba(20, 20, 20, 0.85); border: 1px solid var(--glass-border); border-radius: 16px; padding: 6px; display: flex; flex-direction: column; gap: 4px; backdrop-filter: blur(25px); opacity: 0; transform: translateY(-10px); pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; box-shadow: 0 10px 30px rgba(0,0,0,0.5); min-width: 140px; }
         .auth-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
         .btn-auth-dropdown { background: transparent; border: none; color: #fff; padding: 12px 16px; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; cursor: pointer; text-transform: uppercase; border-radius: 10px; transition: 0.2s; text-align: center; }
@@ -122,6 +145,12 @@
 <div class="container">
     <div class="profile-card">
         
+        <div class="qr-nav">
+            <button class="qr-btn" onclick="openQR()">
+                <i class="fa-solid fa-qrcode"></i>
+            </button>
+        </div>
+
         <div class="auth-nav">
             <button class="auth-menu-btn" onclick="toggleAuthMenu()">
                 <i class="fa-regular fa-user"></i>
@@ -192,6 +221,16 @@
     <div class="footer">© 2026 BULAVIN</div>
 </div>
 
+<div class="qr-modal" id="qrModal" onclick="if(event.target === this) closeQR()">
+    <div class="qr-card" onclick="event.stopPropagation()">
+        <div class="qr-image-wrapper">
+            <img src="https://bulavin.space/qr-code.png" alt="QR Bulavin Space">
+        </div>
+        <div class="qr-title">BULAVIN.SPACE</div>
+        <div class="qr-subtitle">ОТКСАНИРУЙ, ЧТОБЫ ПОДЕЛИТЬСЯ</div>
+    </div>
+</div>
+
 <div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
     <div class="auth-form" id="authForm" onclick="event.stopPropagation()">
         <h2 id="authTitle">ВХОД</h2>
@@ -217,7 +256,11 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- ФИКС: СОБАЧКА ПРИ ВВОДЕ ЮЗЕРНЕЙМА ---
+    // --- ЛОГИКА QR КОДА ---
+    function openQR() { document.getElementById('qrModal').classList.add('show'); }
+    function closeQR() { document.getElementById('qrModal').classList.remove('show'); }
+    // ----------------------
+
     const usernameInput = document.getElementById('authUsername');
     usernameInput.addEventListener('input', function() {
         let val = this.value.replace(/\s/g, ''); 
@@ -225,7 +268,6 @@
         if (val === '@') val = ''; 
         this.value = val;
     });
-    // ----------------------------------------
 
     function toggleAuthMenu() {
         document.getElementById('authDropdown').classList.toggle('show');
