@@ -34,28 +34,43 @@
             font-family: 'Inter', -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        body { display: flex; justify-content: center; align-items: center; }
+        body { display: flex; justify-content: center; align-items: center; position: relative; }
         * { box-sizing: border-box; }
         
-        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(60px) brightness(0.4); transform: scale(1.1); z-index: -2; }
+        /* КАНВАС НА ПЕРЕДНЕМ ПЛАНЕ ОТНОСИТЕЛЬНО ФОНА */
+        #global-canvas { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 1; /* Поверх фона */
+            pointer-events: none; 
+        }
         
-        .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; opacity: 0; animation: fadeIn 1s forwards; }
+        .dynamic-bg { 
+            position: fixed; inset: 0; 
+            background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; 
+            background-size: cover; 
+            filter: blur(60px) brightness(0.3); 
+            transform: scale(1.1); 
+            z-index: 0; /* Самый низ */
+        }
+        
+        .container { 
+            width: 100%; max-width: 420px; padding: 20px; 
+            display: flex; flex-direction: column; 
+            z-index: 10; /* Поверх всего */
+            position: relative; opacity: 0; animation: fadeIn 1s forwards; 
+        }
         @keyframes fadeIn { to { opacity: 1; } }
 
         .dashboard-card { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
-            padding: 55px 25px 45px; 
+            padding: 50px 25px 40px; 
             border-radius: 40px; 
             text-align: center; 
             backdrop-filter: blur(35px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
+            display: flex; flex-direction: column; align-items: center; width: 100%;
         }
 
         .logout-btn {
@@ -68,20 +83,18 @@
         }
         .logout-btn:hover { color: var(--red-accent); border-color: rgba(255, 75, 43, 0.4); background: rgba(255, 75, 43, 0.1); }
 
-        h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); text-transform: uppercase; }
 
         .soul-text { font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; margin-bottom: 35px; width: 100%; }
-        
-        /* Уменьшил первую строку по твоему запросу */
         .soul-text p:first-child { 
-            font-size: 11.5px; 
-            margin-bottom: 18px; 
+            font-size: 12.5px; 
+            margin-bottom: 15px; 
             letter-spacing: 0.5px; 
             opacity: 0.7;
         }
         .soul-text p { margin-bottom: 10px; }
         
-        .soul-text .highlight { margin-top: 25px; font-weight: 400; color: rgba(255,255,255,0.95); }
+        .soul-text .highlight { margin-top: 20px; font-weight: 400; color: rgba(255,255,255,0.95); }
         .soul-text span { 
             display: block; margin-top: 10px; font-size: 16px;
             color: #fff; font-weight: 800; opacity: 1; 
@@ -110,8 +123,8 @@
 </head>
 <body>
 
-<canvas id="global-canvas"></canvas>
 <div class="dynamic-bg"></div>
+<canvas id="global-canvas"></canvas>
 
 <div class="container" id="dashboardContent" style="display: none;">
     <div class="dashboard-card">
@@ -157,50 +170,61 @@
     }
     checkUser();
 
-    // --- НАДЕЖНЫЙ ДВИЖОК ЧАСТИЦ ---
+    // --- МАКСИМАЛЬНО ПРОСТАЯ И НАДЕЖНАЯ АНИМАЦИЯ ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
-    let width, height;
     let particles = [];
 
-    function init() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function createParticles() {
         particles = [];
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < 50; i++) {
             particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                size: Math.random() * 2 + 1,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: -(Math.random() * 0.5 + 0.1),
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 1,
+                speed: Math.random() * 0.5 + 0.2,
                 color: Math.random() > 0.5 ? '#ffffff' : '#ff4b2b',
-                alpha: Math.random() * 0.5 + 0.2
+                opacity: Math.random() * 0.6 + 0.2
             });
         }
     }
 
-    function render() {
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => {
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < particles.length; i++) {
+            let p = particles[i];
+            
             ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fillStyle = p.color;
-            ctx.globalAlpha = p.alpha;
+            ctx.globalAlpha = p.opacity;
             ctx.fill();
             
-            p.y += p.vy;
-            p.x += p.vx;
+            p.y -= p.speed;
             
-            if (p.y < -10) p.y = height + 10;
-            if (p.x < -10 || p.x > width + 10) p.vx *= -1;
-        });
-        requestAnimationFrame(render);
+            // Если частица улетела вверх, возвращаем её вниз
+            if (p.y < -10) {
+                p.y = canvas.height + 10;
+                p.x = Math.random() * canvas.width;
+            }
+        }
+        requestAnimationFrame(animate);
     }
 
-    window.addEventListener('resize', init);
-    init();
-    render();
+    // Запуск после полной загрузки окна
+    window.onload = () => {
+        resize();
+        createParticles();
+        animate();
+    };
+
+    window.onresize = resize;
 </script>
 </body>
 </html>
