@@ -16,7 +16,6 @@
             --red-accent: #ff4b2b;
         }
 
-        /* --- ЖЕЛЕЗОБЕТОННЫЙ ФИКС ДЛЯ МОБИЛОК --- */
         html, body {
             width: 100%; height: 100%; margin: 0; padding: 0;
             overflow: hidden; overscroll-behavior: none;
@@ -36,7 +35,7 @@
         .dashboard-card { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
-            padding: 55px 25px 45px; 
+            padding: 50px 25px 45px; 
             border-radius: 40px; 
             text-align: center; 
             backdrop-filter: blur(30px);
@@ -45,7 +44,6 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- ИКОНКА ВЫХОДА --- */
         .logout-btn {
             position: absolute; top: 20px; right: 20px;
             width: 38px; height: 38px;
@@ -62,19 +60,19 @@
             transform: scale(1.05);
         }
 
-        h1 { font-size: 20px; letter-spacing: 4px; font-weight: 900; margin-bottom: 35px; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        /* Уменьшили отступ под юзернеймом */
+        h1 { font-size: 20px; letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
 
-        /* --- ИДЕАЛЬНАЯ ВЕРСТКА НОВОГО ТЕКСТА --- */
         .soul-text {
             font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.85; 
-            margin-bottom: 40px; letter-spacing: 0.5px;
+            margin-bottom: 35px; letter-spacing: 0.5px;
             width: 100%; max-width: 340px;
         }
-        .soul-text p { margin-bottom: 18px; }
+        .soul-text p { margin-bottom: 12px; } /* Уменьшили отступ между строками */
         .soul-text p:last-child { margin-bottom: 0; }
         
         .soul-text .highlight {
-            margin-top: 25px;
+            margin-top: 20px;
             font-weight: 400;
             color: rgba(255,255,255,0.9);
         }
@@ -85,7 +83,6 @@
             letter-spacing: 2px; text-transform: uppercase;
         }
 
-        /* --- КНОПКА СЛИЯНИЯ --- */
         .merge-btn { 
             position: relative; width: 100%; padding: 20px; border-radius: 20px; 
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
@@ -155,7 +152,7 @@
     }
     checkUser();
 
-    // --- ИДЕАЛЬНАЯ И БЕЗОПАСНАЯ АНИМАЦИЯ ДУШ ---
+    // --- БРОНЕБОЙНАЯ СИСТЕМА ДУШ НА ТЕНЯХ ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -164,94 +161,94 @@
     class Soul {
         constructor(type) {
             this.type = type; // 'white' или 'red'
-            this.init();
-            this.y = Math.random() * window.innerHeight; // При старте раскидываем по экрану
+            this.init(true);
         }
         
-        init() {
+        init(isStart) {
             this.x = Math.random() * window.innerWidth;
-            this.y = window.innerHeight + Math.random() * 100; // Появляются снизу
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = -(Math.random() * 0.4 + 0.2); // Медленно плывут вверх
-            this.radius = Math.random() * 15 + 10;
-            this.alpha = Math.random() * 0.3 + 0.15;
-            this.merging = false;
+            this.y = isStart ? Math.random() * window.innerHeight : window.innerHeight + 50;
+            this.vx = (Math.random() - 0.5) * 0.6;
+            this.vy = -(Math.random() * 0.5 + 0.3); // Плывут вверх
+            this.size = Math.random() * 12 + 8;
+            this.alpha = Math.random() * 0.4 + 0.2;
+            
             this.partner = null;
-            this.flash = 0; // Для анимации взрыва
-        }
-
-        draw(ctx) {
-            // ЖЕСТКИЙ ЛИМИТ: если прозрачность или радиус меньше нуля - не рисуем (спасает от краша)
-            if (this.alpha <= 0 || this.radius <= 0) return; 
-
-            ctx.beginPath();
-            let grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 2);
-            
-            if (this.flash > 0) {
-                // Вспышка при слиянии
-                grad.addColorStop(0, `rgba(255, 200, 200, ${Math.max(0, this.flash)})`);
-                grad.addColorStop(1, 'rgba(255, 75, 43, 0)');
-            } else if (this.type === 'white') {
-                grad.addColorStop(0, `rgba(255, 255, 255, ${this.alpha})`);
-                grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-            } else {
-                grad.addColorStop(0, `rgba(255, 75, 43, ${this.alpha})`);
-                grad.addColorStop(1, 'rgba(255, 75, 43, 0)');
-            }
-            
-            ctx.fillStyle = grad;
-            ctx.arc(this.x, this.y, this.radius * 2, 0, Math.PI * 2);
-            ctx.fill();
+            this.isMerging = false;
+            this.flash = 0;
         }
 
         update(allSouls) {
-            // Если мы сейчас взрываемся
+            // Если взрываемся
             if (this.flash > 0) {
-                this.flash -= 0.02;
-                this.radius += 0.8;
-                if (this.flash <= 0) this.init(); // Перерождаемся после вспышки
+                this.flash -= 0.03;
+                this.size += 1.5;
+                if (this.flash <= 0) this.init(false);
                 return;
             }
 
-            if (!this.merging) {
+            // Обычный полет и поиск пары
+            if (!this.partner) {
                 this.x += this.vx;
                 this.y += this.vy;
                 
-                // Если улетели за экран
-                if (this.y < -50 || this.x < -50 || this.x > width + 50) this.init();
+                // Улетели за экран — перерождаемся снизу
+                if (this.y < -50 || this.x < -50 || this.x > width + 50) this.init(false);
 
                 // Белые ищут красных
-                if (this.type === 'white' && !this.partner) {
+                if (this.type === 'white') {
                     for (let other of allSouls) {
-                        if (other.type === 'red' && !other.partner && !other.merging) {
+                        if (other.type === 'red' && !other.partner && !other.isMerging && other.flash <= 0) {
                             let dx = other.x - this.x;
                             let dy = other.y - this.y;
-                            if (dx*dx + dy*dy < 15000) { // Подлетели близко
+                            if (dx*dx + dy*dy < 20000) { // Ищут в широком радиусе
                                 this.partner = other;
                                 other.partner = this;
-                                this.merging = true;
-                                other.merging = true;
+                                this.isMerging = true;
+                                other.isMerging = true;
                                 break;
                             }
                         }
                     }
                 }
-            } else if (this.partner) {
-                // Плавное притяжение
+            } else {
+                // Притягивание друг к другу
                 let dx = this.partner.x - this.x;
                 let dy = this.partner.y - this.y;
                 let dist = Math.sqrt(dx*dx + dy*dy);
                 
-                this.x += dx * 0.03;
-                this.y += dy * 0.03;
+                this.x += dx * 0.04;
+                this.y += dy * 0.04;
 
-                // Момент касания
+                // Касание
                 if (dist < 10 && this.type === 'white') {
-                    this.flash = 1; // Запускаем вспышку у белой
-                    this.partner.init(); // Красная мгновенно перерождается (исчезает в белой)
+                    this.flash = 1; // Запуск взрыва
+                    this.partner.init(false); // Красная исчезает
                     this.partner = null;
                 }
             }
+        }
+
+        draw(ctx) {
+            if (this.alpha <= 0 || this.size <= 0) return;
+            
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            
+            if (this.flash > 0) {
+                ctx.fillStyle = `rgba(255, 150, 150, ${this.flash})`;
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = `rgba(255, 75, 43, ${this.flash})`;
+            } else {
+                let r = this.type === 'white' ? 255 : 255;
+                let g = this.type === 'white' ? 255 : 75;
+                let b = this.type === 'white' ? 255 : 43;
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.alpha})`;
+                ctx.shadowBlur = 25;
+                ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${this.alpha * 1.5})`;
+            }
+            
+            ctx.fill();
+            ctx.shadowBlur = 0; // Обязательно сбрасываем, чтобы не сломать остальной канвас
         }
     }
 
