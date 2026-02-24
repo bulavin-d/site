@@ -38,7 +38,7 @@
         * { box-sizing: border-box; }
         
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(60px) brightness(0.3); transform: scale(1.1); z-index: -2; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(60px) brightness(0.4); transform: scale(1.1); z-index: -2; }
         
         .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; opacity: 0; animation: fadeIn 1s forwards; }
         @keyframes fadeIn { to { opacity: 1; } }
@@ -46,16 +46,13 @@
         .dashboard-card { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
-            padding: 55px 25px 45px; 
+            padding: 50px 25px 40px; 
             border-radius: 40px; 
             text-align: center; 
             backdrop-filter: blur(35px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
+            display: flex; flex-direction: column; align-items: center; width: 100%;
         }
 
         .logout-btn {
@@ -68,10 +65,17 @@
         }
         .logout-btn:hover { color: var(--red-accent); border-color: rgba(255, 75, 43, 0.4); background: rgba(255, 75, 43, 0.1); }
 
-        h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        h1 { font-size: 20px; letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); text-transform: uppercase; }
 
         .soul-text { font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; margin-bottom: 35px; width: 100%; }
-        .soul-text p:first-child { font-size: 12.5px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        
+        /* Уменьшаем первую строку, чтобы "души" не сползало */
+        .soul-text p:first-child { 
+            font-size: 11.5px; 
+            margin-bottom: 15px; 
+            letter-spacing: 0.3px; 
+            opacity: 0.7;
+        }
         .soul-text p { margin-bottom: 10px; }
         
         .soul-text .highlight { margin-top: 20px; font-weight: 400; color: rgba(255,255,255,0.95); }
@@ -150,65 +154,48 @@
     }
     checkUser();
 
-    // --- ФИКС ФОНА: СУПЕР-СТАБИЛЬНЫЕ ДУШИ ---
+    // --- СУПЕР-СТАБИЛЬНЫЕ ЧАСТИЦЫ ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
-    let width, height;
     let particles = [];
 
-    class SoulParticle {
-        constructor() {
-            this.init();
-            this.y = Math.random() * window.innerHeight; // Раскидываем при старте
+    function initCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        particles = [];
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 1,
+                speed: Math.random() * 0.5 + 0.1,
+                opacity: Math.random() * 0.5 + 0.2,
+                color: Math.random() > 0.5 ? '#ffffff' : '#ff4b2b'
+            });
         }
-        init() {
-            this.x = Math.random() * window.innerWidth;
-            this.y = window.innerHeight + 50;
-            this.size = Math.random() * 3 + 2; 
-            this.speed = Math.random() * 0.4 + 0.15;
-            this.opacity = Math.random() * 0.4 + 0.1;
-            this.color = Math.random() > 0.5 ? '255, 255, 255' : '255, 75, 43';
-        }
-        update() {
-            this.y -= this.speed;
-            if (this.y < -50) this.init();
-        }
-        draw() {
-            // Рисуем мягкое "ядро" души
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.opacity;
             ctx.fill();
             
-            // Рисуем "ауру" (вместо тяжелого shadowBlur)
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${this.color}, ${this.opacity * 0.3})`;
-            ctx.fill();
-        }
+            p.y -= p.speed;
+            if (p.y < -10) {
+                p.y = canvas.height + 10;
+                p.x = Math.random() * canvas.width;
+            }
+        });
+        requestAnimationFrame(draw);
     }
 
-    function setup() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        particles = [];
-        for(let i = 0; i < 35; i++) {
-            particles.push(new SoulParticle());
-        }
-    }
-
-    function loop() {
-        ctx.clearRect(0, 0, width, height);
-        for(let p of particles) {
-            p.update();
-            p.draw();
-        }
-        requestAnimationFrame(loop);
-    }
-
-    window.addEventListener('resize', setup);
-    setup();
-    loop();
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    draw();
 </script>
 </body>
 </html>
