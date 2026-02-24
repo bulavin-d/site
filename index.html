@@ -39,57 +39,180 @@
         
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
-        /* Навигация */
-        .auth-nav { position: absolute; top: 15px; left: 20px; right: 20px; z-index: 25; display: flex; justify-content: space-between; }
-        .btn-auth { background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; padding: 8px 14px; border-radius: 12px; font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; backdrop-filter: blur(10px); transition: 0.2s ease; }
+        /* Навигация: Вход слева, Регистрация справа */
+        .auth-nav { 
+            position: absolute; 
+            top: 15px; left: 20px; right: 20px; 
+            z-index: 25; 
+            display: flex; justify-content: space-between; 
+        }
+
+        .btn-auth { 
+            background: rgba(255,255,255,0.08); 
+            border: 1px solid var(--glass-border); 
+            color: #fff; 
+            padding: 8px 14px; 
+            border-radius: 12px; 
+            font-size: 9px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            backdrop-filter: blur(10px); 
+            transition: all 0.2s ease;
+        }
+        /* Анимация проваливания без свечения */
         .btn-auth:hover { transform: translateY(2px); background: rgba(255,255,255,0.12); }
         .btn-auth:active { transform: translateY(3px) scale(0.96); }
 
-        .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 55px 20px 35px; text-align: center; margin-bottom: 5px; }
+        .profile-card { 
+            position: relative; 
+            background: var(--glass); 
+            backdrop-filter: blur(30px); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 40px; 
+            padding: 55px 20px 35px; 
+            text-align: center; 
+            margin: 0; 
+        }
+
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; }
+        .avatar-link:hover { transform: scale(1.08); }
+        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
         .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
+        
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
-        .bio { font-size: 12px; opacity: 0.6; margin-top: 8px; line-height: 1.4; }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { position: relative; background: var(--glass); border: 1px solid var(--glass-border); padding: 18px 20px; border-radius: 20px; text-decoration: none; color: #fff; font-size: 13px; font-weight: 600; display: flex; align-items: center; transition: 0.4s ease; cursor: pointer; z-index: 10; }
-        .btn i { font-size: 18px; width: 25px; margin-right: 15px; }
+        .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
+        .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
+        .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; }
+        
+        .btn { 
+            position: relative; 
+            background: var(--glass); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--glass-border); 
+            padding: 18px 20px; 
+            border-radius: 20px; 
+            text-decoration: none; 
+            color: #fff; 
+            font-size: 13px; 
+            font-weight: 600; 
+            display: flex; 
+            align-items: center; 
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); 
+            cursor: pointer;
+            z-index: 10;
+            width: 100%;
+            margin: 0;
+        }
+        .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
-        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); }
+        
+        .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
         .btn:active { transform: scale(0.96); }
 
+        /* Чистое свечение площадок */
         .btn-yandex:hover { color: var(--yandex-color) !important; filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5)); }
         .btn-vk:hover { color: var(--vk-color) !important; filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.5)); }
         .btn-spotify:hover { color: var(--spotify-color) !important; filter: drop-shadow(0 0 8px rgba(30, 215, 96, 0.5)); }
+        .btn-yt:hover { color: var(--yt-color) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
+        .btn-soundcloud:hover { color: var(--sc-color) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s ease; overflow: hidden; margin-top: -10px; }
-        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 10px; }
-        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }
+        /* ИДЕАЛЬНАЯ КОМПЕНСАЦИЯ ОТСТУПОВ */
+        .collapse-wrapper { 
+            display: grid; 
+            grid-template-rows: 0fr; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            overflow: hidden; 
+            margin-top: -10px; 
+            opacity: 0;
+        }
+        .collapse-wrapper.show { 
+            grid-template-rows: 1fr; 
+            margin-top: 0; 
+            opacity: 1;
+        }
+        .collapse-content { 
+            min-height: 0; 
+            display: flex; flex-direction: column; gap: 8px; 
+            padding-top: 5px; 
+        }
 
-        .organizer-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; color: var(--red-accent); text-decoration: none; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-top: 15px; padding: 10px 18px; border: 1px solid rgba(255, 75, 43, 0.2); border-radius: 12px; transition: 0.2s; }
+        .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; position: relative; }
+        .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
         
-        /* МОДАЛКА */
+        /* Кнопка "Я организатор" */
+        .organizer-link { 
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
+            color: var(--red-accent); text-decoration: none; 
+            font-size: 11px; font-weight: 800; text-transform: uppercase; 
+            margin-top: 15px; padding: 12px 24px; 
+            border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 15px; 
+            transition: all 0.2s ease;
+        }
+        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-2px); }
+        .organizer-link:active { transform: scale(0.96); }
+
+        /* ОБНОВЛЕННЫЕ СТИЛИ МОДАЛКИ */
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
         .auth-modal.show { display: flex; }
-        .auth-form { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 45px 30px; border-radius: 40px; width: 90%; max-width: 350px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); }
-        #authTitle { font-size: 22px; letter-spacing: 6px; font-weight: 900; margin-bottom: 40px; text-align: center; padding-left: 6px; }
-        .auth-form input { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; margin-bottom: 15px; outline: none; font-size: 13px; }
         
-        /* Кнопка забыли пароль */
-        .forgot-link { font-size: 10px; opacity: 0.4; cursor: pointer; text-align: right; width: 100%; margin-top: -5px; margin-bottom: 15px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px; }
-        .forgot-link:hover { opacity: 0.8; }
+        .auth-form { 
+            background: rgba(255, 255, 255, 0.04); 
+            border: 1px solid var(--glass-border); 
+            padding: 45px 30px; 
+            border-radius: 40px; 
+            width: 90%; max-width: 350px; 
+            display: flex; flex-direction: column; align-items: center; 
+            backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
 
-        .btn-action { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        #authTitle { 
+            font-size: 22px; 
+            letter-spacing: 6px; 
+            font-weight: 900; 
+            margin-bottom: 40px; 
+            text-align: center;
+            width: 100%;
+            color: #fff;
+            padding-left: 6px; 
+        }
+
+        .auth-form input { 
+            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); 
+            padding: 18px; border-radius: 20px; color: #fff; margin-bottom: 15px; 
+            outline: none; font-size: 13px; transition: all 0.3s ease;
+        }
+        .auth-form input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+        
+        /* Стили для ссылки "Забыли пароль?" */
+        .forgot-link { 
+            font-size: 10px; opacity: 0.4; cursor: pointer; 
+            text-align: right; width: 100%; 
+            margin-top: -5px; margin-bottom: 15px; 
+            transition: all 0.2s ease; 
+            text-transform: uppercase; letter-spacing: 1px; 
+        }
+        .forgot-link:hover { opacity: 0.8; color: var(--verify-blue); }
+
+        .btn-action { 
+            width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); 
+            background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; 
+            letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; 
+            margin-top: 10px;
+        }
         .btn-action:hover { background: #fff; color: #000; transform: translateY(-2px); }
+        .btn-action:active { transform: scale(0.98); }
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); z-index: -2; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
+        
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -103,10 +226,14 @@
             <button class="btn-auth" onclick="openAuth(true)">Вход</button>
             <button class="btn-auth" onclick="openAuth(false)">Регистрация</button>
         </div>
-        <div class="avatar-link">
+
+        <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
+        </a>
+        <div class="name-wrapper">
+            <h1>BULAVIN</h1>
+            <svg class="verify-icon" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/></svg>
         </div>
-        <h1>BULAVIN</h1>
         <p class="bio">Казахстанский исполнитель и музыкальный продюсер.</p>
     </div>
 
@@ -130,9 +257,13 @@
     <div class="btn" id="afisha-btn"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
-            <div class="afisha-card" style="background:rgba(255,255,255,0.03); padding:20px; border-radius:25px; border:1px solid var(--glass-border); text-align:center;">
-                <p style="font-size: 12px; opacity: 0.7;">На данный момент выступлений не запланировано.</p>
-                <a href="https://t.me/imbulavin" target="_blank" class="organizer-link"><i class="fa-solid fa-briefcase"></i> Я организатор</a>
+            <div class="afisha-card">
+                <p style="font-size: 12px; opacity: 0.7; text-align: center;">На данный момент выступлений не запланировано.</p>
+                <div style="text-align: center;">
+                    <a href="https://t.me/imbulavin" target="_blank" class="organizer-link">
+                        <i class="fa-solid fa-briefcase"></i> Я организатор
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -140,7 +271,7 @@
     <div class="btn" id="anon-btn"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
     <div class="collapse-wrapper" id="anon-wrapper">
         <div class="collapse-content">
-            <div class="anon-card" style="background:rgba(255,255,255,0.03); padding:20px; border-radius:25px; border:1px solid var(--glass-border);">
+            <div class="anon-card">
                 <form id="google-sheet-form">
                     <textarea class="anon-textarea" id="message" name="message" rows="4" placeholder="Напиши что-нибудь анонимно..." required></textarea>
                     <button type="submit" class="btn-action" id="submit-btn">ОТПРАВИТЬ</button>
@@ -219,6 +350,7 @@
             if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ЗАРЕГИСТРИРОВАТЬСЯ'; }
             else {
                 document.getElementById('authSuccessText').innerHTML = 'Проверьте почту для<br>подтверждения регистрации.';
+                document.getElementById('authIcon').className = 'fa-regular fa-envelope';
                 document.getElementById('authInputs').style.display = 'none';
                 document.getElementById('authSuccess').style.display = 'block';
             }
@@ -232,17 +364,20 @@
         const btn = document.getElementById('forgotPasswordLink');
         const originalText = btn.innerText;
         btn.innerText = 'ОТПРАВКА...';
+        btn.style.opacity = '0.7';
 
         const { error } = await _supabase.auth.resetPasswordForEmail(email, {
             redirectTo: 'https://bulavin.space/password-reset/',
         });
 
         btn.innerText = originalText;
+        btn.style.opacity = '0.4';
 
         if (error) {
             alert(error.message);
         } else {
             document.getElementById('authSuccessText').innerHTML = 'Ссылка для сброса пароля<br>отправлена на почту.';
+            document.getElementById('authIcon').className = 'fa-solid fa-paper-plane';
             document.getElementById('authInputs').style.display = 'none';
             document.getElementById('authSuccess').style.display = 'block';
         }
@@ -258,6 +393,17 @@
     setupCollapse('music-btn', 'music-wrapper');
     setupCollapse('afisha-btn', 'afisha-wrapper');
     setupCollapse('anon-btn', 'anon-wrapper');
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6FqqfvQSiwbm-xmuo0-dFkvReYjjKsqyzEYojdO1tfigGVMz0nb93YpjO9fOZLvRLRQ/exec';
+    const form = document.getElementById('google-sheet-form');
+    const submitBtn = document.getElementById('submit-btn');
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        submitBtn.disabled = true; submitBtn.innerText = 'ОТПРАВЛЯЮ...';
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(() => { submitBtn.innerText = 'ГОТОВО!'; form.reset(); setTimeout(() => { submitBtn.disabled = false; submitBtn.innerText = 'ОТПРАВИТЬ'; }, 3000); })
+            .catch(() => { submitBtn.innerText = 'ОШИБКА'; submitBtn.disabled = false; });
+    });
 
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
@@ -285,16 +431,23 @@
     }
 
     function initCanvas() {
-        if(Math.abs(lastWidth - window.innerWidth) > 50 || emojis.length === 0) {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            lastWidth = window.innerWidth;
-            emojis = Array.from({length: 15}, () => new FloatingEmoji());
-        }
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        emojis = Array.from({length: 15}, () => new FloatingEmoji());
     }
 
-    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); emojis.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(anim); }
-    window.addEventListener('resize', initCanvas);
+    function anim() { 
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+        emojis.forEach(e => { e.update(); e.draw(); }); 
+        requestAnimationFrame(anim); 
+    }
+    
+    window.addEventListener('resize', () => {
+        if(Math.abs(lastWidth - window.innerWidth) > 50) {
+            initCanvas();
+            lastWidth = window.innerWidth;
+        }
+    });
     initCanvas(); anim();
 
     async function fetchPrediction() {
