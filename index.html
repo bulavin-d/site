@@ -39,7 +39,7 @@
         
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
-        /* Навигация */
+        /* Навигация: Вход слева, Регистрация справа */
         .auth-nav { 
             position: absolute; 
             top: 15px; 
@@ -63,6 +63,7 @@
             backdrop-filter: blur(10px); 
             transition: all 0.2s ease;
         }
+        /* Анимация проваливания без свечения */
         .btn-auth:hover { transform: translateY(2px); background: rgba(255,255,255,0.12); }
         .btn-auth:active { transform: translateY(3px) scale(0.96); }
 
@@ -98,6 +99,9 @@
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
         
         .btn:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); }
+        .btn:active { transform: scale(0.96); }
+
+        /* Чистое свечение площадок */
         .btn-yandex:hover { color: var(--yandex-color) !important; filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.5)); }
         .btn-vk:hover { color: var(--vk-color) !important; filter: drop-shadow(0 0 8px rgba(0, 119, 255, 0.5)); }
         .btn-spotify:hover { color: var(--spotify-color) !important; filter: drop-shadow(0 0 8px rgba(30, 215, 96, 0.5)); }
@@ -126,10 +130,11 @@
             font-size: 22px; 
             letter-spacing: 6px; 
             font-weight: 900; 
-            margin-bottom: 35px; /* Отступ от текста до инпутов */
+            margin-bottom: 45px; /* Отодвинул текст от инпутов */
             text-align: center;
             width: 100%;
             color: #fff;
+            padding-left: 6px; /* Фикс оптической кривизны из-за letter-spacing */
         }
 
         .auth-form input { 
@@ -161,7 +166,7 @@
             text-transform: uppercase; 
             margin-top: 10px;
         }
-        .btn-action:hover { background: #fff; color: #000; }
+        .btn-action:hover { background: #fff; color: #000; transform: scale(0.98); }
         /* ------------------------------- */
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
@@ -243,171 +248,3 @@
             <a href="https://music.yandex.kz/artist/24009925" target="_blank" class="btn btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
             <a href="https://vk.com/artist/bulavin" target="_blank" class="btn btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
             <a href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq" target="_blank" class="btn btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
-            <a href="https://music.apple.com/ru/artist/bulavin/1805904899" target="_blank" class="btn"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
-            <a href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA" target="_blank" class="btn btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
-            <a href="https://soundcloud.com/bulavin" target="_blank" class="btn btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
-        </div>
-    </div>
-
-    <div class="btn" id="afisha-btn"><i class="fa-solid fa-calendar-check"></i><span>АФИША</span></div>
-    <div class="collapse-wrapper" id="afisha-wrapper">
-        <div class="collapse-content">
-            <div class="afisha-card">
-                <p style="font-size: 12px; opacity: 0.7; text-align: center;">На данный момент выступлений не запланировано.</p>
-                <div style="text-align: center;">
-                    <a href="https://t.me/imbulavin" target="_blank" class="organizer-link">
-                        <i class="fa-solid fa-briefcase"></i> Я организатор
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="btn" id="anon-btn"><i class="fa-solid fa-mask"></i><span>АНОНИМНОЕ СООБЩЕНИЕ</span></div>
-    <div class="collapse-wrapper" id="anon-wrapper">
-        <div class="collapse-content">
-            <div class="anon-card">
-                <form id="google-sheet-form">
-                    <textarea class="anon-textarea" id="message" name="message" rows="4" placeholder="Напиши что-нибудь анонимно..." required></textarea>
-                    <button type="submit" class="btn-action" id="submit-btn">ОТПРАВИТЬ</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="prediction-card">
-        <div style="font-size: 9px; letter-spacing: 2px; color: var(--verify-blue); margin-bottom: 15px; font-weight: 800;">BULAVIN SYSTEM • БАЗА ДНЯ</div>
-        <div id="prediction">Подключаюсь...</div>
-    </div>
-    <div class="footer">© 2026 BULAVIN</div>
-</div>
-
-<div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
-    <div class="auth-form" id="authForm" onclick="event.stopPropagation()">
-        <h2 id="authTitle">ВХОД</h2>
-        <div id="authInputs" style="width: 100%;">
-            <input type="email" id="authEmail" placeholder="EMAIL">
-            <input type="password" id="authPassword" placeholder="ПАРОЛЬ">
-            <button class="btn-action" id="authBtn" onclick="executeAuth()">ВОЙТИ</button>
-        </div>
-        <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
-            <i class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
-            <p style="font-size: 11px; opacity: 0.9;">Ссылка отправлена на почту.</p>
-            <button class="btn-action" style="margin-top: 20px;" onclick="closeAuth()">ПОНЯТНО</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    let isLoginMode = true;
-    function openAuth(l) { 
-        isLoginMode = l; 
-        document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
-        document.getElementById('authBtn').innerText = l ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ';
-        document.getElementById('authInputs').style.display = 'block';
-        document.getElementById('authSuccess').style.display = 'none';
-        document.getElementById('authModal').classList.add('show'); 
-    }
-    function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
-
-    async function executeAuth() {
-        const email = document.getElementById('authEmail').value;
-        const password = document.getElementById('authPassword').value;
-        const btn = document.getElementById('authBtn');
-        if(!email || !password) return alert('Заполни поля!');
-        btn.disabled = true; btn.innerText = 'ПОДОЖДИ...';
-        if (isLoginMode) {
-            const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ВОЙТИ'; }
-            else window.location.href = '/dashboard/'; 
-        } else {
-            const { error } = await _supabase.auth.signUp({ email, password });
-            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ЗАРЕГИСТРИРОВАТЬСЯ'; }
-            else {
-                document.getElementById('authInputs').style.display = 'none';
-                document.getElementById('authSuccess').style.display = 'block';
-            }
-        }
-    }
-
-    function setupCollapse(btnId, wrapperId) {
-        document.getElementById(btnId).onclick = () => {
-            const el = document.getElementById(wrapperId);
-            const all = document.querySelectorAll('.collapse-wrapper');
-            all.forEach(w => { if(w.id !== wrapperId) w.classList.remove('show'); });
-            el.classList.toggle('show');
-        }
-    }
-    setupCollapse('music-btn', 'music-wrapper');
-    setupCollapse('afisha-btn', 'afisha-wrapper');
-    setupCollapse('anon-btn', 'anon-wrapper');
-
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6FqqfvQSiwbm-xmuo0-dFkvReYjjKsqyzEYojdO1tfigGVMz0nb93YpjO9fOZLvRLRQ/exec';
-    const form = document.getElementById('google-sheet-form');
-    const submitBtn = document.getElementById('submit-btn');
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        submitBtn.disabled = true; submitBtn.innerText = 'ОТПРАВЛЯЮ...';
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(() => { submitBtn.innerText = 'ГОТОВО!'; form.reset(); setTimeout(() => { submitBtn.disabled = false; submitBtn.innerText = 'ОТПРАВИТЬ'; }, 3000); })
-            .catch(() => { submitBtn.innerText = 'ОШИБКА'; submitBtn.disabled = false; });
-    });
-
-    const canvas = document.getElementById('global-canvas');
-    const ctx = canvas.getContext('2d');
-    let emojis = [];
-    let lastWidth = window.innerWidth;
-
-    class FloatingEmoji {
-        constructor() { this.init(true); }
-        init(f) {
-            this.x = Math.random() * window.innerWidth;
-            this.y = f ? Math.random() * window.innerHeight : -50;
-            this.emoji = ['🖤', '💼', '🎧'][Math.floor(Math.random() * 3)];
-            this.size = Math.random() * 20 + 20;
-            this.vx = (Math.random() - 0.5) * 0.4;
-            this.vy = (Math.random() - 0.5) * 0.4;
-            this.rot = Math.random() * Math.PI * 2;
-            this.rotSpd = (Math.random() - 0.5) * 0.01;
-            this.op = Math.random() * 0.2 + 0.1;
-        }
-        update() { 
-            this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd; 
-            if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false); 
-        }
-        draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.fillText(this.emoji, 0, 0); ctx.restore(); }
-    }
-
-    function initCanvas() {
-        if(Math.abs(lastWidth - window.innerWidth) > 50 || emojis.length === 0) {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            lastWidth = window.innerWidth;
-            emojis = Array.from({length: 15}, () => new FloatingEmoji());
-        }
-    }
-
-    function anim() { 
-        ctx.clearRect(0,0,canvas.width,canvas.height); 
-        emojis.forEach(e => { e.update(); e.draw(); }); 
-        requestAnimationFrame(anim); 
-    }
-    
-    window.addEventListener('resize', initCanvas);
-    initCanvas(); anim();
-
-    async function fetchPrediction() {
-        try {
-            const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
-            const d = await r.json();
-            document.getElementById('prediction').innerText = JSON.parse(d.contents).text;
-        } catch (e) { document.getElementById('prediction').innerText = "Продолжай делать своё дело."; }
-    }
-    fetchPrediction();
-</script>
-</body>
-</html>
