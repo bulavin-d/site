@@ -37,17 +37,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
         body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
+        .container { 
+            width: 100%; max-width: 420px; 
+            padding: 40px 20px; 
+            display: flex; flex-direction: column; gap: 10px; 
+            z-index: 5; position: relative; 
+        }
 
         /* Навигация: Вход слева, Регистрация справа */
         .auth-nav { 
             position: absolute; 
-            top: 15px; 
-            left: 20px; 
-            right: 20px; 
+            top: 15px; left: 20px; right: 20px; 
             z-index: 25; 
-            display: flex; 
-            justify-content: space-between; 
+            display: flex; justify-content: space-between; 
         }
 
         .btn-auth { 
@@ -75,9 +77,23 @@
             border-radius: 40px; 
             padding: 55px 20px 35px; 
             text-align: center; 
-            margin-bottom: 5px; 
+            margin: 0; 
         }
 
+        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; }
+        .avatar-link:hover { transform: scale(1.08); }
+        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
+        .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
+        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
+        .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
+        .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
+        .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
+        
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 0; }
+        
         .btn { 
             position: relative; 
             background: var(--glass); 
@@ -94,6 +110,8 @@
             transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1); 
             cursor: pointer;
             z-index: 10;
+            width: 100%;
+            margin: 0;
         }
         .btn i { font-size: 18px; width: 25px; margin-right: 15px; display: flex; justify-content: center; }
         .btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
@@ -108,7 +126,42 @@
         .btn-yt:hover { color: var(--yt-color) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
         .btn-soundcloud:hover { color: var(--sc-color) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        /* --- ОБНОВЛЕННЫЕ СТИЛИ МОДАЛКИ --- */
+        /* ИДЕАЛЬНАЯ КОМПЕНСАЦИЯ ОТСТУПОВ */
+        .collapse-wrapper { 
+            display: grid; 
+            grid-template-rows: 0fr; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            overflow: hidden; 
+            margin-top: -10px; 
+            opacity: 0;
+        }
+        .collapse-wrapper.show { 
+            grid-template-rows: 1fr; 
+            margin-top: 0; 
+            opacity: 1;
+        }
+        .collapse-content { 
+            min-height: 0; 
+            display: flex; flex-direction: column; gap: 8px; 
+            padding-top: 5px; 
+        }
+
+        .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; position: relative; }
+        .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
+        
+        /* Кнопка "Я организатор" */
+        .organizer-link { 
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
+            color: var(--red-accent); text-decoration: none; 
+            font-size: 11px; font-weight: 800; text-transform: uppercase; 
+            margin-top: 15px; padding: 12px 24px; 
+            border: 1px solid rgba(255, 75, 43, 0.25); border-radius: 15px; 
+            transition: all 0.2s ease;
+        }
+        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-2px); }
+        .organizer-link:active { transform: scale(0.96); }
+
+        /* ОБНОВЛЕННЫЕ СТИЛИ МОДАЛКИ */
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
         .auth-modal.show { display: flex; }
         
@@ -117,11 +170,8 @@
             border: 1px solid var(--glass-border); 
             padding: 45px 30px; 
             border-radius: 40px; 
-            width: 90%; 
-            max-width: 350px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            width: 90%; max-width: 350px; 
+            display: flex; flex-direction: column; align-items: center; 
             backdrop-filter: blur(30px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
@@ -130,7 +180,7 @@
             font-size: 22px; 
             letter-spacing: 6px; 
             font-weight: 900; 
-            margin-bottom: 45px; /* Отодвинул текст от инпутов, чтобы был "воздух" */
+            margin-bottom: 40px; /* Свободное пространство до инпутов */
             text-align: center;
             width: 100%;
             color: #fff;
@@ -138,81 +188,26 @@
         }
 
         .auth-form input { 
-            width: 100%; 
-            background: rgba(255,255,255,0.06); 
-            border: 1px solid var(--glass-border); 
-            padding: 18px; 
-            border-radius: 20px; 
-            color: #fff; 
-            margin-bottom: 15px; 
-            outline: none; 
-            font-size: 13px; 
-            transition: all 0.3s ease;
+            width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); 
+            padding: 18px; border-radius: 20px; color: #fff; margin-bottom: 15px; 
+            outline: none; font-size: 13px; transition: all 0.3s ease;
         }
         .auth-form input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
         
         .btn-action { 
-            width: 100%; 
-            padding: 18px; 
-            border-radius: 20px; 
-            border: 1px solid rgba(255,255,255,0.2); 
-            background: rgba(255,255,255,0.05); 
-            color: #fff; 
-            font-weight: 800; 
-            font-size: 12px; 
-            letter-spacing: 2px; 
-            cursor: pointer; 
-            transition: all 0.3s ease; 
-            text-transform: uppercase; 
+            width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); 
+            background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; 
+            letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; 
             margin-top: 10px;
         }
-        .btn-action:hover { background: #fff; color: #000; transform: scale(0.98); }
-        /* ------------------------------- */
+        .btn-action:hover { background: #fff; color: #000; transform: translateY(-2px); }
+        .btn-action:active { transform: scale(0.98); }
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
         
-        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; }
-        .avatar-link:hover { transform: scale(1.08); }
-        .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
-        .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
-        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
-        h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
-        .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
-        .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
-        .bio { font-size: 12px; opacity: 0.6; text-align: center; line-height: 1.4; }
-        
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        
-        .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -10px; }
-        .collapse-wrapper.show { grid-template-rows: 1fr; margin-bottom: 10px; }
-        .collapse-content { min-height: 0; display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }
-
-        .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; position: relative; }
-        .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
-        
-        .organizer-link { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            color: var(--red-accent); 
-            text-decoration: none; 
-            font-size: 11px; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            margin-top: 15px; 
-            padding: 10px 18px; 
-            border: 1px solid rgba(255, 75, 43, 0.2); 
-            border-radius: 12px;
-            transition: all 0.2s ease;
-        }
-        .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-1px); }
-
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; padding-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -388,12 +383,9 @@
     }
 
     function initCanvas() {
-        if(Math.abs(lastWidth - window.innerWidth) > 50 || emojis.length === 0) {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            lastWidth = window.innerWidth;
-            emojis = Array.from({length: 15}, () => new FloatingEmoji());
-        }
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        emojis = Array.from({length: 15}, () => new FloatingEmoji());
     }
 
     function anim() { 
@@ -402,7 +394,12 @@
         requestAnimationFrame(anim); 
     }
     
-    window.addEventListener('resize', initCanvas);
+    window.addEventListener('resize', () => {
+        if(Math.abs(lastWidth - window.innerWidth) > 50) {
+            initCanvas();
+            lastWidth = window.innerWidth;
+        }
+    });
     initCanvas(); anim();
 
     async function fetchPrediction() {
