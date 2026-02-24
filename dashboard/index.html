@@ -38,7 +38,7 @@
         * { box-sizing: border-box; }
         
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(60px) brightness(0.3); transform: scale(1.1); z-index: -2; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(60px) brightness(0.4); transform: scale(1.1); z-index: -2; }
         
         .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; opacity: 0; animation: fadeIn 1s forwards; }
         @keyframes fadeIn { to { opacity: 1; } }
@@ -52,10 +52,7 @@
             backdrop-filter: blur(35px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
+            display: flex; flex-direction: column; align-items: center; width: 100%;
         }
 
         .logout-btn {
@@ -68,11 +65,18 @@
         }
         .logout-btn:hover { color: var(--red-accent); border-color: rgba(255, 75, 43, 0.4); background: rgba(255, 75, 43, 0.1); }
 
-        h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        h1 { font-size: 20px; letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
         .soul-text { font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; margin-bottom: 35px; width: 100%; }
-        /* Поправил размер первой строки, чтобы "души" не улетало */
-        .soul-text p:first-child { font-size: 12.5px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        
+        /* Фикс первой строки: меньше размер и запрет переноса слова "души" */
+        .soul-text p:first-child { 
+            font-size: 11px; 
+            margin-bottom: 15px; 
+            letter-spacing: 0.5px; 
+            white-space: nowrap; 
+            opacity: 0.7;
+        }
         .soul-text p { margin-bottom: 10px; }
         
         .soul-text .highlight { margin-top: 20px; font-weight: 400; color: rgba(255,255,255,0.95); }
@@ -151,7 +155,7 @@
     }
     checkUser();
 
-    // --- ОБНОВЛЕННЫЙ ФОН: ЭНЕРГЕТИЧЕСКИЕ ДУШИ ---
+    // --- НОВЫЙ ВЫСОКОПРОИЗВОДИТЕЛЬНЫЙ ФОН ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -164,34 +168,34 @@
         }
         init() {
             this.x = Math.random() * window.innerWidth;
-            this.y = window.innerHeight + 50;
-            this.size = Math.random() * 4 + 2; // Чуть крупнее
-            this.speed = Math.random() * 0.5 + 0.2;
-            this.opacity = Math.random() * 0.4 + 0.1;
+            this.y = window.innerHeight + 100;
+            this.size = Math.random() * 25 + 10; // Крупные мягкие сферы
+            this.speed = Math.random() * 0.4 + 0.2;
+            this.opacity = Math.random() * 0.3 + 0.1;
             this.color = Math.random() > 0.5 ? '255, 255, 255' : '255, 75, 43';
-            this.pulse = Math.random() * 0.02;
         }
         update() {
             this.y -= this.speed;
-            this.opacity += Math.sin(Date.now() * this.pulse) * 0.01;
-            if (this.y < -50) this.init();
+            if (this.y < -150) this.init();
         }
         draw() {
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter'; // Заставляет частицы светиться при наложении
             ctx.beginPath();
+            let g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
+            g.addColorStop(0, `rgba(${this.color}, ${this.opacity})`);
+            g.addColorStop(1, `rgba(${this.color}, 0)`);
+            ctx.fillStyle = g;
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${this.color}, ${Math.max(0.1, this.opacity)})`;
-            // Добавляем свечение через shadow
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = `rgba(${this.color}, 0.5)`;
             ctx.fill();
-            ctx.shadowBlur = 0;
+            ctx.restore();
         }
     }
 
     function setup() {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
-        particles = Array.from({length: 35}, () => new SoulParticle());
+        particles = Array.from({length: 45}, () => new SoulParticle());
     }
 
     function loop() {
@@ -201,7 +205,8 @@
     }
 
     window.addEventListener('resize', setup);
-    setup(); loop();
+    setup(); 
+    loop();
 </script>
 </body>
 </html>
