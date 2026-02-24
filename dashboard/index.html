@@ -35,7 +35,7 @@
             overscroll-behavior-y: none;
         }
         
-        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; filter: blur(3px); }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: 0; }
         
         .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 10; position: relative; opacity: 0; animation: fadeIn 1s forwards; }
@@ -49,9 +49,10 @@
         h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); text-transform: uppercase; }
 
         .soul-text { font-size: 14px; font-weight: 300; line-height: 1.7; opacity: 0.8; margin-bottom: 30px; width: 100%; }
-        .soul-text p { margin-bottom: 15px; }
+        .soul-text p { margin-bottom: 10px; }
+        .soul-text p:last-child { margin-bottom: 0; font-weight: 500; color: rgba(255, 255, 255, 0.9); }
 
-        /* КНОПКА ОСТАВИТЬ СЛЕД */
+        /* КНОПКА АНОНКИ */
         .anon-trigger-btn { width: 100%; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-weight: 800; font-size: 13px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 12px; transition: 0.3s; }
         .anon-trigger-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: #fff; }
         .anon-trigger-btn i { font-size: 16px; }
@@ -72,6 +73,7 @@
         .glass-card { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 35px 25px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); width: 90%; max-width: 350px; }
         
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 14px; line-height: 1.5; }
+        .anon-textarea::placeholder { opacity: 0.5; }
         .btn-action { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .btn-action:hover { background: #fff; color: #000; }
 
@@ -92,13 +94,15 @@
         <h1 id="userNameDisplay">@USER</h1>
 
         <div class="soul-text">
-            <p>Здесь нет лишних глаз. Только ты, я и твои мысли. Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
-            <p>Если ты хочешь выговориться — вперёд. Здесь не осудят.</p>
+            <p>Здесь нет лишних глаз.</p>
+            <p>Только ты, я и твои мысли. Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
+            <p>Если ты хочешь выговориться — вперёд.</p>
+            <p>Здесь не осудят.</p>
         </div>
 
         <button class="anon-trigger-btn" onclick="openAnon()">
             <i class="fa-solid fa-mask"></i>
-            ОСТАВИТЬ СЛЕД
+            АНОНИМНОЕ СООБЩЕНИЕ
         </button>
 
         <a href="https://t.me/imbulavin_bot" target="_blank" class="merge-link">
@@ -112,8 +116,8 @@
 <div class="glass-modal" id="anonModal" onclick="if(event.target === this) closeAnon()">
     <div class="glass-card" onclick="event.stopPropagation()">
         <form id="anonForm" style="width: 100%;">
-            <textarea class="anon-textarea" id="anonMessage" rows="5" placeholder="Твое послание..." required></textarea>
-            <button type="submit" class="btn-action" id="submitBtn">ПРОДОЛЖИТЬ</button>
+            <textarea class="anon-textarea" id="anonMessage" rows="5" placeholder="Пиши всё, что у тебя на уме..." required></textarea>
+            <button type="submit" class="btn-action" id="submitBtn">ОТПРАВИТЬ</button>
         </form>
     </div>
 </div>
@@ -123,7 +127,7 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ТВОЯ РАБОЧАЯ ССЫЛКА (УЖЕ ВСТАВЛЕНА)
+    // ССЫЛКА НА ТВОЙ GOOGLE SCRIPT
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyWjPndo7PxgFsZRXK7SmqS9K3pHPD2A4OjuBrDoz7kmG82XOeZc_2zrlx7083yOEEMIw/exec';
 
     let currentUsername = "@Unknown";
@@ -164,54 +168,68 @@
             .then(res => {
                 btn.innerText = 'ГОТОВО';
                 form.reset();
-                setTimeout(() => { closeAnon(); btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ'; }, 1500);
+                setTimeout(() => { closeAnon(); btn.disabled = false; btn.innerText = 'ОТПРАВИТЬ'; }, 1500);
             })
             .catch(error => {
                 alert('Ошибка системы');
                 btn.disabled = false;
-                btn.innerText = 'ПРОДОЛЖИТЬ';
+                btn.innerText = 'ОТПРАВИТЬ';
             });
     });
 
-    // ФИКС ЭМОДЗИ/ЧАСТИЦ ДЛЯ МОБИЛОК
+    // АНИМАЦИЯ ЗНАКОВ ВОПРОСА ДЛЯ МОБИЛОК (ПОФИКШЕНО)
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
+    let questions = [];
     let lastWidth = window.innerWidth;
 
-    function resize() {
-        if(Math.abs(lastWidth - window.innerWidth) > 50 || particles.length === 0) {
-            canvas.width = window.innerWidth;
+    class FloatingQuestion {
+        constructor() { this.init(true); }
+        init(f) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = f ? Math.random() * window.innerHeight : window.innerHeight + 50;
+            this.size = Math.random() * 20 + 15; // Размер от 15 до 35
+            this.speed = Math.random() * 0.4 + 0.1; // Медленное всплытие
+            this.op = Math.random() * 0.15 + 0.05; // Низкая прозрачность для атмосферы
+            this.wobble = Math.random() * Math.PI * 2; // Начальная фаза покачивания
+            this.wobbleSpeed = Math.random() * 0.02 + 0.01;
+        }
+        update() { 
+            this.y -= this.speed; 
+            this.x += Math.sin(this.wobble) * 0.5; // Легкое покачивание влево-вправо
+            this.wobble += this.wobbleSpeed;
+            if (this.y < -50) this.init(false); 
+        }
+        draw() { 
+            ctx.save(); 
+            ctx.globalAlpha = this.op; 
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `bold ${this.size}px 'Inter', sans-serif`; 
+            ctx.textAlign = 'center'; 
+            ctx.fillText('?', this.x, this.y); 
+            ctx.restore(); 
+        }
+    }
+    
+    function initCanvas() {
+        const isWidthChanged = Math.abs(lastWidth - window.innerWidth) > 50;
+        if(isWidthChanged || questions.length === 0) {
+            canvas.width = window.innerWidth; 
             canvas.height = window.innerHeight;
             lastWidth = window.innerWidth;
-            createParticles();
+            questions = Array.from({length: 25}, () => new FloatingQuestion());
         } else {
             canvas.height = window.innerHeight;
         }
     }
-
-    function createParticles() {
-        particles = [];
-        for (let i = 0; i < 50; i++) {
-            particles.push({
-                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                radius: Math.random() * 2 + 1, speed: Math.random() * 0.5 + 0.2,
-                color: Math.random() > 0.5 ? '#ffffff' : '#ff4b2b', opacity: Math.random() * 0.4 + 0.1
-            });
-        }
+    
+    function anim() { 
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+        questions.forEach(q => { q.update(); q.draw(); }); 
+        requestAnimationFrame(anim); 
     }
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p.color; ctx.globalAlpha = p.opacity; ctx.fill();
-            p.y -= p.speed;
-            if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
-        });
-        requestAnimationFrame(animate);
-    }
-    window.onload = () => { resize(); animate(); };
-    window.onresize = resize;
+    window.addEventListener('resize', initCanvas);
+    initCanvas(); anim();
 </script>
 </body>
 </html>
