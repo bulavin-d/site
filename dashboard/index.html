@@ -11,6 +11,7 @@
         ym(106955637, 'init', { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer" });
     </script>
     <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BULAVIN | INNER CIRCLE</title>
@@ -21,8 +22,8 @@
     
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --red-accent: #ff4b2b;
         }
 
@@ -34,59 +35,71 @@
             -webkit-tap-highlight-color: transparent;
         }
         body { display: flex; justify-content: center; align-items: center; }
+        * { box-sizing: border-box; }
         
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(60px) brightness(0.3); transform: scale(1.1); z-index: -2; }
         
-        .container { width: 100%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; opacity: 0; animation: fadeIn 1.5s forwards; }
+        .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; opacity: 0; animation: fadeIn 1s forwards; }
         @keyframes fadeIn { to { opacity: 1; } }
 
         .dashboard-card { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
-            padding: 50px 20px 40px; 
+            padding: 55px 25px 45px; 
             border-radius: 40px; 
             text-align: center; 
-            backdrop-filter: blur(25px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(35px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
 
         .logout-btn {
             position: absolute; top: 20px; right: 20px;
-            width: 36px; height: 36px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            color: rgba(255, 255, 255, 0.4); border-radius: 12px; 
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border);
+            color: rgba(255, 255, 255, 0.6); border-radius: 12px; 
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; transition: 0.3s;
         }
-        .logout-btn:hover { color: var(--red-accent); border-color: rgba(255, 75, 43, 0.3); background: rgba(255, 75, 43, 0.05); }
+        .logout-btn:hover { color: var(--red-accent); border-color: rgba(255, 75, 43, 0.4); background: rgba(255, 75, 43, 0.1); }
 
-        h1 { font-size: 19px; letter-spacing: 4px; font-weight: 900; margin-bottom: 25px; color: #fff; text-transform: uppercase; }
+        h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
-        .soul-text { font-size: 13px; font-weight: 300; line-height: 1.6; opacity: 0.8; margin-bottom: 35px; }
-        /* Уменьшаем размер первой строки, чтобы не ломалась */
-        .soul-text p:first-child { font-size: 12px; margin-bottom: 15px; letter-spacing: 0.3px; }
+        .soul-text { font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; margin-bottom: 35px; width: 100%; }
+        /* Поправил размер первой строки, чтобы "души" не улетало */
+        .soul-text p:first-child { font-size: 12.5px; margin-bottom: 15px; letter-spacing: 0.5px; }
+        .soul-text p { margin-bottom: 10px; }
         
-        .soul-text .highlight { margin-top: 20px; font-weight: 400; }
+        .soul-text .highlight { margin-top: 20px; font-weight: 400; color: rgba(255,255,255,0.95); }
         .soul-text span { 
-            display: block; margin-top: 10px; font-size: 15px;
+            display: block; margin-top: 10px; font-size: 16px;
             color: #fff; font-weight: 800; opacity: 1; 
-            text-shadow: 0 0 15px rgba(255,255,255,0.4); 
+            text-shadow: 0 0 15px rgba(255,255,255,0.5); 
             letter-spacing: 2px; text-transform: uppercase;
         }
 
         .merge-btn { 
-            width: 100%; padding: 18px; border-radius: 18px; 
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff; font-weight: 900; font-size: 13px; letter-spacing: 5px; cursor: pointer; 
+            width: 100%; padding: 20px; border-radius: 20px; 
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff; font-weight: 900; font-size: 14px; letter-spacing: 6px; cursor: pointer; 
             text-transform: uppercase; text-decoration: none;
-            display: flex; justify-content: center; align-items: center; gap: 12px;
-            transition: 0.4s;
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+            transition: all 0.4s ease;
+            animation: heartbeat 3s infinite;
+        }
+        @keyframes heartbeat { 
+            0% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
+            50% { box-shadow: 0 0 25px rgba(255, 255, 255, 0.3); }
+            100% { box-shadow: 0 0 10px rgba(255, 255, 255, 0.1); }
         }
         .merge-btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
 
-        .footer { text-align: center; font-size: 9px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -138,53 +151,57 @@
     }
     checkUser();
 
-    // --- УПРОЩЕННЫЙ ФОН: ПРОСТО ЛЕТАЮЩИЕ ЧАСТИЦЫ ---
+    // --- ОБНОВЛЕННЫЙ ФОН: ЭНЕРГЕТИЧЕСКИЕ ДУШИ ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
-    let souls = [];
+    let width, height;
+    let particles = [];
 
-    class SimpleSoul {
+    class SoulParticle {
         constructor() {
             this.init();
             this.y = Math.random() * window.innerHeight;
         }
         init() {
             this.x = Math.random() * window.innerWidth;
-            this.y = window.innerHeight + 20;
-            this.size = Math.random() * 2 + 1;
-            this.vy = -(Math.random() * 0.3 + 0.1);
-            this.vx = (Math.random() - 0.5) * 0.2;
-            this.color = Math.random() > 0.5 ? '255, 255, 255' : '255, 75, 43';
+            this.y = window.innerHeight + 50;
+            this.size = Math.random() * 4 + 2; // Чуть крупнее
+            this.speed = Math.random() * 0.5 + 0.2;
             this.opacity = Math.random() * 0.4 + 0.1;
+            this.color = Math.random() > 0.5 ? '255, 255, 255' : '255, 75, 43';
+            this.pulse = Math.random() * 0.02;
         }
         update() {
-            this.y += this.vy;
-            this.x += this.vx;
-            if (this.y < -20) this.init();
+            this.y -= this.speed;
+            this.opacity += Math.sin(Date.now() * this.pulse) * 0.01;
+            if (this.y < -50) this.init();
         }
         draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+            ctx.fillStyle = `rgba(${this.color}, ${Math.max(0.1, this.opacity)})`;
+            // Добавляем свечение через shadow
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = `rgba(${this.color}, 0.5)`;
             ctx.fill();
+            ctx.shadowBlur = 0;
         }
     }
 
     function setup() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        souls = Array.from({length: 40}, () => new SimpleSoul());
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        particles = Array.from({length: 35}, () => new SoulParticle());
     }
 
     function loop() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        souls.forEach(s => { s.update(); s.draw(); });
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => { p.update(); p.draw(); });
         requestAnimationFrame(loop);
     }
 
     window.addEventListener('resize', setup);
-    setup();
-    loop();
+    setup(); loop();
 </script>
 </body>
 </html>
