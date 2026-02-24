@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637', 'ym');
+        ym(106955637, 'init', { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer" });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BULAVIN | INNER CIRCLE</title>
@@ -19,88 +29,64 @@
         html, body {
             width: 100%; height: 100%; margin: 0; padding: 0;
             overflow: hidden; overscroll-behavior: none;
-            background: #050505; color: #fff;
+            background: #000; color: #fff;
             font-family: 'Inter', -apple-system, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
         body { display: flex; justify-content: center; align-items: center; }
-        * { box-sizing: border-box; }
         
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(70px) brightness(0.25); transform: scale(1.1); z-index: -2; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
         
-        .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; opacity: 0; animation: fadeIn 2s forwards; }
+        .container { width: 100%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; opacity: 0; animation: fadeIn 1.5s forwards; }
         @keyframes fadeIn { to { opacity: 1; } }
 
         .dashboard-card { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
-            padding: 50px 25px 45px; 
+            padding: 50px 20px 40px; 
             border-radius: 40px; 
             text-align: center; 
-            backdrop-filter: blur(30px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(25px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             position: relative;
-            display: flex; flex-direction: column; align-items: center;
         }
 
         .logout-btn {
             position: absolute; top: 20px; right: 20px;
-            width: 38px; height: 38px;
+            width: 36px; height: 36px;
             background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            color: rgba(255, 255, 255, 0.5); 
-            border-radius: 12px; 
+            color: rgba(255, 255, 255, 0.4); border-radius: 12px; 
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.3s ease;
+            cursor: pointer; transition: 0.3s;
         }
-        .logout-btn i { font-size: 15px; margin-left: 2px; }
-        .logout-btn:hover { 
-            color: var(--red-accent); border-color: rgba(255, 75, 43, 0.4);
-            background: rgba(255, 75, 43, 0.1); box-shadow: 0 0 15px rgba(255, 75, 43, 0.3);
-            transform: scale(1.05);
-        }
+        .logout-btn:hover { color: var(--red-accent); border-color: rgba(255, 75, 43, 0.3); background: rgba(255, 75, 43, 0.05); }
 
-        /* Уменьшили отступ под юзернеймом */
-        h1 { font-size: 20px; letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        h1 { font-size: 19px; letter-spacing: 4px; font-weight: 900; margin-bottom: 25px; color: #fff; text-transform: uppercase; }
 
-        .soul-text {
-            font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.85; 
-            margin-bottom: 35px; letter-spacing: 0.5px;
-            width: 100%; max-width: 340px;
-        }
-        .soul-text p { margin-bottom: 12px; } /* Уменьшили отступ между строками */
-        .soul-text p:last-child { margin-bottom: 0; }
+        .soul-text { font-size: 13px; font-weight: 300; line-height: 1.6; opacity: 0.8; margin-bottom: 35px; }
+        /* Уменьшаем размер первой строки, чтобы не ломалась */
+        .soul-text p:first-child { font-size: 12px; margin-bottom: 15px; letter-spacing: 0.3px; }
         
-        .soul-text .highlight {
-            margin-top: 20px;
-            font-weight: 400;
-            color: rgba(255,255,255,0.9);
-        }
+        .soul-text .highlight { margin-top: 20px; font-weight: 400; }
         .soul-text span { 
-            display: block; margin-top: 8px; font-size: 16px;
+            display: block; margin-top: 10px; font-size: 15px;
             color: #fff; font-weight: 800; opacity: 1; 
-            text-shadow: 0 0 20px rgba(255,255,255,0.6); 
+            text-shadow: 0 0 15px rgba(255,255,255,0.4); 
             letter-spacing: 2px; text-transform: uppercase;
         }
 
         .merge-btn { 
-            position: relative; width: 100%; padding: 20px; border-radius: 20px; 
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff; font-weight: 900; font-size: 13px; letter-spacing: 6px; cursor: pointer; 
-            transition: all 0.5s ease; text-transform: uppercase; text-decoration: none;
-            display: flex; justify-content: center; align-items: center; gap: 15px;
-            animation: heartbeat 3s infinite;
+            width: 100%; padding: 18px; border-radius: 18px; 
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff; font-weight: 900; font-size: 13px; letter-spacing: 5px; cursor: pointer; 
+            text-transform: uppercase; text-decoration: none;
+            display: flex; justify-content: center; align-items: center; gap: 12px;
+            transition: 0.4s;
         }
-        @keyframes heartbeat { 
-            0% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
-            50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.4); border-color: rgba(255, 255, 255, 0.6); }
-            100% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
-        }
-        .merge-btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
-        .merge-btn:active { transform: scale(0.96); }
-        .merge-btn i { font-size: 20px; opacity: 0.9; }
+        .merge-btn:hover { background: #fff; color: #000; transform: translateY(-2px); }
 
-        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 9px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -152,134 +138,53 @@
     }
     checkUser();
 
-    // --- БРОНЕБОЙНАЯ СИСТЕМА ДУШ НА ТЕНЯХ ---
+    // --- УПРОЩЕННЫЙ ФОН: ПРОСТО ЛЕТАЮЩИЕ ЧАСТИЦЫ ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
-    let width, height;
     let souls = [];
 
-    class Soul {
-        constructor(type) {
-            this.type = type; // 'white' или 'red'
-            this.init(true);
+    class SimpleSoul {
+        constructor() {
+            this.init();
+            this.y = Math.random() * window.innerHeight;
         }
-        
-        init(isStart) {
+        init() {
             this.x = Math.random() * window.innerWidth;
-            this.y = isStart ? Math.random() * window.innerHeight : window.innerHeight + 50;
-            this.vx = (Math.random() - 0.5) * 0.6;
-            this.vy = -(Math.random() * 0.5 + 0.3); // Плывут вверх
-            this.size = Math.random() * 12 + 8;
-            this.alpha = Math.random() * 0.4 + 0.2;
-            
-            this.partner = null;
-            this.isMerging = false;
-            this.flash = 0;
+            this.y = window.innerHeight + 20;
+            this.size = Math.random() * 2 + 1;
+            this.vy = -(Math.random() * 0.3 + 0.1);
+            this.vx = (Math.random() - 0.5) * 0.2;
+            this.color = Math.random() > 0.5 ? '255, 255, 255' : '255, 75, 43';
+            this.opacity = Math.random() * 0.4 + 0.1;
         }
-
-        update(allSouls) {
-            // Если взрываемся
-            if (this.flash > 0) {
-                this.flash -= 0.03;
-                this.size += 1.5;
-                if (this.flash <= 0) this.init(false);
-                return;
-            }
-
-            // Обычный полет и поиск пары
-            if (!this.partner) {
-                this.x += this.vx;
-                this.y += this.vy;
-                
-                // Улетели за экран — перерождаемся снизу
-                if (this.y < -50 || this.x < -50 || this.x > width + 50) this.init(false);
-
-                // Белые ищут красных
-                if (this.type === 'white') {
-                    for (let other of allSouls) {
-                        if (other.type === 'red' && !other.partner && !other.isMerging && other.flash <= 0) {
-                            let dx = other.x - this.x;
-                            let dy = other.y - this.y;
-                            if (dx*dx + dy*dy < 20000) { // Ищут в широком радиусе
-                                this.partner = other;
-                                other.partner = this;
-                                this.isMerging = true;
-                                other.isMerging = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            } else {
-                // Притягивание друг к другу
-                let dx = this.partner.x - this.x;
-                let dy = this.partner.y - this.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                
-                this.x += dx * 0.04;
-                this.y += dy * 0.04;
-
-                // Касание
-                if (dist < 10 && this.type === 'white') {
-                    this.flash = 1; // Запуск взрыва
-                    this.partner.init(false); // Красная исчезает
-                    this.partner = null;
-                }
-            }
+        update() {
+            this.y += this.vy;
+            this.x += this.vx;
+            if (this.y < -20) this.init();
         }
-
-        draw(ctx) {
-            if (this.alpha <= 0 || this.size <= 0) return;
-            
+        draw() {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            
-            if (this.flash > 0) {
-                ctx.fillStyle = `rgba(255, 150, 150, ${this.flash})`;
-                ctx.shadowBlur = 30;
-                ctx.shadowColor = `rgba(255, 75, 43, ${this.flash})`;
-            } else {
-                let r = this.type === 'white' ? 255 : 255;
-                let g = this.type === 'white' ? 255 : 75;
-                let b = this.type === 'white' ? 255 : 43;
-                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${this.alpha})`;
-                ctx.shadowBlur = 25;
-                ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${this.alpha * 1.5})`;
-            }
-            
+            ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
             ctx.fill();
-            ctx.shadowBlur = 0; // Обязательно сбрасываем, чтобы не сломать остальной канвас
         }
     }
 
-    function initCanvas() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        souls = [];
-        // Создаем 15 пар душ
-        for(let i=0; i<15; i++) {
-            souls.push(new Soul('white'));
-            souls.push(new Soul('red'));
-        }
+    function setup() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        souls = Array.from({length: 40}, () => new SimpleSoul());
     }
 
-    function animate() {
-        ctx.clearRect(0, 0, width, height);
-        souls.forEach(s => { 
-            s.update(souls); 
-            s.draw(ctx); 
-        });
-        requestAnimationFrame(animate);
+    function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        souls.forEach(s => { s.update(); s.draw(); });
+        requestAnimationFrame(loop);
     }
-    
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(initCanvas, 200);
-    });
 
-    initCanvas();
-    animate();
+    window.addEventListener('resize', setup);
+    setup();
+    loop();
 </script>
 </body>
 </html>
