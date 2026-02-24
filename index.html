@@ -344,6 +344,20 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // --- АВТОМАТИЧЕСКАЯ ПОДСТАНОВКА @ В USERNAME ---
+    const usernameInput = document.getElementById('authUsername');
+    usernameInput.addEventListener('input', function() {
+        let val = this.value.replace(/\s/g, ''); // Запрещаем пробелы
+        if (val.length > 0 && !val.startsWith('@')) {
+            val = '@' + val;
+        }
+        if (val === '@') {
+            val = ''; // Если стерли всё слово, убираем @, чтобы вернуть placeholder
+        }
+        this.value = val;
+    });
+    // -------------------------------------------------
+
     // Управление менюшкой
     function toggleAuthMenu() {
         document.getElementById('authDropdown').classList.toggle('show');
@@ -365,6 +379,7 @@
         document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
         document.getElementById('authBtn').innerText = l ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ';
         
+        // Показываем USERNAME только при регистрации, а "Забыли пароль" только при входе
         document.getElementById('authUsername').style.display = l ? 'none' : 'block';
         document.getElementById('forgotPasswordLink').style.display = l ? 'block' : 'none';
         
