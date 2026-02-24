@@ -39,30 +39,61 @@
         
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
-        /* Навигация: Вход слева, Регистрация справа */
+        /* --- НОВАЯ НАВИГАЦИЯ С ИКОНКОЙ --- */
         .auth-nav { 
             position: absolute; 
-            top: 15px; left: 20px; right: 20px; 
+            top: 20px; right: 20px; 
             z-index: 25; 
-            display: flex; justify-content: space-between; 
+            display: flex; flex-direction: column; align-items: flex-end; 
         }
 
-        .btn-auth { 
+        .auth-menu-btn { 
+            width: 38px; height: 38px; 
+            border-radius: 50%; 
             background: rgba(255,255,255,0.08); 
             border: 1px solid var(--glass-border); 
             color: #fff; 
-            padding: 8px 14px; 
-            border-radius: 12px; 
-            font-size: 9px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            backdrop-filter: blur(10px); 
-            transition: all 0.2s ease;
+            display: flex; justify-content: center; align-items: center; 
+            cursor: pointer; backdrop-filter: blur(10px); 
+            transition: all 0.3s ease; position: relative; z-index: 2;
         }
-        /* Анимация проваливания без свечения */
-        .btn-auth:hover { transform: translateY(2px); background: rgba(255,255,255,0.12); }
-        .btn-auth:active { transform: translateY(3px) scale(0.96); }
+        .auth-menu-btn i { font-size: 15px; }
+        .auth-menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+        .auth-menu-btn:active { transform: scale(0.95); }
+
+        /* Пульсирующая точка-приманка */
+        .auth-menu-btn::after {
+            content: ''; position: absolute; top: -1px; right: -1px;
+            width: 12px; height: 12px; background: var(--verify-blue);
+            border-radius: 50%; border: 2px solid #000;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 149, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0); }
+        }
+
+        /* Выпадающее меню */
+        .auth-dropdown {
+            position: absolute; top: 48px; right: 0;
+            background: rgba(20, 20, 20, 0.85); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 6px; display: flex; flex-direction: column; gap: 4px;
+            backdrop-filter: blur(25px); opacity: 0; transform: translateY(-10px);
+            pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-width: 140px;
+        }
+        .auth-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+        .btn-auth-dropdown {
+            background: transparent; border: none; color: #fff; padding: 12px 16px;
+            font-size: 10px; font-weight: 800; letter-spacing: 1.5px; cursor: pointer;
+            text-transform: uppercase; border-radius: 10px; transition: 0.2s; text-align: center;
+        }
+        .btn-auth-dropdown:hover { background: rgba(255,255,255,0.1); }
+        .btn-auth-dropdown:active { transform: scale(0.96); }
+        /* ---------------------------------- */
 
         .profile-card { 
             position: relative; 
@@ -121,7 +152,6 @@
         .btn-yt:hover { color: var(--yt-color) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
         .btn-soundcloud:hover { color: var(--sc-color) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        /* ИДЕАЛЬНАЯ КОМПЕНСАЦИЯ ОТСТУПОВ */
         .collapse-wrapper { 
             display: grid; 
             grid-template-rows: 0fr; 
@@ -144,7 +174,6 @@
         .anon-card, .afisha-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px; position: relative; }
         .anon-textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px; color: #fff; resize: none; outline: none; margin-bottom: 15px; font-size: 13px; }
         
-        /* Кнопка "Я организатор" */
         .organizer-link { 
             display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
             color: var(--red-accent); text-decoration: none; 
@@ -156,7 +185,6 @@
         .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-2px); }
         .organizer-link:active { transform: scale(0.96); }
 
-        /* ОБНОВЛЕННЫЕ СТИЛИ МОДАЛКИ */
         .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
         .auth-modal.show { display: flex; }
         
@@ -189,7 +217,6 @@
         }
         .auth-form input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
         
-        /* Стили для ссылки "Забыли пароль?" */
         .forgot-link { 
             font-size: 10px; opacity: 0.4; cursor: pointer; 
             text-align: right; width: 100%; 
@@ -222,11 +249,16 @@
 
 <div class="container">
     <div class="profile-card">
+        
         <div class="auth-nav">
-            <button class="btn-auth" onclick="openAuth(true)">Вход</button>
-            <button class="btn-auth" onclick="openAuth(false)">Регистрация</button>
+            <button class="auth-menu-btn" onclick="toggleAuthMenu()">
+                <i class="fa-regular fa-user"></i>
+            </button>
+            <div class="auth-dropdown" id="authDropdown">
+                <button class="btn-auth-dropdown" onclick="openAuth(true)">ВХОД</button>
+                <button class="btn-auth-dropdown" onclick="openAuth(false)">РЕГИСТРАЦИЯ</button>
+            </div>
         </div>
-
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
         </a>
@@ -312,13 +344,27 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // Управление менюшкой
+    function toggleAuthMenu() {
+        document.getElementById('authDropdown').classList.toggle('show');
+    }
+
+    // Закрываем меню, если кликнули в другое место
+    window.addEventListener('click', (e) => {
+        const nav = document.querySelector('.auth-nav');
+        if (nav && !nav.contains(e.target)) {
+            document.getElementById('authDropdown').classList.remove('show');
+        }
+    });
+
     let isLoginMode = true;
     function openAuth(l) { 
+        document.getElementById('authDropdown').classList.remove('show'); // Прячем меню
+        
         isLoginMode = l; 
         document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
         document.getElementById('authBtn').innerText = l ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ';
         
-        // Показываем USERNAME только при регистрации, а "Забыли пароль" только при входе
         document.getElementById('authUsername').style.display = l ? 'none' : 'block';
         document.getElementById('forgotPasswordLink').style.display = l ? 'block' : 'none';
         
@@ -326,6 +372,7 @@
         document.getElementById('authSuccess').style.display = 'none';
         document.getElementById('authModal').classList.add('show'); 
     }
+    
     function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
     async function executeAuth() {
@@ -431,9 +478,12 @@
     }
 
     function initCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        if(Math.abs(lastWidth - window.innerWidth) > 50 || emojis.length === 0) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            lastWidth = window.innerWidth;
+            emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        }
     }
 
     function anim() { 
@@ -442,12 +492,7 @@
         requestAnimationFrame(anim); 
     }
     
-    window.addEventListener('resize', () => {
-        if(Math.abs(lastWidth - window.innerWidth) > 50) {
-            initCanvas();
-            lastWidth = window.innerWidth;
-        }
-    });
+    window.addEventListener('resize', initCanvas);
     initCanvas(); anim();
 
     async function fetchPrediction() {
