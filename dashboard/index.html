@@ -1,129 +1,79 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <script type="text/javascript">
-        (function(m,e,t,r,i,k,a){
-            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637', 'ym');
-        ym(106955637, 'init', { clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, ecommerce:"dataLayer" });
-    </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>BULAVIN | SOON</title>
+    <title>BULAVIN | INNER CIRCLE</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --red-glow: #ff4b2b;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --magic-glow: rgba(255, 255, 255, 0.5);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            background: #000; 
-            color: #fff; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: space-between; 
-            align-items: center; 
-            overflow: hidden; 
-            -webkit-tap-highlight-color: transparent;
-        }
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(2px); pointer-events: none; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(90px) brightness(0.15); transform: scale(1.1); z-index: -2; }
         
-        #global-canvas { position: fixed; inset: 0; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.15); transform: scale(1.1); z-index: -2; }
+        .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; gap: 15px; opacity: 0; animation: fadeIn 2s forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
 
-        .container { 
-            width: 100%; 
-            max-width: 420px; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            z-index: 5; 
-            flex-grow: 1;
-        }
-
-        .main-card {
-            background: var(--glass);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            padding: 60px 20px;
-            text-align: center;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .soon-accent {
-            font-size: clamp(40px, 12vw, 56px);
-            font-weight: 900;
-            letter-spacing: 12px;
-            color: var(--red-glow);
-            text-shadow: 0 0 25px rgba(255, 75, 43, 0.7);
-            animation: glow-pulse 2s infinite alternate;
-            text-transform: uppercase;
-            margin-left: 12px; /* центровка из-за letter-spacing */
-        }
-
-        @keyframes glow-pulse {
-            from { opacity: 0.5; transform: scale(0.98); text-shadow: 0 0 10px rgba(255, 75, 43, 0.4); }
-            to { opacity: 1; transform: scale(1); text-shadow: 0 0 40px rgba(255, 75, 43, 0.9); }
-        }
-
-        .loader {
-            width: 25px;
-            height: 25px;
-            border: 2px solid rgba(255,255,255,0.05);
-            border-top: 2px solid var(--red-glow);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .btn-back {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--glass-border);
-            padding: 18px 30px;
-            border-radius: 20px;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            width: 80%;
-        }
-        .btn-back:hover { background: #fff; color: #000; transform: translateY(-2px); }
-        .btn-back:active { transform: scale(0.95); }
-
-        .footer { 
+        .dashboard-card { 
+            background: var(--glass); 
+            border: 1px solid var(--glass-border); 
+            padding: 50px 30px; 
+            border-radius: 40px; 
             text-align: center; 
-            font-size: 10px; 
-            opacity: 0.2; 
-            padding-bottom: 30px; 
-            letter-spacing: 2px; 
-            width: 100%;
-            text-transform: uppercase;
+            backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            position: relative;
         }
+
+        .logout-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+            color: #fff; padding: 8px 14px; border-radius: 12px; font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s ease;
+        }
+        .logout-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+        h2 { font-size: 10px; letter-spacing: 4px; font-weight: 800; margin-bottom: 10px; opacity: 0.4; text-transform: uppercase; }
+        h1 { font-size: 22px; letter-spacing: 4px; font-weight: 900; margin-bottom: 40px; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
+        .soul-text {
+            font-size: 13px; font-weight: 300; line-height: 1.8; opacity: 0.8; 
+            margin-bottom: 40px; letter-spacing: 0.5px;
+        }
+
+        .soul-text span { color: #fff; font-weight: 600; opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+
+        /* Кнопка МАГИЧЕСКОГО СЛИЯНИЯ */
+        .merge-btn { 
+            position: relative; width: 100%; padding: 22px; border-radius: 20px; 
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff; font-weight: 900; font-size: 14px; letter-spacing: 6px; cursor: pointer; 
+            transition: all 0.5s ease; text-transform: uppercase; text-decoration: none;
+            display: flex; justify-content: center; align-items: center; gap: 15px;
+            animation: heartbeat 3s infinite;
+        }
+        
+        @keyframes heartbeat { 
+            0% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.4); border-color: rgba(255, 255, 255, 0.6); }
+            100% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
+        }
+
+        .merge-btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+        .merge-btn:active { transform: scale(0.96); }
+        .merge-btn i { font-size: 22px; opacity: 0.9; }
+
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -131,85 +81,94 @@
 <canvas id="global-canvas"></canvas>
 <div class="dynamic-bg"></div>
 
-<div class="container">
-    <div class="main-card">
-        <div class="soon-accent">SOON</div>
-        <div class="loader"></div>
-        <button class="btn-back" id="logoutBtn">Вернуться на главную</button>
-    </div>
-</div>
+<div class="container" id="dashboardContent" style="display: none;">
+    <div class="dashboard-card">
+        <button class="logout-btn" onclick="logOut()">ВЫЙТИ</button>
+        
+        <h2>ТВОЙ ИДЕНТИФИКАТОР</h2>
+        <h1 id="userNameDisplay">@USER</h1>
 
-<div class="footer">© 2026 BULAVIN</div>
+        <div class="soul-text">
+            Я отдаю тебе свою душу в каждом новом треке и в каждой строчке. Поэтому я уже часть тебя, а ты — часть меня.<br><br>Но чтобы стереть все границы, нам не хватает одного...<br><span>Нам нужно абсолютное слияние.</span>
+        </div>
+
+        <a href="https://t.me/imbulavin_bot" target="_blank" class="merge-btn">
+            <i class="fa-solid fa-fingerprint"></i>
+            СЛИЯНИЕ
+        </a>
+    </div>
+    <div class="footer">© 2026 BULAVIN SYSTEM</div>
+</div>
 
 <script>
     const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 1. Быстрая проверка авторизации
-    async function checkAuth() {
-        const { data: { session } } = await _supabase.auth.getSession();
-        if (!session) {
-            window.location.replace('../'); 
+    async function checkUser() {
+        const { data: { user } } = await _supabase.auth.getUser();
+        if (!user) { window.location.href = '../'; } 
+        else {
+            document.getElementById('dashboardContent').style.display = 'flex';
+            let username = user.user_metadata?.username;
+            if (!username) username = '@' + user.email.split('@')[0];
+            document.getElementById('userNameDisplay').innerText = username.toUpperCase();
         }
     }
-    checkAuth();
 
-    // 2. Исправленный логаут (сначала выход, потом редирект)
-    document.getElementById('logoutBtn').onclick = async function() {
-        const btn = this;
-        btn.innerText = 'ВЫХОД...';
-        btn.disabled = true;
+    async function logOut() {
+        await _supabase.auth.signOut();
+        window.location.href = '../';
+    }
+    checkUser();
 
-        try {
-            await _supabase.auth.signOut();
-            localStorage.clear();
-            sessionStorage.clear();
-        } catch (e) {
-            console.log('Signout error, but redirecting anyway');
-        } finally {
-            window.location.replace('../');
-        }
-    };
-
-    /* --- АНИМАЦИЯ ЭМОДЗИ (КАК НА ГЛАВНОЙ) --- */
+    // --- МАГИЧЕСКИЙ КАНВАС (Энергетические сферы вместо эмодзи) ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
-    let emojis = [];
+    let orbs = [];
+    let lastWidth = window.innerWidth;
 
-    class FloatingEmoji {
+    class GlowingOrb {
         constructor() { this.init(true); }
         init(f) {
             this.x = Math.random() * window.innerWidth;
-            this.y = f ? Math.random() * window.innerHeight : -50;
-            this.emoji = ['🖤', '💼', '🎧'][Math.floor(Math.random() * 3)];
-            this.size = Math.random() * 20 + 20;
-            this.vx = (Math.random() - 0.5) * 0.4;
-            this.vy = (Math.random() - 0.5) * 0.4;
-            this.rot = Math.random() * Math.PI * 2;
-            this.rotSpd = (Math.random() - 0.5) * 0.01;
-            this.op = Math.random() * 0.2 + 0.1;
+            this.y = f ? Math.random() * window.innerHeight : window.innerHeight + 50;
+            this.size = Math.random() * 3 + 1; // Маленькие частицы
+            this.vx = (Math.random() - 0.5) * 0.3;
+            this.vy = -(Math.random() * 0.5 + 0.2); // Медленно плывут вверх
+            this.op = Math.random() * 0.5 + 0.1;
         }
         update() { 
-            this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd; 
-            if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false); 
+            this.x += this.vx; this.y += this.vy; 
+            if (this.y < -50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false); 
         }
-        draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.fillText(this.emoji, 0, 0); ctx.restore(); }
+        draw() { 
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.op})`;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+            ctx.fill();
+        }
     }
 
     function initCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        orbs = Array.from({length: 40}, () => new GlowingOrb());
     }
 
     function anim() { 
         ctx.clearRect(0,0,canvas.width,canvas.height); 
-        emojis.forEach(e => { e.update(); e.draw(); }); 
+        orbs.forEach(o => { o.update(); o.draw(); }); 
         requestAnimationFrame(anim); 
     }
     
-    window.addEventListener('resize', initCanvas);
+    window.addEventListener('resize', () => {
+        if(Math.abs(lastWidth - window.innerWidth) > 50) {
+            initCanvas(); lastWidth = window.innerWidth;
+        }
+    });
     initCanvas(); anim();
 </script>
 </body>
