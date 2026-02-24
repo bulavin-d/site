@@ -35,7 +35,16 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
-        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background: #000; 
+            color: #fff; 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent; 
+            overscroll-behavior-y: none; /* Убивает резиновую оттяжку на мобилках */
+        }
         
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
@@ -61,11 +70,9 @@
         .glass-card { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 35px 30px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); width: 90%; max-width: 350px; }
 
         /* Кнопки в модалке выбора */
-        .choice-btn { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+        .choice-btn { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
         .choice-btn i { font-size: 16px; width: 20px; text-align: center; }
         .choice-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
-        .choice-btn.back-btn { margin-top: 10px; opacity: 0.4; border: none; background: transparent; font-size: 10px; }
-        .choice-btn.back-btn:hover { opacity: 1; transform: none; background: transparent; color: var(--red-accent); }
 
         /* QR Стили */
         .qr-image-wrapper { background: #fff; padding: 15px; border-radius: 25px; margin-bottom: 20px; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; }
@@ -116,6 +123,9 @@
         .auth-form-card input { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; margin-bottom: 15px; outline: none; font-size: 13px; }
         .btn-action { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px; }
         .btn-action:hover { background: #fff; color: #000; transform: translateY(-2px); }
+
+        .forgot-link { font-size: 10px; opacity: 0.4; cursor: pointer; text-align: right; width: 100%; margin-top: -5px; margin-bottom: 15px; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; }
+        .forgot-link:hover { opacity: 0.8; color: var(--verify-blue); }
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
@@ -215,19 +225,12 @@
 </div>
 
 <div class="glass-modal" id="authChoiceModal" onclick="closeAuthChoice()">
-    <div class="glass-card" onclick="event.stopPropagation()">
-        <div class="modal-title" style="margin-bottom: 30px;">ДОСТУП</div>
-        
-        <button class="choice-btn" onclick="openAuth(true)">
+    <div class="glass-card" style="padding: 40px 30px; gap: 15px;" onclick="event.stopPropagation()">
+        <button class="choice-btn" onclick="openAuth(true)" style="margin-bottom: 0;">
             <i class="fa-solid fa-right-to-bracket"></i> ВХОД
         </button>
-        
-        <button class="choice-btn" onclick="openAuth(false)">
+        <button class="choice-btn" onclick="openAuth(false)" style="margin-bottom: 0;">
             <i class="fa-solid fa-user-plus"></i> РЕГИСТРАЦИЯ
-        </button>
-
-        <button class="choice-btn back-btn" onclick="closeAuthChoice()">
-            <i class="fa-solid fa-arrow-left"></i> НАЗАД
         </button>
     </div>
 </div>
@@ -242,10 +245,7 @@
             
             <p id="forgotPasswordLink" class="forgot-link" onclick="resetPasswordTrigger()">Забыли пароль?</p>
             
-            <button class="btn-action" id="authBtn" onclick="executeAuth()">ВОЙТИ</button>
-            <button class="choice-btn back-btn" onclick="closeAuth(); openAuthChoice();">
-                <i class="fa-solid fa-arrow-left"></i> К ВЫБОРУ
-            </button>
+            <button class="btn-action" id="authBtn" onclick="executeAuth()">ПРОДОЛЖИТЬ</button>
         </div>
         <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
             <i id="authIcon" class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
@@ -274,7 +274,7 @@
         closeAuthChoice();
         isLoginMode = l; 
         document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
-        document.getElementById('authBtn').innerText = l ? 'ВОЙТИ' : 'ПРОДОЛЖИТЬ';
+        document.getElementById('authBtn').innerText = 'ПРОДОЛЖИТЬ';
         document.getElementById('authUsername').style.display = l ? 'none' : 'block';
         document.getElementById('forgotPasswordLink').style.display = l ? 'block' : 'none';
         document.getElementById('authInputs').style.display = 'block';
@@ -301,7 +301,7 @@
         
         if (isLoginMode) {
             const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ВОЙТИ'; }
+            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ'; }
             else window.location.href = 'dashboard/'; 
         } else {
             const { error } = await _supabase.auth.signUp({ 
@@ -320,9 +320,17 @@
     async function resetPasswordTrigger() {
         const email = document.getElementById('authEmail').value;
         if (!email) return alert('Введите Email!');
+        
+        const btn = document.getElementById('forgotPasswordLink');
+        const originalText = btn.innerText;
+        btn.innerText = 'ОТПРАВКА...';
+        
         const { error } = await _supabase.auth.resetPasswordForEmail(email, {
             redirectTo: 'https://bulavin.space/password-reset/',
         });
+        
+        btn.innerText = originalText;
+        
         if (error) alert(error.message);
         else {
             document.getElementById('authSuccessText').innerText = 'Ссылка отправлена на почту.';
@@ -354,9 +362,12 @@
             .catch(() => { b.innerText = 'ОШИБКА'; b.disabled = false; });
     });
 
+    // ФИКС ЭМОДЗИ НА МОБИЛКАХ
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
+    let lastWidth = window.innerWidth;
+
     class FloatingEmoji {
         constructor() { this.init(true); }
         init(f) {
@@ -376,10 +387,20 @@
         }
         draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.fillText(this.emoji, 0, 0); ctx.restore(); }
     }
+    
     function initCanvas() {
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        const isWidthChanged = Math.abs(lastWidth - window.innerWidth) > 50;
+        if(isWidthChanged || emojis.length === 0) {
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight;
+            lastWidth = window.innerWidth;
+            emojis = Array.from({length: 15}, () => new FloatingEmoji());
+        } else {
+            // Обновляем только высоту, не сбрасывая массив (спасает от глюков при скролле)
+            canvas.height = window.innerHeight;
+        }
     }
+    
     function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); emojis.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(anim); }
     window.addEventListener('resize', initCanvas);
     initCanvas(); anim();
