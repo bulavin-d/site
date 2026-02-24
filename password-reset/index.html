@@ -1,1 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BULAVIN | RESET</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --verify-blue: #0095f6;
+        }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
+        
+        .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; align-items: center; }
+
+        .auth-form { 
+            background: rgba(255, 255, 255, 0.04); 
+            border: 1px solid var(--glass-border); 
+            padding: 45px 30px; 
+            border-radius: 40px; 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            backdrop-filter: blur(30px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 { font-size: 22px; letter-spacing: 6px; font-weight: 900; margin-bottom: 40px; text-align: center; width: 100%; color: #fff; padding-left: 6px; }
+
+        input { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; margin-bottom: 15px; outline: none; font-size: 13px; transition: all 0.3s ease; }
+        input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+        
+        .btn-action { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; margin-top: 10px; }
+        .btn-action:hover { background: #fff; color: #000; transform: translateY(-2px); }
+        .btn-action:active { transform: scale(0.98); }
+
+        .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 30px; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+<canvas id="global-canvas"></canvas>
+<div class="dynamic-bg"></div>
+
+<div class="container">
+    <div class="auth-form" id="resetCard">
+        <h2>НОВЫЙ ПАРОЛЬ</h2>
+        <div id="resetInputs" style="width: 100%;">
+            <input type="password" id="newPassword" placeholder="ПРИДУМАЙТЕ НОВЫЙ ПАРОЛЬ">
+            <button class="btn-action" id="resetBtn" onclick="updatePassword()">ОБНОВИТЬ</button>
+        </div>
+        
+        <div id="resetSuccess" style="display: none; text-align: center; width: 100%;">
+            <i class="fa-solid fa-circle-check" style="font-size: 40px; color: #1ed760; margin-bottom: 20px;"></i>
+            <p style="font-size: 11px; opacity: 0.9; line-height: 1.5;">Пароль успешно изменен!<br>Теперь можно войти в систему.</p>
+            <button class="btn-action" style="margin-top: 20px;" onclick="window.location.href='../'">НА ГЛАВНУЮ</button>
+        </div>
+    </div>
+    <div class="footer">© 2026 BULAVIN</div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function updatePassword() {
+        const newPassword = document.getElementById('newPassword').value;
+        const btn = document.getElementById('resetBtn');
+        
+        if (newPassword.length < 6) return alert('Пароль должен быть не короче 6 символов!');
+
+        btn.disabled = true; 
+        btn.innerText = 'ПОДОЖДИ...';
+
+        // Supabase автоматически прочитает скрытый токен из ссылки в письме
+        const { error } = await _supabase.auth.updateUser({ password: newPassword });
+
+        if (error) { 
+            alert(error.message); 
+            btn.disabled = false; 
+            btn.innerText = 'ОБНОВИТЬ'; 
+        } else {
+            document.getElementById('resetInputs').style.display = 'none';
+            document.getElementById('resetSuccess').style.display = 'block';
+        }
+    }
+
+    // --- Анимация эмодзи ---
+    const canvas = document.getElementById('global-canvas');
+    const ctx = canvas.getContext('2d');
+    let emojis = [];
+    let lastWidth = window.innerWidth;
+
+    class FloatingEmoji {
+        constructor() { this.init(true); }
+        init(f) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = f ? Math.random() * window.innerHeight : -50;
+            this.emoji = ['🖤', '💼', '🎧'][Math.floor(Math.random() * 3)];
+            this.size = Math.random() * 20 + 20;
+            this.vx = (Math.random() - 0.5) * 0.4;
+            this.vy = (Math.random() - 0.5) * 0.4;
+            this.rot = Math.random() * Math.PI * 2;
+            this.rotSpd = (Math.random() - 0.5) * 0.01;
+            this.op = Math.random() * 0.2 + 0.1;
+        }
+        update() { 
+            this.x += this.vx; this.y += this.vy; this.rot += this.rotSpd; 
+            if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false); 
+        }
+        draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.fillText(this.emoji, 0, 0); ctx.restore(); }
+    }
+
+    function initCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        emojis = Array.from({length: 15}, () => new FloatingEmoji());
+    }
+
+    function anim() { 
+        ctx.clearRect(0,0,canvas.width,canvas.height); 
+        emojis.forEach(e => { e.update(); e.draw(); }); 
+        requestAnimationFrame(anim); 
+    }
+    
+    window.addEventListener('resize', () => {
+        if(Math.abs(lastWidth - window.innerWidth) > 50) {
+            initCanvas();
+            lastWidth = window.innerWidth;
+        }
+    });
+    initCanvas(); anim();
+</script>
+</body>
+</html>
