@@ -39,42 +39,39 @@
         
         .container { width: 100%; max-width: 420px; padding: 40px 20px; display: flex; flex-direction: column; gap: 10px; z-index: 5; position: relative; }
 
-        .auth-nav { position: absolute; top: 20px; right: 20px; z-index: 25; display: flex; flex-direction: column; align-items: flex-end; }
-        .auth-menu-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; position: relative; z-index: 2; }
+        .auth-nav { position: absolute; top: 20px; right: 20px; z-index: 25; }
+        .auth-menu-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; position: relative; }
         .auth-menu-btn i { font-size: 15px; }
         .auth-menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
         .auth-menu-btn:active { transform: scale(0.95); }
         .auth-menu-btn::after { content: ''; position: absolute; top: -1px; right: -1px; width: 12px; height: 12px; background: var(--verify-blue); border-radius: 50%; border: 2px solid #000; animation: pulse-dot 2s infinite; }
         @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(0, 149, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0); } }
 
-        /* --- СТИЛИ ДЛЯ QR КОДА (НОВЫЕ) --- */
         .qr-nav { position: absolute; top: 20px; left: 20px; z-index: 25; display: flex; align-items: flex-start; }
         .qr-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; }
         .qr-btn i { font-size: 16px; }
         .qr-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
         .qr-btn:active { transform: scale(0.95); }
 
-        .qr-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(25px); }
-        .qr-modal.show { display: flex; animation: qrFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        .qr-card { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 35px 30px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); }
+        /* МОДАЛКИ ОБЩИЕ */
+        .glass-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(25px); }
+        .glass-modal.show { display: flex; animation: glassFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes glassFadeIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+
+        .glass-card { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 35px 30px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); width: 90%; max-width: 350px; }
+
+        /* Кнопки в модалке выбора */
+        .choice-btn { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+        .choice-btn i { font-size: 16px; width: 20px; text-align: center; }
+        .choice-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
+        .choice-btn.back-btn { margin-top: 10px; opacity: 0.4; border: none; background: transparent; font-size: 10px; }
+        .choice-btn.back-btn:hover { opacity: 1; transform: none; background: transparent; color: var(--red-accent); }
+
+        /* QR Стили */
         .qr-image-wrapper { background: #fff; padding: 15px; border-radius: 25px; margin-bottom: 20px; width: 220px; height: 220px; display: flex; justify-content: center; align-items: center; }
         .qr-image-wrapper img { width: 100%; height: 100%; object-fit: contain; }
-        
-        .qr-title { font-size: 18px; letter-spacing: 5px; font-weight: 900; color: #fff; text-transform: uppercase; margin-bottom: 5px; text-align: center; }
-        .qr-subtitle { font-size: 10px; opacity: 0.5; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
-
-        @keyframes qrFadeIn { 
-            0% { opacity: 0; transform: scale(0.9); } 
-            100% { opacity: 1; transform: scale(1); } 
-        }
-        /* --------------------------------- */
-
-        .auth-dropdown { position: absolute; top: 48px; right: 0; background: rgba(20, 20, 20, 0.85); border: 1px solid var(--glass-border); border-radius: 16px; padding: 6px; display: flex; flex-direction: column; gap: 4px; backdrop-filter: blur(25px); opacity: 0; transform: translateY(-10px); pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; box-shadow: 0 10px 30px rgba(0,0,0,0.5); min-width: 140px; }
-        .auth-dropdown.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .btn-auth-dropdown { background: transparent; border: none; color: #fff; padding: 12px 16px; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; cursor: pointer; text-transform: uppercase; border-radius: 10px; transition: 0.2s; text-align: center; }
-        .btn-auth-dropdown:hover { background: rgba(255,255,255,0.1); }
-        .btn-auth-dropdown:active { transform: scale(0.96); }
+        .modal-title { font-size: 18px; letter-spacing: 5px; font-weight: 900; color: #fff; text-transform: uppercase; margin-bottom: 5px; text-align: center; width: 100%; }
+        .modal-subtitle { font-size: 10px; opacity: 0.5; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
 
         .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 55px 20px 35px; text-align: center; margin: 0; }
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; }
@@ -114,21 +111,11 @@
         .organizer-link:hover { background: rgba(255, 75, 43, 0.1); transform: translateY(-2px); }
         .organizer-link:active { transform: scale(0.96); }
 
-        .auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
-        .auth-modal.show { display: flex; }
-        
-        .auth-form { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 45px 30px; border-radius: 40px; width: 90%; max-width: 350px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        #authTitle { font-size: 22px; letter-spacing: 6px; font-weight: 900; margin-bottom: 40px; text-align: center; width: 100%; color: #fff; padding-left: 6px; }
-
-        .auth-form input { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; margin-bottom: 15px; outline: none; font-size: 13px; transition: all 0.3s ease; }
-        .auth-form input:focus { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
-        
-        .forgot-link { font-size: 10px; opacity: 0.4; cursor: pointer; text-align: right; width: 100%; margin-top: -5px; margin-bottom: 15px; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; }
-        .forgot-link:hover { opacity: 0.8; color: var(--verify-blue); }
-
-        .btn-action { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; margin-top: 10px; }
+        /* Auth Form Modal */
+        .auth-form-card { width: 90%; max-width: 350px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 45px 30px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); }
+        .auth-form-card input { width: 100%; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; margin-bottom: 15px; outline: none; font-size: 13px; }
+        .btn-action { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 2px; cursor: pointer; transition: 0.3s; text-transform: uppercase; margin-top: 10px; }
         .btn-action:hover { background: #fff; color: #000; transform: translateY(-2px); }
-        .btn-action:active { transform: scale(0.98); }
 
         #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: grayscale(1) brightness(0.6) blur(1px); pointer-events: none; }
         .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(80px) brightness(0.2); transform: scale(1.1); z-index: -2; }
@@ -152,13 +139,9 @@
         </div>
 
         <div class="auth-nav">
-            <button class="auth-menu-btn" onclick="toggleAuthMenu()">
+            <button class="auth-menu-btn" onclick="openAuthChoice()">
                 <i class="fa-regular fa-user"></i>
             </button>
-            <div class="auth-dropdown" id="authDropdown">
-                <button class="btn-auth-dropdown" onclick="openAuth(true)">ВХОД</button>
-                <button class="btn-auth-dropdown" onclick="openAuth(false)">РЕГИСТРАЦИЯ</button>
-            </div>
         </div>
 
         <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
@@ -221,19 +204,37 @@
     <div class="footer">© 2026 BULAVIN</div>
 </div>
 
-<div class="qr-modal" id="qrModal" onclick="if(event.target === this) closeQR()">
-    <div class="qr-card" onclick="event.stopPropagation()">
+<div class="glass-modal" id="qrModal" onclick="closeQR()">
+    <div class="glass-card" onclick="event.stopPropagation()">
         <div class="qr-image-wrapper">
             <img src="https://bulavin.space/qr-code.png" alt="QR Bulavin Space">
         </div>
-        <div class="qr-title">BULAVIN.SPACE</div>
-        <div class="qr-subtitle">ОТКСАНИРУЙ, ЧТОБЫ ПОДЕЛИТЬСЯ</div>
+        <div class="modal-title">BULAVIN.SPACE</div>
+        <div class="modal-subtitle">ОТКСАНИРУЙ, ЧТОБЫ ПОДЕЛИТЬСЯ</div>
     </div>
 </div>
 
-<div class="auth-modal" id="authModal" onclick="if(event.target === this) closeAuth()">
-    <div class="auth-form" id="authForm" onclick="event.stopPropagation()">
-        <h2 id="authTitle">ВХОД</h2>
+<div class="glass-modal" id="authChoiceModal" onclick="closeAuthChoice()">
+    <div class="glass-card" onclick="event.stopPropagation()">
+        <div class="modal-title" style="margin-bottom: 30px;">ДОСТУП</div>
+        
+        <button class="choice-btn" onclick="openAuth(true)">
+            <i class="fa-solid fa-right-to-bracket"></i> ВХОД
+        </button>
+        
+        <button class="choice-btn" onclick="openAuth(false)">
+            <i class="fa-solid fa-user-plus"></i> РЕГИСТРАЦИЯ
+        </button>
+
+        <button class="choice-btn back-btn" onclick="closeAuthChoice()">
+            <i class="fa-solid fa-arrow-left"></i> НАЗАД
+        </button>
+    </div>
+</div>
+
+<div class="glass-modal" id="authModal" onclick="closeAuth()">
+    <div class="auth-form-card" onclick="event.stopPropagation()">
+        <h2 id="authTitle" class="modal-title" style="margin-bottom: 40px;">ВХОД</h2>
         <div id="authInputs" style="width: 100%;">
             <input type="text" id="authUsername" placeholder="USERNAME" style="display: none;">
             <input type="email" id="authEmail" placeholder="EMAIL">
@@ -242,10 +243,13 @@
             <p id="forgotPasswordLink" class="forgot-link" onclick="resetPasswordTrigger()">Забыли пароль?</p>
             
             <button class="btn-action" id="authBtn" onclick="executeAuth()">ВОЙТИ</button>
+            <button class="choice-btn back-btn" onclick="closeAuth(); openAuthChoice();">
+                <i class="fa-solid fa-arrow-left"></i> К ВЫБОРУ
+            </button>
         </div>
         <div id="authSuccess" style="display: none; text-align: center; width: 100%;">
             <i id="authIcon" class="fa-regular fa-envelope" style="font-size: 40px; color: var(--verify-blue); margin-bottom: 20px;"></i>
-            <p id="authSuccessText" style="font-size: 11px; opacity: 0.9; line-height: 1.5;">Проверьте почту для подтверждения.</p>
+            <p id="authSuccessText" style="font-size: 11px; opacity: 0.9; line-height: 1.5;">Проверьте почту.</p>
             <button class="btn-action" style="margin-top: 20px;" onclick="closeAuth()">ПОНЯТНО</button>
         </div>
     </div>
@@ -256,47 +260,35 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // --- ЛОГИКА QR КОДА ---
+    // QR LOGIC
     function openQR() { document.getElementById('qrModal').classList.add('show'); }
     function closeQR() { document.getElementById('qrModal').classList.remove('show'); }
-    // ----------------------
+
+    // AUTH CHOICE LOGIC
+    function openAuthChoice() { document.getElementById('authChoiceModal').classList.add('show'); }
+    function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
+
+    // FORM LOGIC
+    let isLoginMode = true;
+    function openAuth(l) { 
+        closeAuthChoice();
+        isLoginMode = l; 
+        document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
+        document.getElementById('authBtn').innerText = l ? 'ВОЙТИ' : 'ПРОДОЛЖИТЬ';
+        document.getElementById('authUsername').style.display = l ? 'none' : 'block';
+        document.getElementById('forgotPasswordLink').style.display = l ? 'block' : 'none';
+        document.getElementById('authInputs').style.display = 'block';
+        document.getElementById('authSuccess').style.display = 'none';
+        document.getElementById('authModal').classList.add('show'); 
+    }
+    function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
     const usernameInput = document.getElementById('authUsername');
     usernameInput.addEventListener('input', function() {
         let val = this.value.replace(/\s/g, ''); 
         if (val.length > 0 && !val.startsWith('@')) val = '@' + val;
-        if (val === '@') val = ''; 
         this.value = val;
     });
-
-    function toggleAuthMenu() {
-        document.getElementById('authDropdown').classList.toggle('show');
-    }
-
-    window.addEventListener('click', (e) => {
-        const nav = document.querySelector('.auth-nav');
-        if (nav && !nav.contains(e.target)) {
-            document.getElementById('authDropdown').classList.remove('show');
-        }
-    });
-
-    let isLoginMode = true;
-    function openAuth(l) { 
-        document.getElementById('authDropdown').classList.remove('show'); 
-        
-        isLoginMode = l; 
-        document.getElementById('authTitle').innerText = l ? 'ВХОД' : 'РЕГИСТРАЦИЯ'; 
-        document.getElementById('authBtn').innerText = l ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ';
-        
-        document.getElementById('authUsername').style.display = l ? 'none' : 'block';
-        document.getElementById('forgotPasswordLink').style.display = l ? 'block' : 'none';
-        
-        document.getElementById('authInputs').style.display = 'block';
-        document.getElementById('authSuccess').style.display = 'none';
-        document.getElementById('authModal').classList.add('show'); 
-    }
-    
-    function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
     async function executeAuth() {
         const email = document.getElementById('authEmail').value;
@@ -305,7 +297,7 @@
         const btn = document.getElementById('authBtn');
         if(!email || !password) return alert('Заполни поля!');
         
-        btn.disabled = true; btn.innerText = 'ПОДОЖДИ...';
+        btn.disabled = true; btn.innerText = 'СВЯЗЬ...';
         
         if (isLoginMode) {
             const { error } = await _supabase.auth.signInWithPassword({ email, password });
@@ -313,13 +305,11 @@
             else window.location.href = 'dashboard/'; 
         } else {
             const { error } = await _supabase.auth.signUp({ 
-                email, 
-                password,
-                options: { data: { username: username } } 
+                email, password, options: { data: { username: username } } 
             });
-            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ЗАРЕГИСТРИРОВАТЬСЯ'; }
+            if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ'; }
             else {
-                document.getElementById('authSuccessText').innerHTML = 'Проверьте почту для<br>подтверждения регистрации.';
+                document.getElementById('authSuccessText').innerHTML = 'Проверьте почту для подтверждения.';
                 document.getElementById('authIcon').className = 'fa-regular fa-envelope';
                 document.getElementById('authInputs').style.display = 'none';
                 document.getElementById('authSuccess').style.display = 'block';
@@ -329,24 +319,13 @@
 
     async function resetPasswordTrigger() {
         const email = document.getElementById('authEmail').value;
-        if (!email) return alert('Сначала введите свой Email в поле!');
-        
-        const btn = document.getElementById('forgotPasswordLink');
-        const originalText = btn.innerText;
-        btn.innerText = 'ОТПРАВКА...';
-        btn.style.opacity = '0.7';
-
+        if (!email) return alert('Введите Email!');
         const { error } = await _supabase.auth.resetPasswordForEmail(email, {
             redirectTo: 'https://bulavin.space/password-reset/',
         });
-
-        btn.innerText = originalText;
-        btn.style.opacity = '0.4';
-
-        if (error) {
-            alert(error.message);
-        } else {
-            document.getElementById('authSuccessText').innerHTML = 'Ссылка для сброса пароля<br>отправлена на почту.';
+        if (error) alert(error.message);
+        else {
+            document.getElementById('authSuccessText').innerText = 'Ссылка отправлена на почту.';
             document.getElementById('authIcon').className = 'fa-solid fa-paper-plane';
             document.getElementById('authInputs').style.display = 'none';
             document.getElementById('authSuccess').style.display = 'block';
@@ -366,20 +345,18 @@
 
     const scriptURL = 'https://script.google.com/macros/s/AKfycbz6FqqfvQSiwbm-xmuo0-dFkvReYjjKsqyzEYojdO1tfigGVMz0nb93YpjO9fOZLvRLRQ/exec';
     const form = document.getElementById('google-sheet-form');
-    const submitBtn = document.getElementById('submit-btn');
     form.addEventListener('submit', e => {
         e.preventDefault();
-        submitBtn.disabled = true; submitBtn.innerText = 'ОТПРАВЛЯЮ...';
+        const b = document.getElementById('submit-btn');
+        b.disabled = true; b.innerText = 'ОТПРАВЛЯЮ...';
         fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(() => { submitBtn.innerText = 'ГОТОВО!'; form.reset(); setTimeout(() => { submitBtn.disabled = false; submitBtn.innerText = 'ОТПРАВИТЬ'; }, 3000); })
-            .catch(() => { submitBtn.innerText = 'ОШИБКА'; submitBtn.disabled = false; });
+            .then(() => { b.innerText = 'ГОТОВО!'; form.reset(); setTimeout(() => { b.disabled = false; b.innerText = 'ОТПРАВИТЬ'; }, 3000); })
+            .catch(() => { b.innerText = 'ОШИБКА'; b.disabled = false; });
     });
 
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
-    let lastWidth = window.innerWidth;
-
     class FloatingEmoji {
         constructor() { this.init(true); }
         init(f) {
@@ -399,22 +376,11 @@
         }
         draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.rot); ctx.globalAlpha = this.op; ctx.font = `${this.size}px serif`; ctx.textAlign = 'center'; ctx.fillText(this.emoji, 0, 0); ctx.restore(); }
     }
-
     function initCanvas() {
-        if(Math.abs(lastWidth - window.innerWidth) > 50 || emojis.length === 0) {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            lastWidth = window.innerWidth;
-            emojis = Array.from({length: 15}, () => new FloatingEmoji());
-        }
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        emojis = Array.from({length: 15}, () => new FloatingEmoji());
     }
-
-    function anim() { 
-        ctx.clearRect(0,0,canvas.width,canvas.height); 
-        emojis.forEach(e => { e.update(); e.draw(); }); 
-        requestAnimationFrame(anim); 
-    }
-    
+    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); emojis.forEach(e => { e.update(); e.draw(); }); requestAnimationFrame(anim); }
     window.addEventListener('resize', initCanvas);
     initCanvas(); anim();
 
