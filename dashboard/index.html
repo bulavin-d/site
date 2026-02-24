@@ -48,9 +48,10 @@
 
         h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); text-transform: uppercase; }
 
-        .soul-text { font-size: 14px; font-weight: 300; line-height: 1.7; opacity: 0.8; margin-bottom: 30px; width: 100%; }
-        .soul-text p { margin-bottom: 10px; }
-        .soul-text p:last-child { margin-bottom: 0; font-weight: 500; color: rgba(255, 255, 255, 0.9); }
+        /* ИДЕАЛЬНО ОТЦЕНТРОВАННЫЙ И ПЛОТНЫЙ ТЕКСТ */
+        .soul-text { font-size: 13.5px; font-weight: 300; line-height: 1.5; opacity: 0.85; margin-bottom: 30px; width: 100%; text-align: center; }
+        .soul-text p { margin-bottom: 6px; } /* Маленький интервал между строками */
+        .soul-text p:last-child { margin-bottom: 0; font-weight: 500; color: rgba(255, 255, 255, 0.95); }
 
         /* КНОПКА АНОНКИ */
         .anon-trigger-btn { width: 100%; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-weight: 800; font-size: 13px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 12px; transition: 0.3s; }
@@ -95,7 +96,8 @@
 
         <div class="soul-text">
             <p>Здесь нет лишних глаз.</p>
-            <p>Только ты, я и твои мысли. Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
+            <p>Только ты и твои мысли.</p>
+            <p>Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
             <p>Если ты хочешь выговориться — вперёд.</p>
             <p>Здесь не осудят.</p>
         </div>
@@ -177,7 +179,7 @@
             });
     });
 
-    // АНИМАЦИЯ ЗНАКОВ ВОПРОСА ДЛЯ МОБИЛОК (ПОФИКШЕНО)
+    // АНИМАЦИЯ ЗНАКОВ ВОПРОСА ДЛЯ МОБИЛОК
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let questions = [];
