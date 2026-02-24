@@ -53,8 +53,10 @@
         .auth-menu-btn i { font-size: 15px; }
         .auth-menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
         .auth-menu-btn:active { transform: scale(0.95); }
-        .auth-menu-btn::after { content: ''; position: absolute; top: -1px; right: -1px; width: 12px; height: 12px; background: var(--verify-blue); border-radius: 50%; border: 2px solid #000; animation: pulse-dot 2s infinite; }
-        @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(0, 149, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 149, 246, 0); } }
+        
+        /* КРАСНЫЙ ПУЛЬСИРУЮЩИЙ ИНДИКАТОР */
+        .auth-menu-btn::after { content: ''; position: absolute; top: -1px; right: -1px; width: 12px; height: 12px; background: var(--red-accent); border-radius: 50%; border: 2px solid #000; animation: pulse-dot 2s infinite; }
+        @keyframes pulse-dot { 0% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(255, 75, 43, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 75, 43, 0); } }
 
         .qr-nav { position: absolute; top: 20px; left: 20px; z-index: 25; display: flex; align-items: flex-start; }
         .qr-btn { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); color: #fff; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; }
@@ -69,9 +71,9 @@
 
         .glass-card { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 35px 30px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6); width: 90%; max-width: 350px; }
 
-        /* Кнопки в модалке выбора */
-        .choice-btn { width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-        .choice-btn i { font-size: 16px; width: 20px; text-align: center; }
+        /* КНОПКИ В МОДАЛКЕ ВЫБОРА (ВХОД/РЕГ) - Идеальная симметрия */
+        .choice-btn { position: relative; width: 100%; background: var(--glass); border: 1px solid var(--glass-border); padding: 18px; border-radius: 20px; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+        .choice-btn i { position: absolute; left: 25px; font-size: 16px; width: 20px; text-align: center; }
         .choice-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-2px); }
 
         /* QR Стили */
