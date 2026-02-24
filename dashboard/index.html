@@ -13,14 +13,28 @@
         :root {
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --magic-glow: rgba(255, 255, 255, 0.5);
+            --red-accent: #ff4b2b;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
-        body { background: #000; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        /* --- ФИКС ДЛЯ МОБИЛОК (БЛОКИРОВКА "РЕЗИНКИ") --- */
+        html, body {
+            width: 100%;
+            height: 100%; /* Жестко фиксируем высоту */
+            margin: 0; padding: 0;
+            overflow: hidden; /* Запрещаем скролл фона */
+            overscroll-behavior: none; /* Убиваем эффект перетягивания на iOS/Android */
+            background: #000; color: #fff;
+            font-family: 'Inter', -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* ----------------------------------------------- */
+
+        body { display: flex; justify-content: center; align-items: center; }
+        * { box-sizing: border-box; }
         
-        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; filter: blur(2px); pointer-events: none; }
-        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(90px) brightness(0.15); transform: scale(1.1); z-index: -2; }
+        #global-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        /* Уменьшил блюр фона, чтобы новые частицы были четче видны */
+        .dynamic-bg { position: fixed; inset: 0; background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center; background-size: cover; filter: blur(60px) brightness(0.15); transform: scale(1.1); z-index: -2; }
         
         .container { width: 100%; max-width: 420px; padding: 20px; display: flex; flex-direction: column; z-index: 5; position: relative; gap: 15px; opacity: 0; animation: fadeIn 2s forwards; }
         @keyframes fadeIn { to { opacity: 1; } }
@@ -28,32 +42,49 @@
         .dashboard-card { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
-            padding: 50px 30px; 
+            padding: 60px 30px 50px; 
             border-radius: 40px; 
             text-align: center; 
             backdrop-filter: blur(30px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             position: relative;
+            display: flex; flex-direction: column; align-items: center;
         }
 
         .logout-btn {
             position: absolute; top: 20px; right: 20px;
+            width: 38px; height: 38px;
             background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
-            color: #fff; padding: 8px 14px; border-radius: 12px; font-size: 9px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s ease;
+            color: rgba(255, 255, 255, 0.6); 
+            border-radius: 12px; 
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: all 0.3s ease;
         }
-        .logout-btn:hover { background: rgba(255, 255, 255, 0.1); }
+        .logout-btn i { font-size: 16px; }
+        .logout-btn:hover { 
+            color: var(--red-accent);
+            border-color: rgba(255, 75, 43, 0.4);
+            background: rgba(255, 75, 43, 0.1);
+            box-shadow: 0 0 15px rgba(255, 75, 43, 0.3);
+            transform: scale(1.05);
+        }
 
-        h2 { font-size: 10px; letter-spacing: 4px; font-weight: 800; margin-bottom: 10px; opacity: 0.4; text-transform: uppercase; }
         h1 { font-size: 22px; letter-spacing: 4px; font-weight: 900; margin-bottom: 40px; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
 
         .soul-text {
-            font-size: 13px; font-weight: 300; line-height: 1.8; opacity: 0.8; 
-            margin-bottom: 40px; letter-spacing: 0.5px;
+            font-size: 13px; font-weight: 300; line-height: 2; opacity: 0.8; 
+            margin-bottom: 45px; letter-spacing: 0.5px;
+            max-width: 320px; 
+        }
+        .soul-text span { 
+            display: block;
+            margin-top: 20px;
+            font-size: 15px;
+            color: #fff; font-weight: 700; opacity: 1; 
+            text-shadow: 0 0 15px rgba(255,255,255,0.4); 
+            letter-spacing: 1.5px;
         }
 
-        .soul-text span { color: #fff; font-weight: 600; opacity: 1; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-
-        /* Кнопка МАГИЧЕСКОГО СЛИЯНИЯ */
         .merge-btn { 
             position: relative; width: 100%; padding: 22px; border-radius: 20px; 
             background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
@@ -62,13 +93,11 @@
             display: flex; justify-content: center; align-items: center; gap: 15px;
             animation: heartbeat 3s infinite;
         }
-        
         @keyframes heartbeat { 
             0% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
             50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.4); border-color: rgba(255, 255, 255, 0.6); }
             100% { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
         }
-
         .merge-btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
         .merge-btn:active { transform: scale(0.96); }
         .merge-btn i { font-size: 22px; opacity: 0.9; }
@@ -83,13 +112,15 @@
 
 <div class="container" id="dashboardContent" style="display: none;">
     <div class="dashboard-card">
-        <button class="logout-btn" onclick="logOut()">ВЫЙТИ</button>
+        <button class="logout-btn" onclick="logOut()">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
         
-        <h2>ТВОЙ ИДЕНТИФИКАТОР</h2>
         <h1 id="userNameDisplay">@USER</h1>
 
         <div class="soul-text">
-            Я отдаю тебе свою душу в каждом новом треке и в каждой строчке. Поэтому я уже часть тебя, а ты — часть меня.<br><br>Но чтобы стереть все границы, нам не хватает одного...<br><span>Нам нужно абсолютное слияние.</span>
+            Я отдаю тебе свою душу в каждом новом треке и в каждой строчке. Поэтому я уже часть тебя, а ты — часть меня.
+            <span>Нам нужно абсолютное слияние.</span>
         </div>
 
         <a href="https://t.me/imbulavin_bot" target="_blank" class="merge-btn">
@@ -122,54 +153,154 @@
     }
     checkUser();
 
-    // --- МАГИЧЕСКИЙ КАНВАС (Энергетические сферы вместо эмодзи) ---
+    // --- НОВАЯ СИСТЕМА СЛИЯНИЯ ДУШ ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
-    let orbs = [];
-    let lastWidth = window.innerWidth;
+    let width, height;
+    let souls = [];
+    let mergingPairs = [];
+    const MERGE_DISTANCE = 60; // Дистанция, при которой начинается слияние
 
-    class GlowingOrb {
-        constructor() { this.init(true); }
-        init(f) {
-            this.x = Math.random() * window.innerWidth;
-            this.y = f ? Math.random() * window.innerHeight : window.innerHeight + 50;
-            this.size = Math.random() * 3 + 1; // Маленькие частицы
-            this.vx = (Math.random() - 0.5) * 0.3;
-            this.vy = -(Math.random() * 0.5 + 0.2); // Медленно плывут вверх
-            this.op = Math.random() * 0.5 + 0.1;
+    // Класс для обычной летающей души
+    class Soul {
+        constructor(type) {
+            this.type = type; // 'white' или 'red'
+            this.reset();
         }
-        update() { 
-            this.x += this.vx; this.y += this.vy; 
-            if (this.y < -50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false); 
+        reset() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.radius = Math.random() * 15 + 10; // Размер сгустка
+            this.alpha = Math.random() * 0.3 + 0.2;
+            this.isMerging = false;
         }
-        draw() { 
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${this.op})`;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
-            ctx.fill();
+        update() {
+            if (this.isMerging) return;
+            this.x += this.vx; this.y += this.vy;
+            // Отталкивание от границ
+            if (this.x < 0 || this.x > width) this.vx *= -1;
+            if (this.y < 0 || this.y > height) this.vy *= -1;
         }
+        draw(context) {
+            if (this.isMerging) return;
+            drawGlowingSoul(context, this.x, this.y, this.radius, this.type, this.alpha);
+        }
+    }
+
+    // Класс для анимации слияния двух душ
+    class MergingPair {
+        constructor(soul1, soul2) {
+            this.s1 = soul1; this.s2 = soul2;
+            // Находим центр слияния
+            this.centerX = (soul1.x + soul2.x) / 2;
+            this.centerY = (soul1.y + soul2.y) / 2;
+            this.progress = 0; // Прогресс анимации (0 -> 1)
+            this.finished = false;
+        }
+        update() {
+            this.progress += 0.008; // Скорость слияния
+            if (this.progress >= 1) {
+                this.finished = true;
+                this.s1.reset(); this.s2.reset(); // Возвращаем души в мир
+            }
+            // Двигаем души к центру
+            this.s1.x += (this.centerX - this.s1.x) * 0.05;
+            this.s1.y += (this.centerY - this.s1.y) * 0.05;
+            this.s2.x += (this.centerX - this.s2.x) * 0.05;
+            this.s2.y += (this.centerY - this.s2.y) * 0.05;
+        }
+        draw(ctx) {
+            const fade = 1 - this.progress; // Исчезновение исходных душ
+            drawGlowingSoul(ctx, this.s1.x, this.s1.y, this.s1.radius*(1-this.progress*0.5), this.s1.type, this.s1.alpha * fade);
+            drawGlowingSoul(ctx, this.s2.x, this.s2.y, this.s2.radius*(1-this.progress*0.5), this.s2.type, this.s2.alpha * fade);
+
+            // Рисуем центральную вспышку слияния
+            if (this.progress > 0.3) {
+                const mergeAlpha = Math.sin(this.progress * Math.PI) * 0.8; // Плавное появление и затухание
+                const mergeRadius = (this.s1.radius + this.s2.radius) * (this.progress + 0.5);
+                // Смешанный цвет (бело-красный)
+                const gradient = ctx.createRadialGradient(this.centerX, this.centerY, 0, this.centerX, this.centerY, mergeRadius);
+                gradient.addColorStop(0, `rgba(255, 200, 200, ${mergeAlpha})`);
+                gradient.addColorStop(0.5, `rgba(255, 75, 43, ${mergeAlpha * 0.5})`);
+                gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath(); ctx.arc(this.centerX, this.centerY, mergeRadius, 0, Math.PI*2); ctx.fill();
+            }
+        }
+    }
+
+    // Функция рисования одной души (градиентный сгусток)
+    function drawGlowingSoul(ctx, x, y, r, type, alpha) {
+        const gradient = ctx.createRadialGradient(x, y, 0, x, y, r * 2);
+        if (type === 'white') {
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+            gradient.addColorStop(0.6, `rgba(200, 220, 255, ${alpha * 0.3})`);
+        } else {
+            gradient.addColorStop(0, `rgba(255, 100, 100, ${alpha})`);
+            gradient.addColorStop(0.6, `rgba(255, 75, 43, ${alpha * 0.3})`);
+        }
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        // Рисуем чуть сплюснутый круг для органичности
+        ctx.ellipse(x, y, r * 1.2, r * 0.9, Math.random()*0.1, 0, Math.PI * 2);
+        ctx.fill();
     }
 
     function initCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        orbs = Array.from({length: 40}, () => new GlowingOrb());
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        // Создаем равное количество белых и красных душ
+        souls = [];
+        for(let i=0; i<12; i++) souls.push(new Soul('white'));
+        for(let i=0; i<12; i++) souls.push(new Soul('red'));
     }
 
-    function anim() { 
-        ctx.clearRect(0,0,canvas.width,canvas.height); 
-        orbs.forEach(o => { o.update(); o.draw(); }); 
-        requestAnimationFrame(anim); 
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Проверка на слияние
+        for (let i = 0; i < souls.length; i++) {
+            if (souls[i].type !== 'white' || souls[i].isMerging) continue;
+            for (let j = 0; j < souls.length; j++) {
+                if (souls[j].type !== 'red' || souls[j].isMerging) continue;
+
+                const dx = souls[i].x - souls[j].x;
+                const dy = souls[i].y - souls[j].y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+
+                if (dist < MERGE_DISTANCE) {
+                    souls[i].isMerging = true;
+                    souls[j].isMerging = true;
+                    mergingPairs.push(new MergingPair(souls[i], souls[j]));
+                    break; // Эта белая душа нашла пару в этом кадре
+                }
+            }
+        }
+
+        // Обновляем и рисуем свободные души
+        souls.forEach(s => { s.update(); s.draw(ctx); });
+
+        // Обновляем и рисуем слияния
+        mergingPairs.forEach((pair, index) => {
+            pair.update(); pair.draw(ctx);
+            if (pair.finished) mergingPairs.splice(index, 1);
+        });
+
+        requestAnimationFrame(animate);
     }
     
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-        if(Math.abs(lastWidth - window.innerWidth) > 50) {
-            initCanvas(); lastWidth = window.innerWidth;
-        }
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(initCanvas, 200);
     });
-    initCanvas(); anim();
+
+    initCanvas();
+    animate();
 </script>
 </body>
 </html>
