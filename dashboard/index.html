@@ -48,17 +48,15 @@
 
         h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 15px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); text-transform: uppercase; }
 
-        /* ИДЕАЛЬНО ОТЦЕНТРОВАННЫЙ И ПЛОТНЫЙ ТЕКСТ */
-        .soul-text { font-size: 13.5px; font-weight: 300; line-height: 1.5; opacity: 0.85; margin-bottom: 30px; width: 100%; text-align: center; }
-        .soul-text p { margin-bottom: 6px; } /* Маленький интервал между строками */
+        /* ТЕКСТ: МЕНЬШЕ РАЗМЕР И ПЛОТНЫЙ ИНТЕРВАЛ */
+        .soul-text { font-size: 12.2px; font-weight: 300; line-height: 1.5; opacity: 0.85; margin-bottom: 30px; width: 100%; text-align: center; white-space: nowrap; }
+        .soul-text p { margin-bottom: 4px; }
         .soul-text p:last-child { margin-bottom: 0; font-weight: 500; color: rgba(255, 255, 255, 0.95); }
 
-        /* КНОПКА АНОНКИ */
         .anon-trigger-btn { width: 100%; padding: 20px; border-radius: 20px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; font-weight: 800; font-size: 13px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 12px; transition: 0.3s; }
         .anon-trigger-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); border-color: #fff; }
         .anon-trigger-btn i { font-size: 16px; }
 
-        /* ВТОРОСТЕПЕННАЯ КНОПКА СЛИЯНИЯ */
         .merge-link { width: 100%; padding: 16px; border-radius: 20px; background: transparent; border: 1px solid rgba(255, 255, 255, 0.1); color: rgba(255,255,255,0.4); font-weight: 700; font-size: 11px; letter-spacing: 4px; cursor: pointer; text-transform: uppercase; text-decoration: none; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
         .merge-link:hover { color: #fff; border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.05); }
         .merge-link i { animation: neon-pulse 2s infinite alternate; }
@@ -68,7 +66,6 @@
             100% { text-shadow: 0 0 10px rgba(255,255,255,0.8); transform: scale(1.1); }
         }
 
-        /* МОДАЛКА ВВОДА */
         .glass-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(25px); }
         .glass-modal.show { display: flex; }
         .glass-card { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); padding: 35px 25px; border-radius: 40px; display: flex; flex-direction: column; align-items: center; backdrop-filter: blur(30px); width: 90%; max-width: 350px; }
@@ -129,7 +126,6 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // ССЫЛКА НА ТВОЙ GOOGLE SCRIPT
     const scriptURL = 'https://script.google.com/macros/s/AKfycbyWjPndo7PxgFsZRXK7SmqS9K3pHPD2A4OjuBrDoz7kmG82XOeZc_2zrlx7083yOEEMIw/exec';
 
     let currentUsername = "@Unknown";
@@ -179,7 +175,6 @@
             });
     });
 
-    // АНИМАЦИЯ ЗНАКОВ ВОПРОСА ДЛЯ МОБИЛОК
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let questions = [];
@@ -190,15 +185,15 @@
         init(f) {
             this.x = Math.random() * window.innerWidth;
             this.y = f ? Math.random() * window.innerHeight : window.innerHeight + 50;
-            this.size = Math.random() * 20 + 15; // Размер от 15 до 35
-            this.speed = Math.random() * 0.4 + 0.1; // Медленное всплытие
-            this.op = Math.random() * 0.15 + 0.05; // Низкая прозрачность для атмосферы
-            this.wobble = Math.random() * Math.PI * 2; // Начальная фаза покачивания
+            this.size = Math.random() * 20 + 15;
+            this.speed = Math.random() * 0.4 + 0.1;
+            this.op = Math.random() * 0.15 + 0.05;
+            this.wobble = Math.random() * Math.PI * 2;
             this.wobbleSpeed = Math.random() * 0.02 + 0.01;
         }
         update() { 
             this.y -= this.speed; 
-            this.x += Math.sin(this.wobble) * 0.5; // Легкое покачивание влево-вправо
+            this.x += Math.sin(this.wobble) * 0.5;
             this.wobble += this.wobbleSpeed;
             if (this.y < -50) this.init(false); 
         }
