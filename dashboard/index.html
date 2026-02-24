@@ -46,13 +46,16 @@
         .dashboard-card { 
             background: var(--glass); 
             border: 1px solid var(--glass-border); 
-            padding: 50px 25px 40px; 
+            padding: 55px 25px 45px; 
             border-radius: 40px; 
             text-align: center; 
             backdrop-filter: blur(35px);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             position: relative;
-            display: flex; flex-direction: column; align-items: center; width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
 
         .logout-btn {
@@ -65,20 +68,20 @@
         }
         .logout-btn:hover { color: var(--red-accent); border-color: rgba(255, 75, 43, 0.4); background: rgba(255, 75, 43, 0.1); }
 
-        h1 { font-size: 20px; letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); text-transform: uppercase; }
+        h1 { font-size: 21px; letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; color: #fff; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
         .soul-text { font-size: 14px; font-weight: 300; line-height: 1.6; opacity: 0.9; margin-bottom: 35px; width: 100%; }
         
-        /* Уменьшаем первую строку, чтобы "души" не сползало */
+        /* Уменьшил первую строку по твоему запросу */
         .soul-text p:first-child { 
             font-size: 11.5px; 
-            margin-bottom: 15px; 
-            letter-spacing: 0.3px; 
+            margin-bottom: 18px; 
+            letter-spacing: 0.5px; 
             opacity: 0.7;
         }
         .soul-text p { margin-bottom: 10px; }
         
-        .soul-text .highlight { margin-top: 20px; font-weight: 400; color: rgba(255,255,255,0.95); }
+        .soul-text .highlight { margin-top: 25px; font-weight: 400; color: rgba(255,255,255,0.95); }
         .soul-text span { 
             display: block; margin-top: 10px; font-size: 16px;
             color: #fff; font-weight: 800; opacity: 1; 
@@ -154,48 +157,50 @@
     }
     checkUser();
 
-    // --- СУПЕР-СТАБИЛЬНЫЕ ЧАСТИЦЫ ---
+    // --- НАДЕЖНЫЙ ДВИЖОК ЧАСТИЦ ---
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
+    let width, height;
     let particles = [];
 
-    function initCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    function init() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
         particles = [];
         for (let i = 0; i < 60; i++) {
             particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
+                x: Math.random() * width,
+                y: Math.random() * height,
                 size: Math.random() * 2 + 1,
-                speed: Math.random() * 0.5 + 0.1,
-                opacity: Math.random() * 0.5 + 0.2,
-                color: Math.random() > 0.5 ? '#ffffff' : '#ff4b2b'
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: -(Math.random() * 0.5 + 0.1),
+                color: Math.random() > 0.5 ? '#ffffff' : '#ff4b2b',
+                alpha: Math.random() * 0.5 + 0.2
             });
         }
     }
 
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function render() {
+        ctx.clearRect(0, 0, width, height);
         particles.forEach(p => {
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fillStyle = p.color;
-            ctx.globalAlpha = p.opacity;
+            ctx.globalAlpha = p.alpha;
             ctx.fill();
             
-            p.y -= p.speed;
-            if (p.y < -10) {
-                p.y = canvas.height + 10;
-                p.x = Math.random() * canvas.width;
-            }
+            p.y += p.vy;
+            p.x += p.vx;
+            
+            if (p.y < -10) p.y = height + 10;
+            if (p.x < -10 || p.x > width + 10) p.vx *= -1;
         });
-        requestAnimationFrame(draw);
+        requestAnimationFrame(render);
     }
 
-    window.addEventListener('resize', initCanvas);
-    initCanvas();
-    draw();
+    window.addEventListener('resize', init);
+    init();
+    render();
 </script>
 </body>
 </html>
