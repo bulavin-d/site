@@ -15,6 +15,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BULAVIN</title>
+
+    <meta name="description" content="BULAVIN — официальный сайт. Казахстанский исполнитель и музыкальный продюсер. Inner Circle, музыка, афиша и слияние.">
+    <meta name="keywords" content="BULAVIN, Булавин, музыка, артист, Казахстан, Inner Circle, продюсер">
+    <meta property="og:title" content="BULAVIN | OFFICIAL SITE">
+    <meta property="og:description" content="Официальная платформа BULAVIN SYSTEM. Добро пожаловать в систему.">
+    <meta property="og:image" content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
+    <meta property="og:url" content="https://bulavin.space">
+    <meta property="og:type" content="website">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MusicGroup",
+      "name": "BULAVIN",
+      "url": "https://bulavin.space",
+      "image": "https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000",
+      "description": "Казахстанский исполнитель и музыкальный продюсер.",
+      "nationality": {
+        "@type": "Country",
+        "name": "Kazakhstan"
+      },
+      "sameAs": [
+        "https://www.instagram.com/lu4danya",
+        "https://t.me/imbulavin",
+        "https://music.yandex.kz/artist/24009925",
+        "https://vk.com/artist/bulavin",
+        "https://music.apple.com/ru/artist/bulavin/1805904899",
+        "https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA",
+        "https://soundcloud.com/bulavin"
+      ]
+    }
+    </script>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="icon" href="https://em-content.zobj.net/source/apple/354/black-heart_1f5a4.png">
@@ -388,7 +420,6 @@
             lastWidth = window.innerWidth;
             emojis = Array.from({length: 15}, () => new FloatingEmoji());
         } else {
-            // Обновляем только высоту, не сбрасывая массив (спасает от глюков при скролле)
             canvas.height = window.innerHeight;
         }
     }
