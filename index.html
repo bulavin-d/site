@@ -120,15 +120,25 @@
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; cursor: pointer; }
         .avatar-link:hover { transform: scale(1.05); }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
-        .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
-        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; overflow: hidden; }
+        .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; transition: opacity 0.5s ease; }
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ДОБАВЛЕНО: Тонкий крутящийся текст вокруг авы на главной */
-        .curved-text-wrapper { position: absolute; top: -12px; left: -12px; width: 134px; height: 134px; pointer-events: none; animation: rotate-text 20s linear infinite; z-index: 10; opacity: 0.6; }
-        .curved-text-wrapper path { fill: transparent; }
-        .curved-text-wrapper text { fill: #fff; font-size: 11px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; font-family: monospace; }
-        @keyframes rotate-text { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* НОВЫЕ СТИЛИ ДЛЯ АНИМАЦИИ ВНУТРИ КРУЖКА */
+        .avatar-placeholder {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: flex; justify-content: center; align-items: center;
+            z-index: 2;
+        }
+        #avatarText {
+            font-weight: 900; font-size: 11px; letter-spacing: 3px; color: var(--red-accent);
+            text-transform: uppercase; animation: pulse-text 2s infinite;
+        }
+        #avatarIcon {
+            font-size: 35px; color: #fff; animation: pulse-icon 1.5s infinite;
+        }
+        @keyframes pulse-text { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+        @keyframes pulse-icon { 0%, 100% { transform: scale(0.9); opacity: 0.8; } 50% { transform: scale(1.1); opacity: 1; } }
         
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
         .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
@@ -179,22 +189,12 @@
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; padding-bottom: 20px; }
 
-        /* ИЗМЕНЕНО: Оформление открытого кружка */
+        /* Оформление открытого видео */
         .story-wrapper { position: relative; display: flex; justify-content: center; align-items: center; }
         .story-container { width: 250px; height: 250px; position: relative; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.3); background: #000; z-index: 5; }
         #storyVideo { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* ИЗМЕНЕНО: Вращающийся текст вокруг самого открытого видео */
-        .story-curved-text { position: absolute; width: 280px; height: 280px; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; animation: rotate-text 15s linear infinite; z-index: 1; opacity: 0.4; }
-        .story-curved-text path { fill: transparent; }
-        .story-curved-text text { fill: #fff; font-size: 10px; font-weight: 400; letter-spacing: 4px; font-family: monospace; }
-        
         .story-close { position: absolute; top: -40px; right: -20px; font-size: 30px; color: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; font-weight: 100; z-index: 10; padding: 10px; }
         .story-close:hover { color: #fff; transform: scale(1.2); }
-        
-        /* ДОБАВЛЕНО: Полоса прогресса видео */
-        .progress-bar-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.2); z-index: 10; }
-        #progress-bar { height: 100%; width: 0%; background: var(--red-accent); transition: width 0.1s linear; }
     </style>
 </head>
 <body>
@@ -218,11 +218,13 @@
         </div>
 
         <div class="avatar-link" onclick="openStory()">
-            <svg class="curved-text-wrapper" viewBox="0 0 100 100">
-                <path id="curve-avatar" d="M 50, 50 m -42, 0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" />
-                <text><textPath href="#curve-avatar" startOffset="50%" text-anchor="middle">EXCLUSIVE • EXCLUSIVE • EXCLUSIVE • </textPath></text>
-            </svg>
-            <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
+            <div class="avatar-inner-border">
+                <div id="avatarPlaceholder" class="avatar-placeholder">
+                    <span id="avatarText">EXCLUSIVE</span>
+                    <i id="avatarIcon" class="fa-solid fa-play" style="display: none;"></i>
+                </div>
+                <img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar" id="mainAvatarImage" style="opacity: 0;">
+            </div>
         </div>
         
         <div class="name-wrapper">
@@ -317,22 +319,12 @@
 
 <div class="glass-modal" id="storyModal" onclick="closeStory()">
     <div class="story-wrapper" onclick="event.stopPropagation()">
-        
-        <svg class="story-curved-text" viewBox="0 0 100 100">
-            <path id="curve-video" d="M 50, 50 m -45, 0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0" />
-            <text><textPath href="#curve-video" startOffset="50%" text-anchor="middle">EXCLUSIVE • EXCLUSIVE • EXCLUSIVE • </textPath></text>
-        </svg>
-
         <div class="story-close" onclick="closeStory()">×</div>
-        
         <div class="story-container">
             <video id="storyVideo" playsinline>
                 <source src="https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4" type="video/mp4">
             </video>
-            <div class="progress-bar-container">
-                <div id="progress-bar"></div>
             </div>
-        </div>
     </div>
 </div>
 
@@ -349,15 +341,9 @@
     function openAuthChoice() { document.getElementById('authChoiceModal').classList.add('show'); }
     function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
 
-    // STORY LOGIC & PROGRESS BAR
+    // STORY LOGIC
     const videoElement = document.getElementById('storyVideo');
-    const progressBar = document.getElementById('progress-bar');
 
-    videoElement.addEventListener('timeupdate', () => {
-        const percentage = (videoElement.currentTime / videoElement.duration) * 100;
-        progressBar.style.width = percentage + '%';
-    });
-    
     // Закрываем видео, когда оно заканчивается
     videoElement.addEventListener('ended', closeStory);
 
@@ -365,7 +351,6 @@
         const modal = document.getElementById('storyModal');
         modal.classList.add('show');
         videoElement.src = "https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4?v=" + new Date().getTime();
-        progressBar.style.width = '0%';
         videoElement.currentTime = 0;
         videoElement.play();
     }
@@ -507,6 +492,39 @@
         } catch (e) { document.getElementById('prediction').innerText = "Продолжай делать своё дело."; }
     }
     fetchPrediction();
+
+    // ДОБАВЛЕНО: ЛОГИКА АНИМАЦИИ АВАТАРКИ ПРИ ЗАГРУЗКЕ
+    document.addEventListener('DOMContentLoaded', () => {
+        const avatarImg = document.getElementById('mainAvatarImage');
+        const placeholder = document.getElementById('avatarPlaceholder');
+        const textEl = document.getElementById('avatarText');
+        const iconEl = document.getElementById('avatarIcon');
+
+        // 1. Сразу показываем EXCLUSIVE, фото скрыто
+        // (Стили уже заданы в CSS и HTML, но для надежности)
+        avatarImg.style.opacity = '0';
+        placeholder.style.display = 'flex';
+        textEl.style.display = 'block';
+        iconEl.style.display = 'none';
+
+        // 2. Через 3.5 сек меняем на иконку Play
+        setTimeout(() => {
+            textEl.style.display = 'none';
+            iconEl.style.display = 'block';
+        }, 3500);
+
+        // 3. Ещё через 3.5 сек (итого 7 сек) снова EXCLUSIVE
+        setTimeout(() => {
+            iconEl.style.display = 'none';
+            textEl.style.display = 'block';
+        }, 7000);
+
+        // 4. В конце (итого 10.5-11 сек) убираем заглушку и показываем фото
+        setTimeout(() => {
+            placeholder.style.display = 'none';
+            avatarImg.style.opacity = '1';
+        }, 11000);
+    });
 </script>
 </body>
 </html>
