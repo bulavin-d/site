@@ -100,7 +100,7 @@
         .qr-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
         .qr-btn:active { transform: scale(0.95); }
 
-        .glass-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(25px); }
+        .glass-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(15px); }
         .glass-modal.show { display: flex; animation: glassFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes glassFadeIn { 0% { opacity: 0; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
 
@@ -118,16 +118,16 @@
         .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 55px 20px 35px; text-align: center; margin: 0; }
         
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; cursor: pointer; }
-        .avatar-link:hover { transform: scale(1.08); }
+        .avatar-link:hover { transform: scale(1.05); }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
         .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ДОБАВЛЕНО: Крутящийся текст NEW EXCLUSIVE вокруг аватарки */
-        .curved-text-wrapper { position: absolute; top: -15px; left: -15px; width: 140px; height: 140px; pointer-events: none; animation: rotate-text 15s linear infinite; }
+        /* ДОБАВЛЕНО: Тонкий крутящийся текст вокруг авы на главной */
+        .curved-text-wrapper { position: absolute; top: -12px; left: -12px; width: 134px; height: 134px; pointer-events: none; animation: rotate-text 20s linear infinite; z-index: 10; opacity: 0.6; }
         .curved-text-wrapper path { fill: transparent; }
-        .curved-text-wrapper text { fill: rgba(255, 255, 255, 0.9); font-size: 12px; font-weight: 900; letter-spacing: 4px; text-transform: uppercase; }
+        .curved-text-wrapper text { fill: #fff; font-size: 11px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; font-family: monospace; }
         @keyframes rotate-text { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
@@ -179,19 +179,22 @@
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; padding-bottom: 20px; }
 
-        /* ИЗМЕНЕНО: СТИЛИ ДЛЯ КРУЖКА (убрал колхоз, добавил свечение) */
-        .story-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .story-container { width: 300px; height: 300px; position: relative; border-radius: 50%; overflow: hidden; border: 2px solid rgba(255,255,255,0.8); box-shadow: 0 0 50px rgba(220, 39, 67, 0.4); background: #000; }
+        /* ИЗМЕНЕНО: Оформление открытого кружка */
+        .story-wrapper { position: relative; display: flex; justify-content: center; align-items: center; }
+        .story-container { width: 250px; height: 250px; position: relative; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.3); background: #000; z-index: 5; }
         #storyVideo { width: 100%; height: 100%; object-fit: cover; }
-        .story-close { position: absolute; top: -50px; right: 50%; transform: translateX(50%); font-size: 40px; color: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; font-weight: 100; }
-        .story-close:hover { color: #fff; transform: translateX(50%) scale(1.2); }
         
-        /* ИЗМЕНЕНО: Аккуратная надпись под кружком */
-        .story-badge {
-            font-size: 10px; font-weight: 800; letter-spacing: 3px; color: var(--red-accent);
-            text-transform: uppercase; text-shadow: 0 0 10px rgba(255, 75, 43, 0.5);
-            background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255, 75, 43, 0.2);
-        }
+        /* ИЗМЕНЕНО: Вращающийся текст вокруг самого открытого видео */
+        .story-curved-text { position: absolute; width: 280px; height: 280px; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; animation: rotate-text 15s linear infinite; z-index: 1; opacity: 0.4; }
+        .story-curved-text path { fill: transparent; }
+        .story-curved-text text { fill: #fff; font-size: 10px; font-weight: 400; letter-spacing: 4px; font-family: monospace; }
+        
+        .story-close { position: absolute; top: -40px; right: -20px; font-size: 30px; color: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; font-weight: 100; z-index: 10; padding: 10px; }
+        .story-close:hover { color: #fff; transform: scale(1.2); }
+        
+        /* ДОБАВЛЕНО: Полоса прогресса видео */
+        .progress-bar-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.2); z-index: 10; }
+        #progress-bar { height: 100%; width: 0%; background: var(--red-accent); transition: width 0.1s linear; }
     </style>
 </head>
 <body>
@@ -216,8 +219,8 @@
 
         <div class="avatar-link" onclick="openStory()">
             <svg class="curved-text-wrapper" viewBox="0 0 100 100">
-                <path id="curve" d="M 50, 50 m -40, 0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" />
-                <text><textPath href="#curve" startOffset="50%" text-anchor="middle">NEW EXCLUSIVE • NEW EXCLUSIVE • </textPath></text>
+                <path id="curve-avatar" d="M 50, 50 m -42, 0 a 42,42 0 1,1 84,0 a 42,42 0 1,1 -84,0" />
+                <text><textPath href="#curve-avatar" startOffset="50%" text-anchor="middle">EXCLUSIVE • EXCLUSIVE • EXCLUSIVE • </textPath></text>
             </svg>
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
         </div>
@@ -314,13 +317,22 @@
 
 <div class="glass-modal" id="storyModal" onclick="closeStory()">
     <div class="story-wrapper" onclick="event.stopPropagation()">
+        
+        <svg class="story-curved-text" viewBox="0 0 100 100">
+            <path id="curve-video" d="M 50, 50 m -45, 0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0" />
+            <text><textPath href="#curve-video" startOffset="50%" text-anchor="middle">EXCLUSIVE • EXCLUSIVE • EXCLUSIVE • </textPath></text>
+        </svg>
+
         <div class="story-close" onclick="closeStory()">×</div>
+        
         <div class="story-container">
-            <video id="storyVideo" playsinline loop>
+            <video id="storyVideo" playsinline>
                 <source src="https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4" type="video/mp4">
             </video>
+            <div class="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
         </div>
-        <div class="story-badge">ЭКСКЛЮЗИВНО | BULAVIN SYSTEM</div>
     </div>
 </div>
 
@@ -337,23 +349,30 @@
     function openAuthChoice() { document.getElementById('authChoiceModal').classList.add('show'); }
     function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
 
-    // STORY LOGIC
+    // STORY LOGIC & PROGRESS BAR
+    const videoElement = document.getElementById('storyVideo');
+    const progressBar = document.getElementById('progress-bar');
+
+    videoElement.addEventListener('timeupdate', () => {
+        const percentage = (videoElement.currentTime / videoElement.duration) * 100;
+        progressBar.style.width = percentage + '%';
+    });
+    
+    // Закрываем видео, когда оно заканчивается
+    videoElement.addEventListener('ended', closeStory);
+
     function openStory() {
         const modal = document.getElementById('storyModal');
-        const video = document.getElementById('storyVideo');
         modal.classList.add('show');
-        
-        // ДОБАВЛЕНО: Кэш-брейкер
-        video.src = "https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4?v=" + new Date().getTime();
-        
-        video.currentTime = 0;
-        video.play();
+        videoElement.src = "https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4?v=" + new Date().getTime();
+        progressBar.style.width = '0%';
+        videoElement.currentTime = 0;
+        videoElement.play();
     }
     function closeStory() {
         const modal = document.getElementById('storyModal');
-        const video = document.getElementById('storyVideo');
         modal.classList.remove('show');
-        video.pause();
+        videoElement.pause();
     }
 
     // FORM LOGIC
