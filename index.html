@@ -117,7 +117,6 @@
 
         .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 55px 20px 35px; text-align: center; margin: 0; }
         
-        /* ИЗМЕНЕНИЯ ДЛЯ АВАТАРКИ: ТЕПЕРЬ ОНА КЛИКАБЕЛЬНА ДЛЯ КРУЖКА */
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; cursor: pointer; }
         .avatar-link:hover { transform: scale(1.08); }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
@@ -125,6 +124,22 @@
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
+        /* ДОБАВЛЕНО: Стили для подсказки сторис */
+        .story-hint {
+            position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+            background: #fff; color: #000; font-size: 9px; font-weight: 900;
+            padding: 5px 12px; border-radius: 20px; white-space: nowrap;
+            letter-spacing: 1px; text-transform: uppercase; pointer-events: none;
+            opacity: 0; animation: hint-anim 10s forwards;
+            z-index: 10;
+        }
+        @keyframes hint-anim {
+            0% { opacity: 0; bottom: -30px; }
+            10% { opacity: 1; bottom: -20px; }
+            90% { opacity: 1; bottom: -20px; }
+            100% { opacity: 0; bottom: -30px; visibility: hidden; }
+        }
+
         h1 { font-size: 24px; letter-spacing: 4px; text-transform: uppercase; font-weight: 900; }
         .name-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 8px; }
         .verify-icon { width: 18px; height: 18px; fill: var(--verify-blue); }
@@ -179,6 +194,14 @@
         #storyVideo { width: 100%; height: 100%; object-fit: cover; }
         .story-close { position: absolute; top: 15px; right: 25px; font-size: 35px; color: #fff; cursor: pointer; z-index: 10; text-shadow: 0 0 10px rgba(0,0,0,0.8); transition: transform 0.2s; }
         .story-close:hover { transform: scale(1.2); }
+        
+        /* ДОБАВЛЕНО: Стили для бейджа внутри кружка */
+        .story-badge {
+            position: absolute; bottom: 25px; left: 0; width: 100%; text-align: center;
+            font-size: 9px; font-weight: 800; letter-spacing: 2px; color: var(--red-accent);
+            text-transform: uppercase; z-index: 5; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -203,6 +226,7 @@
 
         <div class="avatar-link" onclick="openStory()">
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
+            <div class="story-hint">ПОСМОТРЕТЬ STORIES</div>
         </div>
         
         <div class="name-wrapper">
@@ -300,7 +324,8 @@
         <video id="storyVideo" playsinline loop>
             <source src="https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4" type="video/mp4">
         </video>
-        <div class="story-close" onclick="closeStory()">&times;</div>
+        <div class="story-badge">ЭКСКЛЮЗИВНО | BULAVIN SYSTEM</div>
+        <div class="story-close" onclick="closeStory()">×</div>
     </div>
 </div>
 
@@ -322,6 +347,10 @@
         const modal = document.getElementById('storyModal');
         const video = document.getElementById('storyVideo');
         modal.classList.add('show');
+        
+        // ДОБАВЛЕНО: Кэш-брейкер, чтобы видео всегда было новым
+        video.src = "https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4?v=" + new Date().getTime();
+        
         video.currentTime = 0;
         video.play();
     }
