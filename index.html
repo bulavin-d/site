@@ -116,7 +116,9 @@
         .modal-subtitle { font-size: 10px; opacity: 0.5; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
 
         .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 55px 20px 35px; text-align: center; margin: 0; }
-        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; }
+        
+        /* ИЗМЕНЕНИЯ ДЛЯ АВАТАРКИ: ТЕПЕРЬ ОНА КЛИКАБЕЛЬНА ДЛЯ КРУЖКА */
+        .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; cursor: pointer; }
         .avatar-link:hover { transform: scale(1.08); }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
         .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; }
@@ -142,20 +144,10 @@
         .btn-yt:hover { color: var(--yt-color) !important; filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5)); }
         .btn-soundcloud:hover { color: var(--sc-color) !important; filter: drop-shadow(0 0 8px rgba(255, 85, 0, 0.5)); }
 
-        /* АНИМАЦИЯ ОТПЕЧАТКА ПАЛЬЦА */
-        .btn-fusion i {
-            animation: neon-pulse 2s infinite alternate;
-        }
-        
+        .btn-fusion i { animation: neon-pulse 2s infinite alternate; }
         @keyframes neon-pulse {
-            0% {
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.2);
-                transform: scale(1);
-            }
-            100% {
-                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4);
-                transform: scale(1.1);
-            }
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.2), 0 0 10px rgba(255, 255, 255, 0.2); transform: scale(1); }
+            100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.4); transform: scale(1.1); }
         }
 
         .collapse-wrapper { display: grid; grid-template-rows: 0fr; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; margin-top: -10px; opacity: 0; }
@@ -181,6 +173,12 @@
         
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; padding-bottom: 20px; }
+
+        /* СТИЛИ ДЛЯ КРУЖКА */
+        .story-container { width: 280px; height: 280px; position: relative; border-radius: 50%; overflow: hidden; border: 3px solid #fff; box-shadow: 0 0 40px rgba(255,255,255,0.3); background: #000; }
+        #storyVideo { width: 100%; height: 100%; object-fit: cover; }
+        .story-close { position: absolute; top: 15px; right: 25px; font-size: 35px; color: #fff; cursor: pointer; z-index: 10; text-shadow: 0 0 10px rgba(0,0,0,0.8); transition: transform 0.2s; }
+        .story-close:hover { transform: scale(1.2); }
     </style>
 </head>
 <body>
@@ -203,9 +201,10 @@
             </button>
         </div>
 
-        <a href="https://www.instagram.com/lu4danya" target="_blank" class="avatar-link">
+        <div class="avatar-link" onclick="openStory()">
             <div class="avatar-inner-border"><img src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000" class="avatar"></div>
-        </a>
+        </div>
+        
         <div class="name-wrapper">
             <h1>BULAVIN</h1>
             <svg class="verify-icon" viewBox="0 0 24 24"><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/></svg>
@@ -296,6 +295,15 @@
     </div>
 </div>
 
+<div class="glass-modal" id="storyModal" onclick="closeStory()">
+    <div class="story-container" onclick="event.stopPropagation()">
+        <video id="storyVideo" playsinline loop>
+            <source src="https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4" type="video/mp4">
+        </video>
+        <div class="story-close" onclick="closeStory()">&times;</div>
+    </div>
+</div>
+
 <script>
     const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
@@ -308,6 +316,21 @@
     // AUTH CHOICE LOGIC
     function openAuthChoice() { document.getElementById('authChoiceModal').classList.add('show'); }
     function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
+
+    // STORY LOGIC
+    function openStory() {
+        const modal = document.getElementById('storyModal');
+        const video = document.getElementById('storyVideo');
+        modal.classList.add('show');
+        video.currentTime = 0;
+        video.play();
+    }
+    function closeStory() {
+        const modal = document.getElementById('storyModal');
+        const video = document.getElementById('storyVideo');
+        modal.classList.remove('show');
+        video.pause();
+    }
 
     // FORM LOGIC
     let isLoginMode = true;
