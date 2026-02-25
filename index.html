@@ -16,15 +16,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <title>BULAVIN — Официальный сайт | Музыка, афиша, новости</title>
-
     <meta name="google-site-verification" content="3Puxn3Z_8SABoUfhTI3cmc1WmrJgWKGJGPiXgXA0tgs" />
-
     <meta name="description" content="BULAVIN — официальный сайт. Казахстанский исполнитель и музыкальный продюсер. Музыка, афиша, официальный сайт.">
     <meta name="keywords" content="BULAVIN, Булавин, музыка, артист, Казахстан, продюсер, Касьяненко Даниил Юрьевич, Кто такой Булавин, BULAVIN Музыкант, Булавин треки">
     
     <meta property="og:title" content="BULAVIN — Официальный сайт">
     <meta property="og:description" content="Музыка, актуальная афиша выступлений и свежие новости.">
-    
     <meta property="og:image" content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
     <meta property="og:url" content="https://bulavin.space">
     <meta property="og:type" content="website">
@@ -117,18 +114,18 @@
 
         .profile-card { position: relative; background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--glass-border); border-radius: 40px; padding: 55px 20px 35px; text-align: center; margin: 0; }
         
+        /* Стили аватарки на главной */
         .avatar-link { display: block; width: 110px; height: 110px; margin: 0 auto 20px; position: relative; z-index: 5; transition: transform 0.3s ease; cursor: pointer; }
         .avatar-link:hover { transform: scale(1.05); }
         .avatar-link::before { content: ''; position: absolute; inset: 0; background: var(--insta-gradient); border-radius: 50%; animation: rotate-gradient 4s linear infinite; z-index: -1; }
         .avatar-inner-border { position: absolute; inset: 4px; background: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 3px; overflow: hidden; }
         
-        /* ИЗМЕНЕНО: Аватарка теперь размывается, а не исчезает */
         .avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; transition: all 0.5s ease; filter: blur(4px) brightness(0.4); }
         .avatar.clear { filter: blur(0px) brightness(1); }
         
         @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ИЗМЕНЕНО: Аккуратный текст и иконка поверх размытой авы */
+        /* Текст внутри аватарки на главной */
         .avatar-placeholder {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -195,15 +192,17 @@
         .prediction-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border); border-radius: 30px; padding: 30px 25px; text-align: center; margin-top: 5px; }
         .footer { text-align: center; font-size: 10px; opacity: 0.2; margin-top: 20px; letter-spacing: 2px; padding-bottom: 20px; }
 
-        /* Оформление открытого видео */
+        /* ========================================== */
+        /* БЛОК ВИДЕО-СТОРИС (ОТКРЫТОЕ ВИДЕО) */
+        /* ========================================== */
         .story-wrapper { position: relative; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 15px;}
         .story-container { width: 250px; height: 250px; position: relative; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.3); background: #000; z-index: 5; }
         #storyVideo { width: 100%; height: 100%; object-fit: cover; }
         .story-close { position: absolute; top: -40px; right: -20px; font-size: 30px; color: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; font-weight: 100; z-index: 10; padding: 10px; }
         .story-close:hover { color: #fff; transform: scale(1.2); }
 
-        /* ДОБАВЛЕНО: Аккуратная полоска прогресса внутри кружка */
-        .progress-bar-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: rgba(255,255,255,0.2); z-index: 10; }
+        /* Полоса прогресса теперь СНАРУЖИ кружка */
+        .progress-bar-container { width: 250px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; z-index: 10; }
         #progress-bar { height: 100%; width: 0%; background: #fff; transition: width 0.1s linear; }
     </style>
 </head>
@@ -330,41 +329,47 @@
 <div class="glass-modal" id="storyModal" onclick="closeStory()">
     <div class="story-wrapper" onclick="event.stopPropagation()">
         <div class="story-close" onclick="closeStory()">×</div>
+        
         <div class="story-container">
             <video id="storyVideo" playsinline>
                 <source src="https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4" type="video/mp4">
             </video>
-            <div class="progress-bar-container">
-                <div id="progress-bar"></div>
-            </div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div id="progress-bar"></div>
         </div>
     </div>
 </div>
 
 <script>
+    // ==========================================
+    // ЛОГИКА SUPABASE (БАЗА ДАННЫХ)
+    // ==========================================
     const SUPABASE_URL = 'https://uhqxtkuriccfimcnchuj.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocXh0a3VyaWNjZmltY25jaHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NTIzNjIsImV4cCI6MjA4NzQyODM2Mn0.juMhRq8oK1xB5gfRuROJur0DuwKqeZpke4ljGQLxYvI';
     const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // QR LOGIC
+    // ==========================================
+    // ЛОГИКА UI (ОКНА И КНОПКИ)
+    // ==========================================
     function openQR() { document.getElementById('qrModal').classList.add('show'); }
     function closeQR() { document.getElementById('qrModal').classList.remove('show'); }
 
-    // AUTH CHOICE LOGIC
     function openAuthChoice() { document.getElementById('authChoiceModal').classList.add('show'); }
     function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
 
-    // STORY LOGIC & PROGRESS BAR
+    // ==========================================
+    // ЛОГИКА СТОРИС (ВИДЕО И ПОЛОСКА)
+    // ==========================================
     const videoElement = document.getElementById('storyVideo');
     const progressBar = document.getElementById('progress-bar');
 
-    // Логика полоски прогресса
     videoElement.addEventListener('timeupdate', () => {
         const percentage = (videoElement.currentTime / videoElement.duration) * 100;
         progressBar.style.width = percentage + '%';
     });
 
-    // Закрываем видео, когда оно заканчивается
     videoElement.addEventListener('ended', closeStory);
 
     function openStory() {
@@ -381,7 +386,9 @@
         videoElement.pause();
     }
 
-    // FORM LOGIC
+    // ==========================================
+    // ЛОГИКА АВТОРИЗАЦИИ (ВХОД / РЕГИСТРАЦИЯ)
+    // ==========================================
     let isLoginMode = true;
     function openAuth(l) { 
         closeAuthChoice();
@@ -453,6 +460,9 @@
         }
     }
 
+    // ==========================================
+    // ЛОГИКА РАСКРЫВАЮЩИХСЯ СПИСКОВ (АККОРДЕОН)
+    // ==========================================
     function setupCollapse(btnId, wrapperId) {
         document.getElementById(btnId).onclick = () => {
             const el = document.getElementById(wrapperId);
@@ -463,7 +473,9 @@
     setupCollapse('music-btn', 'music-wrapper');
     setupCollapse('afisha-btn', 'afisha-wrapper');
 
-    // ФИКС ЭМОДЗИ НА МОБИЛКАХ
+    // ==========================================
+    // ЛОГИКА АНИМАЦИИ ФОНА (ПЛАВАЮЩИЕ ЭМОДЗИ)
+    // ==========================================
     const canvas = document.getElementById('global-canvas');
     const ctx = canvas.getContext('2d');
     let emojis = [];
@@ -505,6 +517,9 @@
     window.addEventListener('resize', initCanvas);
     initCanvas(); anim();
 
+    // ==========================================
+    // ЛОГИКА API ПРЕДСКАЗАНИЙ
+    // ==========================================
     async function fetchPrediction() {
         try {
             const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
@@ -514,7 +529,9 @@
     }
     fetchPrediction();
 
-    // ЛОГИКА АНИМАЦИИ АВАТАРКИ ПРИ ЗАГРУЗКЕ
+    // ==========================================
+    // ЛОГИКА АНИМАЦИИ АВАТАРКИ ПРИ ЗАГРУЗКЕ САЙТА
+    // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
         const avatarImg = document.getElementById('mainAvatarImage');
         const placeholder = document.getElementById('avatarPlaceholder');
