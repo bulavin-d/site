@@ -1,0 +1,299 @@
+/* ================================================
+   BULAVIN SYSTEM — DASHBOARD STYLES
+   Дизайн идентичен главной странице
+   ================================================ */
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* Полноэкранный canvas поверх всего (копия главной) */
+#global-canvas {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    filter: grayscale(1) brightness(0.55) blur(1px);
+    pointer-events: none;
+}
+.dynamic-bg {
+    position: fixed; inset: 0;
+    background: url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center;
+    background-size: cover;
+    filter: blur(90px) brightness(0.14) saturate(0.6);
+    transform: scale(1.15);
+    z-index: -2;
+    transition: background-image 0.8s ease;
+}
+
+/* Container */
+.container {
+    width: 100%; max-width: 420px;
+    padding: 40px 18px 60px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 5; position: relative;
+    animation: fadeInUp 0.7s var(--ease-out) forwards;
+    opacity: 0;
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PROFILE HEADER CARD ─────────────────────── */
+.dash-profile-card {
+    background: var(--glass);
+    backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+    border: 1px solid var(--glass-border);
+    border-radius: 32px;
+    padding: 32px 24px 26px;
+    text-align: center;
+    position: relative;
+}
+.dash-logout-btn {
+    position: absolute; top: 18px; right: 18px;
+    width: 34px; height: 34px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 11px;
+    color: rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 12px;
+    transition: all 0.25s ease;
+}
+.dash-logout-btn:hover {
+    color: var(--red);
+    border-color: rgba(255,75,43,0.35);
+    background: rgba(255,75,43,0.08);
+}
+.dash-username {
+    font-size: 20px; letter-spacing: 4px; font-weight: 900;
+    margin-bottom: 6px; text-transform: uppercase;
+}
+.dash-welcome {
+    font-size: 9px; color: rgba(255,255,255,0.28);
+    letter-spacing: 3px; text-transform: uppercase;
+}
+
+/* ── GENERIC CARD ────────────────────────────── */
+.dash-card {
+    background: var(--glass);
+    backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    padding: 22px 20px;
+    display: flex; flex-direction: column; gap: 14px;
+}
+
+/* ── SECRET GALLERY ──────────────────────────── */
+.gallery-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 2px;
+}
+.gallery-label {
+    font-size: 9px; font-weight: 800; letter-spacing: 3px;
+    color: var(--blue); text-transform: uppercase;
+}
+.gallery-info-wrap { position: relative; }
+.gallery-info-btn {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: rgba(255,255,255,0.4);
+    font-size: 10px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.22s ease;
+}
+.gallery-info-btn:hover { color: #fff; background: rgba(255,255,255,0.12); }
+.gallery-tooltip {
+    position: absolute; right: 0; top: 32px;
+    background: rgba(10,10,18,0.95);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.75);
+    width: 220px; z-index: 100;
+    pointer-events: none;
+    opacity: 0; transform: translateY(-6px) scale(0.96);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    backdrop-filter: blur(20px);
+}
+.gallery-tooltip.show {
+    opacity: 1; transform: translateY(0) scale(1);
+}
+
+/* Рамка галереи — вертикальная, стекло */
+.gallery-frame {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.09);
+}
+.gallery-skeleton {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.18); font-size: 32px;
+    animation: skeletonPulse 2s ease-in-out infinite;
+}
+@keyframes skeletonPulse {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 0.85; }
+}
+.gallery-photo {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+}
+@keyframes photoFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Световой блик */
+.gallery-flare {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(
+        115deg,
+        transparent 25%,
+        rgba(255,255,255,0.07) 45%,
+        rgba(255,255,255,0.13) 50%,
+        rgba(255,255,255,0.07) 55%,
+        transparent 75%
+    );
+    background-size: 200% 100%;
+    animation: flareSlide 5s ease-in-out infinite;
+    border-radius: 20px;
+}
+@keyframes flareSlide {
+    0%   { background-position: 200% 0; opacity: 0; }
+    10%  { opacity: 1; }
+    50%  { background-position: -200% 0; opacity: 1; }
+    60%  { opacity: 0; }
+    100% { background-position: -200% 0; opacity: 0; }
+}
+
+/* Кнопка загрузки в галерею */
+.gallery-upload-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px dashed rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.5);
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; cursor: pointer; font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: all 0.25s ease;
+}
+.gallery-upload-btn:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.35);
+    color: #fff;
+}
+.gallery-upload-btn i { font-size: 13px; }
+
+/* ── SOUL CARD ───────────────────────────────── */
+.dash-soul-card { gap: 16px; }
+.soul-text {
+    font-size: 12px; font-weight: 300; line-height: 1.65;
+    color: rgba(255,255,255,0.6);
+}
+.soul-text p { margin-bottom: 4px; }
+.soul-highlight {
+    color: rgba(255,255,255,0.88) !important;
+    font-weight: 500 !important;
+}
+
+/* ── ANON BTN ────────────────────────────────── */
+.anon-btn {
+    width: 100%; padding: 18px; border-radius: 19px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.18);
+    color: #fff; font-weight: 800; font-size: 13px; letter-spacing: 2px;
+    cursor: pointer; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    transition: all 0.28s ease; font-family: inherit;
+}
+.anon-btn:hover { background: rgba(255,255,255,0.13); border-color: #fff; transform: translateY(-2px); }
+.anon-btn i { font-size: 16px; }
+
+/* ── BTN (FUSION — копия с главной) ──────────── */
+.btn {
+    position: relative;
+    background: var(--glass);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    padding: 17px 20px; border-radius: 20px;
+    text-decoration: none; color: var(--text);
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center;
+    transition: all 0.28s var(--ease-out);
+    cursor: pointer; z-index: 10; width: 100%;
+}
+.btn i { font-size: 18px; width: 25px; margin-right: 14px; display: flex; justify-content: center; flex-shrink: 0; }
+.btn span { flex-grow: 1; text-align: center; margin-right: 25px; }
+.btn:hover { transform: translateY(-2px); border-color: var(--glass-border-h); background: var(--glass-hover); }
+.btn-fusion i { animation: neon-pulse 2.2s infinite alternate; }
+@keyframes neon-pulse {
+    0%   { text-shadow: 0 0 5px rgba(255,255,255,.2); transform: scale(1); }
+    100% { text-shadow: 0 0 10px rgba(255,255,255,.8), 0 0 22px rgba(255,255,255,.5); transform: scale(1.1); }
+}
+
+/* ── FOOTER ──────────────────────────────────── */
+.footer {
+    text-align: center; font-size: 10px;
+    color: var(--text-dimmer); letter-spacing: 2px;
+    margin-top: 8px; padding-bottom: 10px;
+}
+
+/* ── ANON TEXTAREA ───────────────────────────── */
+.anon-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.055); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 18px; padding: 18px; color: #fff; resize: none; outline: none;
+    margin-bottom: 14px; font-size: 13.5px; line-height: 1.5; font-family: inherit;
+    transition: border-color 0.25s;
+}
+.anon-textarea:focus { border-color: rgba(255,255,255,0.28); }
+.anon-textarea::placeholder { color: rgba(255,255,255,0.28); }
+
+/* ── STATUS LINE ──────────────────────────────── */
+.status-line {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35); text-align: center;
+    min-height: 24px; transition: color 0.3s ease;
+}
+.status-line.ok   { color: #1ed760; }
+.status-line.err  { color: #ff4b2b; }
+.status-line.busy { color: #ffcc00; }
+
+/* ── CROPPER MODAL ───────────────────────────── */
+.cropper-card {
+    width: 92%; max-width: 420px;
+    background: rgba(8,8,16,0.96);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    backdrop-filter: blur(36px);
+}
+.cropper-header {
+    display: flex; align-items: center; justify-content: space-between;
+}
+.cropper-close-btn {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: all 0.2s ease;
+}
+.cropper-close-btn:hover { background: rgba(255,75,43,0.15); color: var(--red); }
+.cropper-wrap {
+    width: 100%; border-radius: 16px; overflow: hidden;
+    background: #000; max-height: 60vh;
+}
+.cropper-wrap img { max-width: 100%; display: block; }

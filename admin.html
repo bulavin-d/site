@@ -7,6 +7,10 @@
     <meta name="robots" content="noindex, nofollow">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
     <link rel="icon" href="https://raw.githubusercontent.com/bulavin-d/site/refs/heads/main/logo.bulavin.space.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/shared.css">
@@ -14,26 +18,21 @@
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════
-     LOGIN
-═══════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div class="login-wrap" id="loginWrap">
     <div class="login-card">
         <div class="login-title">SYSTEM ACCESS</div>
         <div class="login-sub">BULAVIN ADMIN PANEL</div>
-        <input  class="input" type="password" id="passInput" placeholder="ADMIN PASSWORD" style="margin-bottom:14px;">
+        <input class="input" type="password" id="passInput" placeholder="ADMIN PASSWORD" style="margin-bottom:14px;">
         <button class="btn-action" id="loginBtn" onclick="handleLogin()">AUTHORIZE</button>
         <div class="status-line" id="loginStatus"></div>
         <a href="/" class="back-link" style="margin-top:4px;">← ВЕРНУТЬСЯ НА САЙТ</a>
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     ADMIN PANEL
-═══════════════════════════════════════════════ -->
+<!-- ADMIN PANEL -->
 <div class="admin-layout" id="adminWrap" style="display:none;">
 
-    <!-- HEADER -->
     <div class="admin-header">
         <div class="admin-logo">BULAVIN <span>CMS</span></div>
         <div style="display:flex;align-items:center;gap:12px;">
@@ -42,35 +41,33 @@
         </div>
     </div>
 
-    <!-- TABS NAV -->
     <div class="admin-tabs" role="tablist">
-        <button class="tab-btn active" onclick="switchTab('tab-main', this)" role="tab">
+        <button class="tab-btn active" onclick="switchTab('tab-main', this)">
             <i class="fa-solid fa-house"></i>Главная
         </button>
-        <button class="tab-btn" onclick="switchTab('tab-dash', this)" role="tab">
+        <button class="tab-btn" onclick="switchTab('tab-dash', this)">
             <i class="fa-solid fa-id-badge"></i>Dashboard
         </button>
-        <button class="tab-btn" onclick="switchTab('tab-media', this)" role="tab">
+        <button class="tab-btn" onclick="switchTab('tab-media', this)">
             <i class="fa-solid fa-photo-film"></i>Медиа
         </button>
-        <button class="tab-btn" onclick="switchTab('tab-links', this)" role="tab">
+        <button class="tab-btn" onclick="switchTab('tab-links', this)">
             <i class="fa-solid fa-link"></i>Ссылки
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-community', this)">
+            <i class="fa-solid fa-users"></i>Комьюнити
         </button>
     </div>
 
-    <!-- ════════════════════════════════════════
-         ВК: ГЛАВНАЯ
-    ════════════════════════════════════════ -->
+    <!-- ════ ВК: ГЛАВНАЯ ════ -->
     <div class="tab-content active" id="tab-main">
 
-        <!-- ВИЗУАЛ -->
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-sliders"></i>Визуальные настройки</div>
-
             <div class="toggle-row">
                 <div>
                     <div class="toggle-label-text">Эффект EXCLUSIVE</div>
-                    <div class="toggle-sub">15-секундное размытие аватарки при загрузке</div>
+                    <div class="toggle-sub">15-секундное размытие аватарки</div>
                 </div>
                 <label class="toggle">
                     <input type="checkbox" id="blurToggle" onchange="saveBlurSetting()">
@@ -78,7 +75,6 @@
                 </label>
             </div>
             <div class="status-line" id="blurStatus"></div>
-
             <div class="field-label">ЦВЕТ КОЛЬЦА АВАТАРКИ</div>
             <div class="color-row">
                 <div class="color-preview" id="ringColorSwatch" style="background:linear-gradient(45deg,#f09433,#bc1888);">
@@ -93,32 +89,26 @@
             <div class="status-line" id="colorStatus"></div>
         </div>
 
-        <!-- ТЕКСТЫ -->
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-pen"></i>Тексты страницы</div>
-
             <div class="field-row">
                 <div class="field-label">BIO (подпись)</div>
                 <input class="input" type="text" id="fieldBio" placeholder="Казахстанский исполнитель...">
             </div>
-            <button class="btn-action" onclick="saveField('fieldBio', 'bio', 'textStatus')">СОХРАНИТЬ BIO</button>
-
+            <button class="btn-action" onclick="saveField('fieldBio','bio','textStatus')">СОХРАНИТЬ BIO</button>
             <div class="field-row">
                 <div class="field-label">FOOTER</div>
                 <input class="input" type="text" id="fieldFooter" placeholder="© 2026 BULAVIN">
             </div>
-            <button class="btn-action" onclick="saveField('fieldFooter', 'footer_text', 'textStatus')">СОХРАНИТЬ FOOTER</button>
-
+            <button class="btn-action" onclick="saveField('fieldFooter','footer_text','textStatus')">СОХРАНИТЬ FOOTER</button>
             <div class="status-line" id="textStatus"></div>
         </div>
 
-        <!-- АФИША -->
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-calendar-check"></i>Афиша</div>
-
             <div class="field-row">
                 <div class="field-label">Текст когда нет выступлений</div>
-                <input class="input" type="text" id="fieldAfisha" placeholder="На данный момент выступлений не запланировано.">
+                <input class="input" type="text" id="fieldAfisha" placeholder="На данный момент...">
             </div>
             <div class="field-row">
                 <div class="field-label">Ссылка «Я организатор»</div>
@@ -126,34 +116,22 @@
             </div>
             <button class="btn-action" onclick="saveAfishaTexts()">СОХРАНИТЬ</button>
             <div class="status-line" id="afishaTextStatus"></div>
-
             <div class="admin-divider"></div>
-
             <div class="field-label">ПОСТЕР АФИШИ</div>
-            <p class="help-text">Загрузи постер — он появится в аккордеоне вместо текста. Убери ссылки — вернётся кнопка «Я организатор».</p>
-
             <label class="upload-label" for="posterFileInput">
-                <i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ПОСТЕР (JPG/PNG)
+                <i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ПОСТЕР
             </label>
             <input type="file" id="posterFileInput" accept="image/*">
-
-            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
-                ИЛИ URL
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
-            </div>
-
             <div class="field-row">
-                <div class="field-label">URL постера</div>
+                <div class="field-label">или URL постера</div>
                 <input class="input" type="url" id="fieldPosterUrl" placeholder="https://...">
             </div>
             <div class="field-row">
-                <div class="field-label">URL билетов (кнопка «КУПИТЬ БИЛЕТЫ»)</div>
+                <div class="field-label">URL билетов</div>
                 <input class="input" type="url" id="fieldTicketsUrl" placeholder="https://...">
             </div>
-
             <div class="btn-row">
-                <button class="btn-action" onclick="saveAfishaPoster()">СОХРАНИТЬ ПОСТЕР</button>
+                <button class="btn-action" onclick="saveAfishaPoster()">СОХРАНИТЬ</button>
                 <button class="btn-action btn-danger" onclick="clearAfishaPoster()">УБРАТЬ</button>
             </div>
             <div class="status-line" id="posterStatus"></div>
@@ -161,58 +139,48 @@
 
     </div>
 
-    <!-- ════════════════════════════════════════
-         ВК: DASHBOARD
-    ════════════════════════════════════════ -->
+    <!-- ════ ВК: DASHBOARD ════ -->
     <div class="tab-content" id="tab-dash">
-
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-id-badge"></i>Контент страницы /dashboard/</div>
-
+            <div class="section-title"><i class="fa-solid fa-id-badge"></i>Контент /dashboard/</div>
             <div class="field-row">
-                <div class="field-label">Soul Text (каждая строка = новый абзац)</div>
+                <div class="field-label">Soul Text (каждая строка = абзац)</div>
                 <textarea class="admin-textarea" id="fieldSoulText" rows="5"
-                    placeholder="Здесь нет лишних глаз.&#10;Только ты и твои мысли.&#10;Что бы ты сказал мне...&#10;Если ты хочешь выговориться — вперёд."></textarea>
+                    placeholder="Здесь нет лишних глаз.&#10;Только ты и твои мысли."></textarea>
             </div>
-
             <div class="field-row">
                 <div class="field-label">Ссылка кнопки СЛИЯНИЕ</div>
                 <input class="input" type="url" id="fieldMergeUrl" placeholder="https://t.me/...">
             </div>
-
             <button class="btn-action" onclick="saveDashboard()">СОХРАНИТЬ DASHBOARD</button>
             <div class="status-line" id="dashStatus"></div>
         </div>
-
     </div>
 
-    <!-- ════════════════════════════════════════
-         ВК: МЕДИА
-    ════════════════════════════════════════ -->
+    <!-- ════ ВК: МЕДИА ════ -->
     <div class="tab-content" id="tab-media">
 
         <!-- ВИДЕО-КРУЖОК -->
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-circle-play"></i>Видео-кружок (Story)</div>
+            <div class="section-title"><i class="fa-solid fa-circle-play"></i>Видео-кружок</div>
             <p class="help-text">Загрузи MP4 — заменит story.mp4 в бакете stories.</p>
-
             <label class="upload-label" for="videoFileInput">
                 <i class="fa-solid fa-film"></i> ВЫБРАТЬ ВИДЕО (MP4)
             </label>
             <input type="file" id="videoFileInput" accept="video/mp4,video/quicktime">
-
             <button class="btn-action btn-danger" onclick="deleteVideo()">
                 <i class="fa-solid fa-trash" style="margin-right:8px;"></i>УДАЛИТЬ ВИДЕО
             </button>
             <div class="status-line" id="videoStatus"></div>
         </div>
 
-        <!-- АВАТАРКА -->
+        <!-- АВАТАРКА С CROPPER -->
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-image"></i>Аватарка</div>
+            <p class="help-text">При выборе файла откроется окно кадрирования (1:1). Файл сохраняется в бакет <code>avatars</code>.</p>
 
             <label class="upload-label" for="avatarFileInput">
-                <i class="fa-solid fa-upload"></i> ЗАГРУЗИТЬ ФАЙЛ
+                <i class="fa-solid fa-upload"></i> ВЫБРАТЬ ФОТО
             </label>
             <input type="file" id="avatarFileInput" accept="image/*">
 
@@ -224,95 +192,88 @@
 
             <div style="display:flex;gap:8px;">
                 <input class="input" type="url" id="avatarUrlInput" placeholder="https://..." style="flex:1;">
-                <button class="btn-action" style="width:auto;padding:16px 14px;white-space:nowrap;" onclick="saveAvatarUrl()">OK</button>
+                <button class="btn-action" style="width:auto;padding:16px 14px;" onclick="saveAvatarUrl()">OK</button>
             </div>
+
+            <button class="btn-action btn-danger" onclick="deleteAvatar()">
+                <i class="fa-solid fa-user-slash" style="margin-right:8px;"></i>УДАЛИТЬ АВАТАРКУ
+            </button>
             <div class="status-line" id="avatarStatus"></div>
         </div>
 
     </div>
 
-    <!-- ════════════════════════════════════════
-         ВК: ССЫЛКИ
-    ════════════════════════════════════════ -->
+    <!-- ════ ВК: ССЫЛКИ ════ -->
     <div class="tab-content" id="tab-links">
-
-        <!-- СТАНДАРТНЫЕ ССЫЛКИ -->
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-link"></i>Стандартные ссылки</div>
-
-            <div class="field-row">
-                <div class="field-label"><i class="fa-brands fa-telegram" style="margin-right:5px;"></i>Telegram</div>
-                <input class="input" type="url" id="fieldTelegram" placeholder="https://t.me/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-brands fa-instagram" style="margin-right:5px;"></i>Instagram</div>
-                <input class="input" type="url" id="fieldInstagram" placeholder="https://instagram.com/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-solid fa-compact-disc" style="margin-right:5px;"></i>Yandex Music</div>
-                <input class="input" type="url" id="fieldYandex" placeholder="https://music.yandex.kz/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-brands fa-vk" style="margin-right:5px;"></i>VK Music</div>
-                <input class="input" type="url" id="fieldVk" placeholder="https://vk.com/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-brands fa-spotify" style="margin-right:5px;"></i>Spotify</div>
-                <input class="input" type="url" id="fieldSpotify" placeholder="https://open.spotify.com/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-brands fa-apple" style="margin-right:5px;"></i>Apple Music</div>
-                <input class="input" type="url" id="fieldApple" placeholder="https://music.apple.com/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-brands fa-youtube" style="margin-right:5px;"></i>YouTube Music</div>
-                <input class="input" type="url" id="fieldYt" placeholder="https://music.youtube.com/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-brands fa-soundcloud" style="margin-right:5px;"></i>SoundCloud</div>
-                <input class="input" type="url" id="fieldSoundcloud" placeholder="https://soundcloud.com/...">
-            </div>
-            <div class="field-row">
-                <div class="field-label"><i class="fa-solid fa-fingerprint" style="margin-right:5px;"></i>Слияние (бот)</div>
-                <input class="input" type="url" id="fieldFusion" placeholder="https://t.me/...">
-            </div>
-
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-telegram" style="margin-right:5px;"></i>Telegram</div><input class="input" type="url" id="fieldTelegram" placeholder="https://t.me/..."></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-instagram" style="margin-right:5px;"></i>Instagram</div><input class="input" type="url" id="fieldInstagram" placeholder="https://instagram.com/..."></div>
+            <div class="field-row"><div class="field-label"><i class="fa-solid fa-compact-disc" style="margin-right:5px;"></i>Yandex Music</div><input class="input" type="url" id="fieldYandex"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-vk" style="margin-right:5px;"></i>VK Music</div><input class="input" type="url" id="fieldVk"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-spotify" style="margin-right:5px;"></i>Spotify</div><input class="input" type="url" id="fieldSpotify"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-apple" style="margin-right:5px;"></i>Apple Music</div><input class="input" type="url" id="fieldApple"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-youtube" style="margin-right:5px;"></i>YouTube Music</div><input class="input" type="url" id="fieldYt"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-soundcloud" style="margin-right:5px;"></i>SoundCloud</div><input class="input" type="url" id="fieldSoundcloud"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-solid fa-fingerprint" style="margin-right:5px;"></i>Слияние</div><input class="input" type="url" id="fieldFusion"></div>
             <button class="btn-action" onclick="saveAllLinks()">СОХРАНИТЬ ВСЕ ССЫЛКИ</button>
             <div class="status-line" id="linksStatus"></div>
         </div>
 
-        <!-- КАСТОМНЫЕ КНОПКИ -->
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-plus"></i>Дополнительные кнопки</div>
-            <p class="help-text">Эти кнопки появятся на главной странице под кнопкой «СЛИЯНИЕ». Иконки — классы Font Awesome 6, например: <code style="color:rgba(255,255,255,0.5);">fa-solid fa-star</code></p>
-
-            <!-- Список существующих -->
+            <p class="help-text">Появятся на главной под «СЛИЯНИЕ». Иконки: классы Font Awesome 6, напр. <code>fa-solid fa-star</code></p>
             <div class="custom-btn-list" id="customBtnList">
                 <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:12px 0;">Загрузка...</div>
             </div>
-
             <div class="admin-divider"></div>
-
-            <!-- Форма добавления -->
             <div class="add-btn-form">
-                <div class="field-label" style="margin-bottom:2px;">Добавить новую кнопку</div>
-                <input class="input" type="text" id="newBtnLabel" placeholder="Название кнопки" style="margin-bottom:8px;">
+                <div class="field-label" style="margin-bottom:2px;">Добавить кнопку</div>
+                <input class="input" type="text" id="newBtnLabel" placeholder="Название" style="margin-bottom:8px;">
                 <input class="input" type="url"  id="newBtnUrl"   placeholder="https://..." style="margin-bottom:8px;">
                 <input class="input" type="text" id="newBtnIcon"  placeholder="fa-solid fa-link" style="margin-bottom:8px;">
-                <button class="btn-action" onclick="addCustomButton()">
-                    <i class="fa-solid fa-plus" style="margin-right:8px;"></i>ДОБАВИТЬ
-                </button>
+                <button class="btn-action" onclick="addCustomButton()">ДОБАВИТЬ</button>
             </div>
             <div class="status-line" id="customBtnStatus"></div>
         </div>
+    </div>
 
+    <!-- ════ ВК: КОМЬЮНИТИ ════ -->
+    <div class="tab-content" id="tab-community">
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-users"></i>Secret Gallery — модерация</div>
+            <p class="help-text">Все фото загруженные участниками Inner Circle. Удаляй нежелательный контент.</p>
+            <div class="community-stats" id="communityStats">Загрузка...</div>
+            <div class="community-grid" id="communityGrid">
+                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:20px 0;">Загрузка...</div>
+            </div>
+            <div class="status-line" id="communityStatus"></div>
+        </div>
     </div>
 
     <a href="/" class="back-link">← ВЕРНУТЬСЯ НА САЙТ</a>
 </div>
 
+<!-- CROPPER MODAL (для аватарки) -->
+<div class="glass-modal" id="avatarCropperModal">
+    <div class="cropper-card" onclick="event.stopPropagation()">
+        <div class="cropper-header">
+            <span style="font-size:13px;font-weight:800;letter-spacing:2px;">КАДРИРОВАТЬ АВАТАРКУ</span>
+            <button class="cropper-close-btn" onclick="closeAvatarCropper()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="cropper-wrap">
+            <img id="avatarCropperImg" src="" alt="">
+        </div>
+        <button class="btn-action" onclick="confirmAvatarCrop()">
+            <i class="fa-solid fa-check" style="margin-right:8px;"></i>СОХРАНИТЬ АВАТАРКУ
+        </button>
+        <div class="status-line" id="avatarCropStatus"></div>
+    </div>
+</div>
+
 <script src="/js/config.js"></script>
 <script src="/js/admin.js"></script>
-
 </body>
 </html>

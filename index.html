@@ -25,7 +25,6 @@
     <meta name="google-site-verification" content="3Puxn3Z_8SABoUfhTI3cmc1WmrJgWKGJGPiXgXA0tgs">
     <meta name="description"  content="BULAVIN — официальный сайт. Казахстанский исполнитель и музыкальный продюсер. Музыка, афиша, официальный сайт.">
     <meta name="keywords"     content="BULAVIN, Булавин, музыка, артист, Казахстан, продюсер, Касьяненко Даниил Юрьевич, Кто такой Булавин, BULAVIN Музыкант, Булавин треки">
-
     <meta property="og:title"       content="BULAVIN — Официальный сайт">
     <meta property="og:description" content="Музыка, актуальная афиша выступлений и свежие новости.">
     <meta property="og:image"       content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
@@ -53,16 +52,9 @@
     }
     </script>
 
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- Favicon -->
     <link rel="icon" href="https://raw.githubusercontent.com/bulavin-d/site/refs/heads/main/logo.bulavin.space.png">
-
-    <!-- Иконки -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- Стили -->
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/main.css">
 </head>
@@ -81,27 +73,33 @@
                 <i class="fa-solid fa-qrcode"></i>
             </button>
         </div>
-
         <div class="auth-nav">
             <button class="nav-btn has-dot" onclick="openAuthChoice()" aria-label="Войти">
                 <i class="fa-regular fa-user"></i>
             </button>
         </div>
 
-        <div class="avatar-link" onclick="openStory()">
+        <!-- Avatar: кольцо скрыто (класс avatar-loading), силуэт-заглушка -->
+        <div class="avatar-link avatar-loading" onclick="openStory()" id="avatarLink">
             <div class="avatar-inner-border">
-                <div id="avatarPlaceholder" class="avatar-placeholder">
+                <!-- Силуэт-заглушка, скрывается когда появляется фото -->
+                <div class="avatar-silhouette" id="avatarSilhouette">
+                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="40" cy="28" r="16" fill="rgba(255,255,255,0.13)"/>
+                        <path d="M10 72c0-16.569 13.431-30 30-30s30 13.431 30 30" stroke="none" fill="rgba(255,255,255,0.1)"/>
+                        <ellipse cx="40" cy="70" rx="28" ry="18" fill="rgba(255,255,255,0.1)"/>
+                    </svg>
+                </div>
+                <!-- EXCLUSIVE overlay -->
+                <div id="avatarPlaceholder" class="avatar-placeholder" style="display:none;">
                     <span id="avatarText">EXCLUSIVE</span>
                     <i id="avatarIcon" class="fa-solid fa-play" style="display:none;"></i>
                 </div>
-                <img
-                    src="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000"
-                    class="avatar" id="mainAvatarImage" alt="BULAVIN"
-                >
+                <!-- Реальное фото (скрыто до загрузки) -->
+                <img class="avatar" id="mainAvatarImage" alt="BULAVIN" style="opacity:0;">
             </div>
         </div>
 
-        <!-- Имя: h1 центрирован, верификация — абсолютно снаружи -->
         <div class="name-wrapper">
             <div class="name-inner">
                 <h1>BULAVIN</h1>
@@ -110,7 +108,9 @@
                 </svg>
             </div>
         </div>
-        <p class="bio">Казахстанский исполнитель и музыкальный продюсер.</p>
+
+        <!-- Bio: скелетон до загрузки -->
+        <p class="bio skeleton-text" id="bioEl">&nbsp;</p>
     </div>
 
     <!-- SOCIAL GRID -->
@@ -129,12 +129,12 @@
     </button>
     <div class="collapse-wrapper" id="music-wrapper">
         <div class="collapse-content">
-            <a id="link-yandex"     href="https://music.yandex.kz/artist/24009925"                     target="_blank" rel="noopener" class="btn btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
-            <a id="link-vk"         href="https://vk.com/artist/bulavin"                               target="_blank" rel="noopener" class="btn btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
-            <a id="link-spotify"    href="https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq"      target="_blank" rel="noopener" class="btn btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
-            <a id="link-apple"      href="https://music.apple.com/ru/artist/bulavin/1805904899"         target="_blank" rel="noopener" class="btn"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
-            <a id="link-yt"         href="https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA"  target="_blank" rel="noopener" class="btn btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
-            <a id="link-soundcloud" href="https://soundcloud.com/bulavin"                              target="_blank" rel="noopener" class="btn btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
+            <a id="link-yandex"     href="#" target="_blank" rel="noopener" class="btn btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
+            <a id="link-vk"         href="#" target="_blank" rel="noopener" class="btn btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
+            <a id="link-spotify"    href="#" target="_blank" rel="noopener" class="btn btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
+            <a id="link-apple"      href="#" target="_blank" rel="noopener" class="btn"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
+            <a id="link-yt"         href="#" target="_blank" rel="noopener" class="btn btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
+            <a id="link-soundcloud" href="#" target="_blank" rel="noopener" class="btn btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
         </div>
     </div>
 
@@ -145,17 +145,14 @@
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
             <div class="afisha-card">
-                <!-- Текст (когда нет постера) -->
                 <p id="afisha-text" style="font-size:12px;color:var(--text-dim);text-align:center;">
                     На данный момент выступлений не запланировано.
                 </p>
-                <!-- Кнопка организатора (когда нет постера) -->
                 <div id="organizer-wrap" style="text-align:center;">
-                    <a id="link-organizer" href="https://t.me/imbulavin" target="_blank" rel="noopener" class="organizer-link">
+                    <a id="link-organizer" href="#" target="_blank" rel="noopener" class="organizer-link">
                         <i class="fa-solid fa-briefcase"></i> Я организатор
                     </a>
                 </div>
-                <!-- Постер афиши (когда есть) -->
                 <div id="afisha-poster-wrap" style="display:none;position:relative;">
                     <img class="afisha-poster-img" src="" alt="Афиша" style="width:100%;border-radius:16px;display:block;">
                     <div class="poster-badge" style="display:none;">
@@ -167,7 +164,7 @@
     </div>
 
     <!-- FUSION -->
-    <a id="link-fusion" href="https://t.me/imbulavin_bot" target="_blank" rel="noopener"
+    <a id="link-fusion" href="#" target="_blank" rel="noopener"
        class="btn btn-fusion" style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
         <i class="fa-solid fa-fingerprint"></i><span>СЛИЯНИЕ</span>
     </a>
@@ -181,7 +178,7 @@
         <div id="prediction">Подключаюсь...</div>
     </div>
 
-    <p class="footer">© 2026 BULAVIN</p>
+    <p class="footer" id="footerEl">© 2026 BULAVIN</p>
 </div>
 
 <!-- ── МОДАЛЬНЫЕ ОКНА ─────────────────────────── -->
@@ -197,9 +194,13 @@
     </div>
 </div>
 
-<!-- AUTH CHOICE -->
+<!-- AUTH CHOICE — добавлен заголовок SYSTEM ACCESS -->
 <div class="glass-modal" id="authChoiceModal" onclick="closeAuthChoice()">
-    <div class="glass-card" style="padding:36px 26px;display:flex;flex-direction:column;gap:14px;width:90%;max-width:330px;" onclick="event.stopPropagation()">
+    <div class="glass-card" style="padding:32px 26px;display:flex;flex-direction:column;gap:12px;width:90%;max-width:330px;" onclick="event.stopPropagation()">
+        <div class="auth-choice-header">
+            <div class="auth-choice-badge">SYSTEM ACCESS</div>
+            <p class="auth-choice-sub">BULAVIN INNER CIRCLE</p>
+        </div>
         <button class="choice-btn" onclick="openAuth(true)">
             <i class="fa-solid fa-right-to-bracket"></i> ВХОД
         </button>
@@ -218,7 +219,6 @@
             <input class="input" type="email"    id="authEmail"    placeholder="EMAIL"    style="margin-bottom:12px;">
             <input class="input" type="password" id="authPassword" placeholder="ПАРОЛЬ"  style="margin-bottom:12px;">
             <p id="forgotPasswordLink" class="forgot-link" onclick="resetPasswordTrigger()">Забыли пароль?</p>
-            <!-- REMEMBER ME -->
             <div id="rememberMeRow" class="remember-row">
                 <label class="remember-label">
                     <input type="checkbox" id="rememberMeCheck" checked>
@@ -255,9 +255,7 @@
     </div>
 </div>
 
-<!-- Supabase config + main logic -->
 <script src="/js/config.js"></script>
 <script src="/js/main.js"></script>
-
 </body>
 </html>

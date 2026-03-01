@@ -1,14 +1,14 @@
 /* ================================================
-   BULAVIN SYSTEM — MAIN PAGE LOGIC
-   !! Не трогать auth, storage, SEO, анимации !!
+   BULAVIN SYSTEM — MAIN PAGE LOGIC v4
+   !! НЕ ТРОГАТЬ: auth, storage, SEO, анимации !!
    ================================================ */
 
 /* ────────────────────────────────────────────────
-   1. ДИНАМИЧЕСКИЙ КОНТЕНТ ИЗ SUPABASE
+   1. КОНТЕНТ + FOUC-FREE LOADING
    ──────────────────────────────────────────────── */
 const DEFAULTS = {
-    avatar_url:            'https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000',
-    bio:                   'Казахстанский исполнитель и музыкальный продюсер.',
+    avatar_url:            '',
+    bio:                   '',
     footer_text:           '© 2026 BULAVIN',
     telegram_url:          'https://t.me/imbulavin',
     instagram_url:         'https://www.instagram.com/lu4danya',
@@ -27,7 +27,10 @@ const DEFAULTS = {
     ring_color:            '',
 };
 
+const FALLBACK_AVATAR = ''; // пусто = силуэт-заглушка
+
 let _content = { ...DEFAULTS };
+let _contentLoaded = false;
 
 async function loadContent() {
     try {
@@ -37,22 +40,27 @@ async function loadContent() {
         if (error) throw error;
         data.forEach(row => { if (row.value !== null) _content[row.key] = row.value; });
     } catch(e) {
-        console.warn('[BULAVIN] site_content недоступен, работаем с дефолтами.', e.message);
+        console.warn('[BULAVIN] site_content недоступен.', e.message);
     }
+    _contentLoaded = true;
     applyContent();
     await loadCustomButtons();
 }
 
 function applyContent() {
+    if (!_contentLoaded) return;
     const c = _content;
 
-    // Bio
-    const bioEl = document.querySelector('.bio');
-    if (bioEl) bioEl.textContent = c.bio;
+    // BIO — убрать скелетон, показать текст
+    const bioEl = document.getElementById('bioEl');
+    if (bioEl) {
+        bioEl.textContent = c.bio || 'Казахстанский исполнитель и музыкальный продюсер.';
+        bioEl.classList.remove('skeleton-text');
+    }
 
     // Footer
-    const footerEl = document.querySelector('.footer');
-    if (footerEl) footerEl.textContent = c.footer_text;
+    const footerEl = document.getElementById('footerEl');
+    if (footerEl) footerEl.textContent = c.footer_text || '© 2026 BULAVIN';
 
     // Links
     _setLink('link-telegram',  c.telegram_url);
@@ -69,12 +77,33 @@ function applyContent() {
     applyAfisha(c);
 
     // Avatar
-    const avatarImg = document.getElementById('mainAvatarImage');
-    const dynBg = document.querySelector('.dynamic-bg');
-    if (avatarImg && c.avatar_url) {
-        avatarImg.src = c.avatar_url;
-        if (dynBg) dynBg.style.backgroundImage = `url('${c.avatar_url}')`;
+    const avatarImg      = document.getElementById('mainAvatarImage');
+    const avatarLink     = document.getElementById('avatarLink');
+    const avatarSilhouette = document.getElementById('avatarSilhouette');
+    const dynBg          = document.querySelector('.dynamic-bg');
+
+    const avatarUrl = c.avatar_url && c.avatar_url.trim();
+
+    if (avatarUrl) {
+        const img = new Image();
+        img.onload = () => {
+            avatarImg.src = avatarUrl;
+            avatarImg.style.transition = 'opacity 0.55s ease';
+            avatarImg.style.opacity = '1';
+            if (avatarSilhouette) avatarSilhouette.style.opacity = '0';
+            // Показываем кольцо
+            if (avatarLink) {
+                avatarLink.classList.remove('avatar-loading');
+                avatarLink.classList.add('avatar-ready');
+            }
+            if (dynBg) dynBg.style.backgroundImage = `url('${avatarUrl}')`;
+        };
+        img.onerror = () => {
+            // Оставляем силуэт, кольцо не показываем
+        };
+        img.src = avatarUrl;
     }
+    // Если нет аватарки — силуэт остаётся, кольцо не появляется
 
     // Ring gradient color
     if (c.ring_color && c.ring_color.trim()) {
@@ -90,15 +119,14 @@ function applyContent() {
 }
 
 function applyAfisha(c) {
-    const afishaTextEl = document.getElementById('afisha-text');
+    const afishaTextEl  = document.getElementById('afisha-text');
     const organizerWrap = document.getElementById('organizer-wrap');
-    const posterWrap = document.getElementById('afisha-poster-wrap');
+    const posterWrap    = document.getElementById('afisha-poster-wrap');
 
     const hasPoster = c.afisha_poster_url && c.afisha_poster_url.trim();
 
     if (hasPoster) {
-        // Показываем постер, скрываем кнопку организатора
-        if (afishaTextEl) afishaTextEl.style.display = 'none';
+        if (afishaTextEl)  afishaTextEl.style.display = 'none';
         if (organizerWrap) organizerWrap.style.display = 'none';
         if (posterWrap) {
             posterWrap.style.display = 'block';
@@ -112,7 +140,6 @@ function applyAfisha(c) {
             }
         }
     } else {
-        // Нет постера — показываем текст + организатора
         if (afishaTextEl) {
             afishaTextEl.style.display = 'block';
             afishaTextEl.textContent = c.afisha_text;
@@ -171,6 +198,7 @@ function closeAuthChoice() { document.getElementById('authChoiceModal').classLis
 
 /* ────────────────────────────────────────────────
    4. СТОРИС — ВИДЕО + ПРОГРЕСС-БАР
+   !! НЕ ТРОГАТЬ !!
    ──────────────────────────────────────────────── */
 const videoElement = document.getElementById('storyVideo');
 const progressBar  = document.getElementById('progress-bar');
@@ -194,7 +222,7 @@ function closeStory() {
 }
 
 /* ────────────────────────────────────────────────
-   5. АВТОРИЗАЦИЯ (ВХОД / РЕГИСТРАЦИЯ / СБРОС)
+   5. АВТОРИЗАЦИЯ — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 let isLoginMode = true;
 
@@ -213,7 +241,6 @@ function openAuth(loginMode) {
 }
 function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
-// Username formatting
 document.getElementById('authUsername').addEventListener('input', function() {
     let val = this.value.replace(/\s/g, '');
     if (val.length > 0 && !val.startsWith('@')) val = '@' + val;
@@ -227,7 +254,6 @@ async function executeAuth() {
     const btn      = document.getElementById('authBtn');
     if (!email || !password) return alert('Заполни поля!');
 
-    // Remember me
     const rememberMeEl = document.getElementById('rememberMeCheck');
     const rememberMe = rememberMeEl ? rememberMeEl.checked : true;
     if (!rememberMe) {
@@ -243,10 +269,7 @@ async function executeAuth() {
         if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ'; }
         else window.location.href = '/dashboard/';
     } else {
-        const { error } = await _supabase.auth.signUp({
-            email, password,
-            options: { data: { username } }
-        });
+        const { error } = await _supabase.auth.signUp({ email, password, options: { data: { username } } });
         if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ'; }
         else {
             document.getElementById('authSuccessText').innerHTML = 'Проверьте почту для подтверждения.';
@@ -260,16 +283,11 @@ async function executeAuth() {
 async function resetPasswordTrigger() {
     const email = document.getElementById('authEmail').value;
     if (!email) return alert('Введите Email!');
-
     const link = document.getElementById('forgotPasswordLink');
     const orig = link.innerText;
     link.innerText = 'ОТПРАВКА...';
-
-    const { error } = await _supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://bulavin.space/password-reset/',
-    });
+    const { error } = await _supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://bulavin.space/password-reset/' });
     link.innerText = orig;
-
     if (error) alert(error.message);
     else {
         document.getElementById('authSuccessText').innerText = 'Ссылка отправлена на почту.';
@@ -280,7 +298,7 @@ async function resetPasswordTrigger() {
 }
 
 /* ────────────────────────────────────────────────
-   6. АККОРДЕОН (МУЗЫКА / АФИША)
+   6. АККОРДЕОН — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 function setupCollapse(btnId, wrapperId) {
     document.getElementById(btnId).onclick = () => {
@@ -295,7 +313,7 @@ setupCollapse('music-btn',  'music-wrapper');
 setupCollapse('afisha-btn', 'afisha-wrapper');
 
 /* ────────────────────────────────────────────────
-   7. ПЛАВАЮЩИЕ ЭМОДЗИ (canvas)
+   7. ПЛАВАЮЩИЕ ЭМОДЗИ — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 const canvas = document.getElementById('global-canvas');
 const ctx    = canvas.getContext('2d');
@@ -316,8 +334,7 @@ class FloatingEmoji {
     }
     update() {
         this.x += this.vx; this.y += this.vy; this.rot += this.rs;
-        if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50)
-            this.init(false);
+        if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false);
     }
     draw() {
         ctx.save();
@@ -334,9 +351,7 @@ function initEmojis() {
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         lastW = window.innerWidth;
         emojis = Array.from({ length: 15 }, () => new FloatingEmoji());
-    } else {
-        canvas.height = window.innerHeight;
-    }
+    } else { canvas.height = window.innerHeight; }
 }
 function animEmojis() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -347,7 +362,7 @@ window.addEventListener('resize', initEmojis);
 initEmojis(); animEmojis();
 
 /* ────────────────────────────────────────────────
-   8. API ПРЕДСКАЗАНИЙ (BULAVIN SYSTEM)
+   8. API ПРЕДСКАЗАНИЙ — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 async function fetchPrediction() {
     try {
@@ -361,7 +376,7 @@ async function fetchPrediction() {
 fetchPrediction();
 
 /* ────────────────────────────────────────────────
-   9. АНИМАЦИЯ АВАТАРКИ (15-секундная логика)
+   9. АНИМАЦИЯ АВАТАРКИ — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 function initAvatarAnimation() {
     const avatarImg   = document.getElementById('mainAvatarImage');
@@ -369,26 +384,28 @@ function initAvatarAnimation() {
     const textEl      = document.getElementById('avatarText');
     const iconEl      = document.getElementById('avatarIcon');
 
-    if (!window._blurEnabled) {
-        placeholder.style.display = 'none';
-        avatarImg.classList.add('clear');
-        return;
-    }
+    if (!window._blurEnabled || !avatarImg.src || !avatarImg.src.startsWith('http')) return;
 
     placeholder.style.display = 'flex';
     textEl.style.display = 'block';
     iconEl.style.display = 'none';
+    // Перекрываем прозрачный img
+    avatarImg.style.filter = 'blur(4px) brightness(0.35)';
 
     setTimeout(() => { textEl.style.display = 'none'; iconEl.style.display = 'block'; }, 3500);
     setTimeout(() => { iconEl.style.display = 'none'; textEl.style.display = 'block'; }, 7000);
-    setTimeout(() => { placeholder.style.display = 'none'; avatarImg.classList.add('clear'); }, 11000);
+    setTimeout(() => {
+        placeholder.style.display = 'none';
+        avatarImg.style.transition = 'filter 0.8s ease, opacity 0.8s ease';
+        avatarImg.style.filter = 'blur(0px) brightness(1)';
+    }, 11000);
 }
 
 /* ────────────────────────────────────────────────
    BOOT
    ──────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
-    applyContent();
+    // НЕ показываем старые данные — ждём БД
     await loadContent();
     initAvatarAnimation();
 });
