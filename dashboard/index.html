@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <script type="text/javascript">
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637','ym');
+        ym(106955637,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true,ecommerce:"dataLayer"});
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute;left:-9999px;" alt=""></div></noscript>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BULAVIN | INNER CIRCLE</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="icon" href="https://raw.githubusercontent.com/bulavin-d/site/refs/heads/main/logo.bulavin.space.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css">
+
+    <style>
+        body {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background: #020204;
+        }
+        #global-canvas {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            z-index:1; pointer-events:none; filter:blur(3px);
+        }
+        .dynamic-bg {
+            position:fixed; inset:0;
+            background:url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center;
+            background-size:cover;
+            filter:blur(90px) brightness(0.13) saturate(0.5);
+            transform:scale(1.15); z-index:0;
+        }
+        .container {
+            width:100%; max-width:420px; padding:20px;
+            display:flex; flex-direction:column;
+            z-index:10; position:relative;
+            opacity:0; animation:fadeIn 0.9s forwards;
+        }
+        @keyframes fadeIn { to { opacity:1; } }
+
+        .dashboard-card {
+            background: rgba(255,255,255,0.032);
+            border:1px solid rgba(255,255,255,0.09);
+            padding:50px 24px 40px; border-radius:36px; text-align:center;
+            backdrop-filter:blur(36px); -webkit-backdrop-filter:blur(36px);
+            box-shadow:0 25px 60px -15px rgba(0,0,0,0.85);
+            position:relative; display:flex; flex-direction:column; align-items:center;
+        }
+        .logout-icon {
+            position:absolute; top:20px; right:20px;
+            width:36px; height:36px;
+            background:rgba(255,255,255,0.06);
+            border:1px solid rgba(255,255,255,0.09);
+            color:rgba(255,255,255,0.45); border-radius:11px;
+            display:flex; justify-content:center; align-items:center;
+            cursor:pointer; transition:0.28s;
+        }
+        .logout-icon:hover { color:#ff4b2b; border-color:rgba(255,75,43,0.4); background:rgba(255,75,43,0.08); }
+
+        h1 { font-size:21px; letter-spacing:4px; font-weight:900; margin-bottom:14px; text-transform:uppercase; }
+        .soul-text { font-size:12px; font-weight:300; line-height:1.55; color:rgba(255,255,255,0.7); margin-bottom:28px; }
+        .soul-text p { margin-bottom:4px; }
+        .soul-text p:last-child { color:rgba(255,255,255,0.92); font-weight:500; }
+
+        .anon-btn {
+            width:100%; padding:19px; border-radius:19px;
+            background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.18);
+            color:#fff; font-weight:800; font-size:13px; letter-spacing:2px;
+            cursor:pointer; text-transform:uppercase; margin-bottom:12px;
+            display:flex; justify-content:center; align-items:center; gap:12px;
+            transition:all 0.28s ease;
+        }
+        .anon-btn:hover { background:rgba(255,255,255,0.13); border-color:#fff; transform:translateY(-2px); }
+        .anon-btn i { font-size:16px; }
+
+        .merge-link {
+            width:100%; padding:15px; border-radius:18px;
+            background:transparent; border:1px solid rgba(255,255,255,0.09);
+            color:rgba(255,255,255,0.35); font-weight:700; font-size:11px; letter-spacing:4px;
+            cursor:pointer; text-transform:uppercase; text-decoration:none;
+            display:flex; justify-content:center; align-items:center; gap:10px;
+            transition:0.28s;
+        }
+        .merge-link:hover { color:#fff; border-color:rgba(255,255,255,0.28); background:rgba(255,255,255,0.05); }
+        .merge-link i { animation:neon-pulse 2.2s infinite alternate; }
+        @keyframes neon-pulse {
+            0%  { text-shadow:0 0 5px rgba(255,255,255,.2); transform:scale(1); }
+            100%{ text-shadow:0 0 12px rgba(255,255,255,.8); transform:scale(1.12); }
+        }
+
+        /* Anon modal */
+        .anon-modal {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.8); z-index:1000;
+            justify-content:center; align-items:center;
+            backdrop-filter:blur(22px);
+        }
+        .anon-modal.show { display:flex; }
+        .anon-card {
+            background:rgba(255,255,255,0.04);
+            border:1px solid rgba(255,255,255,0.1);
+            padding:32px 24px; border-radius:34px;
+            width:90%; max-width:340px;
+            backdrop-filter:blur(30px);
+        }
+        .anon-textarea {
+            width:100%;
+            background:rgba(255,255,255,0.055); border:1px solid rgba(255,255,255,0.1);
+            border-radius:18px; padding:18px; color:#fff; resize:none; outline:none;
+            margin-bottom:14px; font-size:13.5px; line-height:1.5; font-family:inherit;
+            transition:border-color 0.25s;
+        }
+        .anon-textarea:focus { border-color:rgba(255,255,255,0.28); }
+        .anon-textarea::placeholder { color:rgba(255,255,255,0.28); }
+
+        .footer { text-align:center; font-size:10px; color:rgba(255,255,255,0.18); margin-top:28px; letter-spacing:2px; }
+    </style>
+</head>
+<body>
+<div class="dynamic-bg"></div>
+<canvas id="global-canvas"></canvas>
+
+<div class="container" id="dashboardContent" style="display:none;">
+    <div class="dashboard-card">
+        <button class="logout-icon" onclick="logOut()">
+            <i class="fa-solid fa-power-off" style="font-size:13px;"></i>
+        </button>
+        <h1 id="userNameDisplay">@USER</h1>
+        <div class="soul-text">
+            <p>Здесь нет лишних глаз.</p>
+            <p>Только ты и твои мысли.</p>
+            <p>Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
+            <p>Если ты хочешь выговориться — вперёд.</p>
+        </div>
+        <button class="anon-btn" onclick="openAnon()">
+            <i class="fa-solid fa-mask"></i> АНОНИМНОЕ СООБЩЕНИЕ
+        </button>
+        <a href="https://t.me/imbulavin_bot" target="_blank" rel="noopener" class="merge-link">
+            <i class="fa-solid fa-fingerprint"></i> СЛИЯНИЕ
+        </a>
+    </div>
+    <div class="footer">© 2026 BULAVIN SYSTEM</div>
+</div>
+
+<div class="anon-modal" id="anonModal" onclick="if(event.target===this)closeAnon()">
+    <div class="anon-card" onclick="event.stopPropagation()">
+        <form id="anonForm">
+            <textarea class="anon-textarea" id="anonMessage" rows="5" placeholder="Пиши всё, что у тебя на уме..." required></textarea>
+            <button type="submit" class="btn-action" id="submitBtn">ОТПРАВИТЬ</button>
+        </form>
+    </div>
+</div>
+
+<script src="/js/config.js"></script>
+<script>
+    // GOOGLE APPS SCRIPT (анонимные сообщения) — не трогать
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyWjPndo7PxgFsZRXK7SmqS9K3pHPD2A4OjuBrDoz7kmG82XOeZc_2zrlx7083yOEEMIw/exec';
+    let currentUsername = '@Unknown';
+
+    async function checkUser() {
+        const { data: { user } } = await _supabase.auth.getUser();
+        if (!user) { window.location.href = '../'; return; }
+        document.getElementById('dashboardContent').style.display = 'flex';
+        currentUsername = user.user_metadata?.username || ('@' + user.email.split('@')[0]);
+        document.getElementById('userNameDisplay').innerText = currentUsername.toUpperCase();
+    }
+    async function logOut() { await _supabase.auth.signOut(); window.location.href = '../'; }
+    checkUser();
+
+    function openAnon()  { document.getElementById('anonModal').classList.add('show'); }
+    function closeAnon() { document.getElementById('anonModal').classList.remove('show'); }
+
+    document.getElementById('anonForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        const msg = document.getElementById('anonMessage').value;
+        btn.disabled = true; btn.innerText = 'СВЯЗЬ...';
+        const fd = new FormData();
+        fd.append('message', msg); fd.append('username', currentUsername);
+        fetch(scriptURL, { method: 'POST', body: fd })
+            .then(() => {
+                btn.innerText = 'ГОТОВО';
+                document.getElementById('anonForm').reset();
+                setTimeout(() => { closeAnon(); btn.disabled = false; btn.innerText = 'ОТПРАВИТЬ'; }, 1500);
+            })
+            .catch(() => { alert('Ошибка системы'); btn.disabled = false; btn.innerText = 'ОТПРАВИТЬ'; });
+    });
+
+    // Floating ? canvas
+    const canvas = document.getElementById('global-canvas');
+    const ctx    = canvas.getContext('2d');
+    let questions = [], lastW = window.innerWidth;
+    class FloatingQuestion {
+        constructor() { this.init(true); }
+        init(f) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = f ? Math.random() * window.innerHeight : window.innerHeight + 50;
+            this.size  = Math.random() * 20 + 15;
+            this.speed = Math.random() * 0.4 + 0.1;
+            this.op    = Math.random() * 0.13 + 0.04;
+            this.wobble = Math.random() * Math.PI * 2;
+            this.ws     = Math.random() * 0.02 + 0.01;
+        }
+        update() { this.y -= this.speed; this.x += Math.sin(this.wobble) * 0.5; this.wobble += this.ws; if(this.y < -50) this.init(false); }
+        draw()   { ctx.save(); ctx.globalAlpha=this.op; ctx.fillStyle='#fff'; ctx.font=`bold ${this.size}px Inter,sans-serif`; ctx.textAlign='center'; ctx.fillText('?',this.x,this.y); ctx.restore(); }
+    }
+    function initC() {
+        if(Math.abs(lastW-window.innerWidth)>50||!questions.length){
+            canvas.width=window.innerWidth; canvas.height=window.innerHeight; lastW=window.innerWidth;
+            questions=Array.from({length:25},()=>new FloatingQuestion());
+        } else { canvas.height=window.innerHeight; }
+    }
+    function animC() { ctx.clearRect(0,0,canvas.width,canvas.height); questions.forEach(q=>{q.update();q.draw();}); requestAnimationFrame(animC); }
+    window.addEventListener('resize',initC); initC(); animC();
+</script>
+</body>
+</html>

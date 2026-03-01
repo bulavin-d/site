@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>BULAVIN | СБРОС ПАРОЛЯ</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="icon" href="https://raw.githubusercontent.com/bulavin-d/site/refs/heads/main/logo.bulavin.space.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/shared.css">
+
+    <style>
+        body {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background: #020204;
+        }
+        #global-canvas {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            z-index:-1; filter:grayscale(1) brightness(0.5) blur(1px); pointer-events:none;
+        }
+        .dynamic-bg {
+            position:fixed; inset:0;
+            background:url('https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000') no-repeat center center;
+            background-size:cover; filter:blur(90px) brightness(0.12); transform:scale(1.15); z-index:-2;
+        }
+        .container {
+            width:100%; max-width:400px; padding:20px;
+            display:flex; flex-direction:column; z-index:5; align-items:center;
+        }
+        .reset-card {
+            background:rgba(255,255,255,0.038);
+            border:1px solid rgba(255,255,255,0.09);
+            padding:44px 28px; border-radius:36px; width:100%;
+            display:flex; flex-direction:column; align-items:center;
+            backdrop-filter:blur(32px); box-shadow:0 25px 50px -12px rgba(0,0,0,0.75);
+        }
+        h2 { font-size:20px; letter-spacing:6px; font-weight:900; margin-bottom:36px; text-align:center; text-transform:uppercase; }
+        .msg { font-size:11px; color:rgba(255,255,255,0.55); text-align:center; line-height:1.55; margin-top:8px; }
+        .footer { text-align:center; font-size:10px; color:rgba(255,255,255,0.18); margin-top:28px; letter-spacing:2px; }
+    </style>
+</head>
+<body>
+<div class="dynamic-bg"></div>
+<canvas id="global-canvas"></canvas>
+
+<div class="container">
+    <div class="reset-card">
+        <h2>НОВЫЙ ПАРОЛЬ</h2>
+        <div id="formBlock" style="width:100%;display:flex;flex-direction:column;gap:12px;">
+            <input class="input" type="password" id="newPassword"     placeholder="НОВЫЙ ПАРОЛЬ">
+            <input class="input" type="password" id="confirmPassword" placeholder="ПОВТОРИТЕ ПАРОЛЬ">
+            <button class="btn-action" id="resetBtn" onclick="doReset()">СОХРАНИТЬ</button>
+        </div>
+        <div id="resultBlock" style="display:none;text-align:center;width:100%;">
+            <i class="fa-solid fa-check" style="font-size:36px;color:#1ed760;margin-bottom:16px;display:block;"></i>
+            <p style="font-size:11px;color:rgba(255,255,255,0.8);line-height:1.55;">Пароль изменён. Теперь можешь войти.</p>
+            <a href="/" class="btn-action" style="display:block;margin-top:20px;text-align:center;text-decoration:none;">НА ГЛАВНУЮ</a>
+        </div>
+        <p class="msg" id="errorMsg"></p>
+    </div>
+    <div class="footer">© 2026 BULAVIN SYSTEM</div>
+</div>
+
+<script src="/js/config.js"></script>
+<script>
+    async function doReset() {
+        const pass    = document.getElementById('newPassword').value;
+        const confirm = document.getElementById('confirmPassword').value;
+        const errEl   = document.getElementById('errorMsg');
+        const btn     = document.getElementById('resetBtn');
+
+        errEl.textContent = '';
+        if (!pass || pass.length < 6) { errEl.textContent = 'Пароль минимум 6 символов.'; return; }
+        if (pass !== confirm)          { errEl.textContent = 'Пароли не совпадают.'; return; }
+
+        btn.disabled = true; btn.textContent = 'СОХРАНЯЮ...';
+
+        const { error } = await _supabase.auth.updateUser({ password: pass });
+
+        if (error) {
+            errEl.textContent = error.message;
+            btn.disabled = false; btn.textContent = 'СОХРАНИТЬ';
+        } else {
+            document.getElementById('formBlock').style.display  = 'none';
+            document.getElementById('resultBlock').style.display = 'block';
+        }
+    }
+
+    // Emoji canvas
+    const canvas = document.getElementById('global-canvas');
+    const ctx    = canvas.getContext('2d');
+    let particles = [];
+    class P {
+        constructor() { this.reset(true); }
+        reset(f) {
+            this.x  = Math.random() * window.innerWidth;
+            this.y  = f ? Math.random() * window.innerHeight : window.innerHeight + 20;
+            this.s  = Math.random() * 1.5 + 0.5;
+            this.vy = -(Math.random() * 0.5 + 0.2);
+            this.vx = (Math.random() - 0.5) * 0.3;
+            this.op = Math.random() * 0.25 + 0.05;
+        }
+        update() {
+            this.x += this.vx; this.y += this.vy;
+            if (this.y < -10) this.reset(false);
+        }
+        draw() {
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.s, 0, Math.PI*2);
+            ctx.fillStyle = `rgba(255,255,255,${this.op})`; ctx.fill();
+        }
+    }
+    function init() { canvas.width=window.innerWidth; canvas.height=window.innerHeight; particles=Array.from({length:60},()=>new P()); }
+    function anim() { ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(anim); }
+    window.addEventListener('resize',init); init(); anim();
+</script>
+</body>
+</html>

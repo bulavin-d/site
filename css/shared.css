@@ -1,0 +1,123 @@
+/* ================================================
+   BULAVIN SYSTEM — SHARED DESIGN TOKENS
+   Premium Dark / Liquid Glass
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+
+:root {
+    /* Palette — deeper, premium dark */
+    --bg:            #030305;
+    --bg-card:       rgba(255, 255, 255, 0.032);
+    --glass:         rgba(255, 255, 255, 0.042);
+    --glass-hover:   rgba(255, 255, 255, 0.072);
+    --glass-border:  rgba(255, 255, 255, 0.09);
+    --glass-border-h:rgba(255, 255, 255, 0.22);
+    --glass-blur:    blur(28px);
+
+    /* Text */
+    --text:          #f0f0f0;
+    --text-dim:      rgba(255, 255, 255, 0.45);
+    --text-dimmer:   rgba(255, 255, 255, 0.22);
+
+    /* Accents */
+    --blue:          #0095f6;
+    --red:           #ff4b2b;
+    --yandex:        #ffcc00;
+    --vk:            #0077ff;
+    --spotify:       #1ed760;
+    --yt:            #ff0000;
+    --sc:            #ff5500;
+
+    /* Ring gradient (overridable from admin) */
+    --ring-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+
+    /* Motion */
+    --ease-out:       cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-spring:    cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reset */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+}
+
+/* ── GLASS CARD BASE ───────────────────────────── */
+.glass-card {
+    background:    var(--bg-card);
+    border:        1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-radius: 28px;
+}
+
+/* ── MODALS ─────────────────────────────────────── */
+.glass-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.82);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+.glass-modal.show {
+    display: flex;
+    animation: modalIn 0.32s var(--ease-spring) forwards;
+}
+@keyframes modalIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── INPUT ──────────────────────────────────────── */
+.input {
+    width: 100%;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid var(--glass-border);
+    padding: 16px 18px;
+    border-radius: 16px;
+    color: var(--text);
+    outline: none;
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+.input:focus {
+    border-color: rgba(255,255,255,0.28);
+    background: rgba(255,255,255,0.075);
+}
+.input::placeholder { color: rgba(255,255,255,0.3); }
+
+/* ── BTN-ACTION ─────────────────────────────────── */
+.btn-action {
+    width: 100%;
+    padding: 17px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    font-weight: 800;
+    font-size: 12px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+    text-transform: uppercase;
+    font-family: inherit;
+}
+.btn-action:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-1px); }
+.btn-action:active { transform: scale(0.97); }
+
+/* ── SCROLLBAR ──────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
