@@ -21,8 +21,10 @@ const DEFAULTS = {
     fusion_url:            'https://t.me/imbulavin_bot',
     afisha_text:           'На данный момент выступлений не запланировано.',
     organizer_url:         'https://t.me/imbulavin',
+    afisha_poster_url:     '',
+    afisha_tickets_url:    '',
     exclusive_blur_enabled:'true',
-    ring_color:            '',   // пусто = оригинальный instagram-градиент
+    ring_color:            '',
 };
 
 let _content = { ...DEFAULTS };
@@ -38,6 +40,7 @@ async function loadContent() {
         console.warn('[BULAVIN] site_content недоступен, работаем с дефолтами.', e.message);
     }
     applyContent();
+    await loadCustomButtons();
 }
 
 function applyContent() {
@@ -62,10 +65,8 @@ function applyContent() {
     _setLink('link-soundcloud',c.soundcloud_url);
     _setLink('link-fusion',    c.fusion_url);
 
-    // Afisha text
-    const afishaText = document.getElementById('afisha-text');
-    if (afishaText) afishaText.textContent = c.afisha_text;
-    _setLink('link-organizer', c.organizer_url);
+    // Afisha
+    applyAfisha(c);
 
     // Avatar
     const avatarImg = document.getElementById('mainAvatarImage');
@@ -84,8 +85,43 @@ function applyContent() {
         );
     }
 
-    // Blur toggle — используется в initAvatarAnimation()
+    // Blur toggle
     window._blurEnabled = c.exclusive_blur_enabled !== 'false';
+}
+
+function applyAfisha(c) {
+    const afishaTextEl = document.getElementById('afisha-text');
+    const organizerWrap = document.getElementById('organizer-wrap');
+    const posterWrap = document.getElementById('afisha-poster-wrap');
+
+    const hasPoster = c.afisha_poster_url && c.afisha_poster_url.trim();
+
+    if (hasPoster) {
+        // Показываем постер, скрываем кнопку организатора
+        if (afishaTextEl) afishaTextEl.style.display = 'none';
+        if (organizerWrap) organizerWrap.style.display = 'none';
+        if (posterWrap) {
+            posterWrap.style.display = 'block';
+            const img = posterWrap.querySelector('.afisha-poster-img');
+            if (img) img.src = c.afisha_poster_url;
+            if (c.afisha_tickets_url && c.afisha_tickets_url.trim()) {
+                posterWrap.onclick = () => window.open(c.afisha_tickets_url, '_blank');
+                posterWrap.style.cursor = 'pointer';
+                const badge = posterWrap.querySelector('.poster-badge');
+                if (badge) badge.style.display = 'flex';
+            }
+        }
+    } else {
+        // Нет постера — показываем текст + организатора
+        if (afishaTextEl) {
+            afishaTextEl.style.display = 'block';
+            afishaTextEl.textContent = c.afisha_text;
+        }
+        if (organizerWrap) organizerWrap.style.display = 'block';
+        const orgLink = document.getElementById('link-organizer');
+        if (orgLink && c.organizer_url) orgLink.href = c.organizer_url;
+        if (posterWrap) posterWrap.style.display = 'none';
+    }
 }
 
 function _setLink(id, url) {
@@ -94,7 +130,39 @@ function _setLink(id, url) {
 }
 
 /* ────────────────────────────────────────────────
-   2. QR / МОДАЛЬНЫЕ ОКНА
+   2. ДИНАМИЧЕСКИЕ КНОПКИ ИЗ custom_buttons
+   ──────────────────────────────────────────────── */
+async function loadCustomButtons() {
+    try {
+        const { data, error } = await _supabase
+            .from('custom_buttons')
+            .select('*')
+            .eq('visible', true)
+            .order('position', { ascending: true });
+        if (error) throw error;
+        renderCustomButtons(data || []);
+    } catch(e) {
+        console.warn('[BULAVIN] custom_buttons недоступен.', e.message);
+    }
+}
+
+function renderCustomButtons(buttons) {
+    const container = document.getElementById('custom-buttons-container');
+    if (!container) return;
+    container.innerHTML = '';
+    buttons.forEach(btn => {
+        const a = document.createElement('a');
+        a.href = btn.url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.className = 'btn';
+        a.innerHTML = `<i class="${btn.icon || 'fa-solid fa-link'}"></i><span>${btn.label}</span>`;
+        container.appendChild(a);
+    });
+}
+
+/* ────────────────────────────────────────────────
+   3. QR / МОДАЛЬНЫЕ ОКНА
    ──────────────────────────────────────────────── */
 function openQR()          { document.getElementById('qrModal').classList.add('show'); }
 function closeQR()         { document.getElementById('qrModal').classList.remove('show'); }
@@ -102,7 +170,7 @@ function openAuthChoice()  { document.getElementById('authChoiceModal').classLis
 function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
 
 /* ────────────────────────────────────────────────
-   3. СТОРИС — ВИДЕО + ПРОГРЕСС-БАР
+   4. СТОРИС — ВИДЕО + ПРОГРЕСС-БАР
    ──────────────────────────────────────────────── */
 const videoElement = document.getElementById('storyVideo');
 const progressBar  = document.getElementById('progress-bar');
@@ -126,7 +194,7 @@ function closeStory() {
 }
 
 /* ────────────────────────────────────────────────
-   4. АВТОРИЗАЦИЯ (ВХОД / РЕГИСТРАЦИЯ / СБРОС)
+   5. АВТОРИЗАЦИЯ (ВХОД / РЕГИСТРАЦИЯ / СБРОС)
    ──────────────────────────────────────────────── */
 let isLoginMode = true;
 
@@ -137,6 +205,8 @@ function openAuth(loginMode) {
     document.getElementById('authBtn').innerText = 'ПРОДОЛЖИТЬ';
     document.getElementById('authUsername').style.display = loginMode ? 'none' : 'block';
     document.getElementById('forgotPasswordLink').style.display = loginMode ? 'block' : 'none';
+    const rememberRow = document.getElementById('rememberMeRow');
+    if (rememberRow) rememberRow.style.display = loginMode ? 'flex' : 'none';
     document.getElementById('authInputs').style.display = 'block';
     document.getElementById('authSuccess').style.display = 'none';
     document.getElementById('authModal').classList.add('show');
@@ -156,6 +226,15 @@ async function executeAuth() {
     const username = document.getElementById('authUsername').value;
     const btn      = document.getElementById('authBtn');
     if (!email || !password) return alert('Заполни поля!');
+
+    // Remember me
+    const rememberMeEl = document.getElementById('rememberMeCheck');
+    const rememberMe = rememberMeEl ? rememberMeEl.checked : true;
+    if (!rememberMe) {
+        sessionStorage.setItem('bulavin_no_persist', '1');
+    } else {
+        sessionStorage.removeItem('bulavin_no_persist');
+    }
 
     btn.disabled = true; btn.innerText = 'СВЯЗЬ...';
 
@@ -201,7 +280,7 @@ async function resetPasswordTrigger() {
 }
 
 /* ────────────────────────────────────────────────
-   5. АККОРДЕОН (МУЗЫКА / АФИША)
+   6. АККОРДЕОН (МУЗЫКА / АФИША)
    ──────────────────────────────────────────────── */
 function setupCollapse(btnId, wrapperId) {
     document.getElementById(btnId).onclick = () => {
@@ -216,7 +295,7 @@ setupCollapse('music-btn',  'music-wrapper');
 setupCollapse('afisha-btn', 'afisha-wrapper');
 
 /* ────────────────────────────────────────────────
-   6. ПЛАВАЮЩИЕ ЭМОДЗИ (canvas)
+   7. ПЛАВАЮЩИЕ ЭМОДЗИ (canvas)
    ──────────────────────────────────────────────── */
 const canvas = document.getElementById('global-canvas');
 const ctx    = canvas.getContext('2d');
@@ -268,7 +347,7 @@ window.addEventListener('resize', initEmojis);
 initEmojis(); animEmojis();
 
 /* ────────────────────────────────────────────────
-   7. API ПРЕДСКАЗАНИЙ (BULAVIN SYSTEM)
+   8. API ПРЕДСКАЗАНИЙ (BULAVIN SYSTEM)
    ──────────────────────────────────────────────── */
 async function fetchPrediction() {
     try {
@@ -282,22 +361,20 @@ async function fetchPrediction() {
 fetchPrediction();
 
 /* ────────────────────────────────────────────────
-   8. АНИМАЦИЯ АВАТАРКИ (15-секундная логика)
+   9. АНИМАЦИЯ АВАТАРКИ (15-секундная логика)
    ──────────────────────────────────────────────── */
 function initAvatarAnimation() {
-    const avatarImg  = document.getElementById('mainAvatarImage');
+    const avatarImg   = document.getElementById('mainAvatarImage');
     const placeholder = document.getElementById('avatarPlaceholder');
-    const textEl     = document.getElementById('avatarText');
-    const iconEl     = document.getElementById('avatarIcon');
+    const textEl      = document.getElementById('avatarText');
+    const iconEl      = document.getElementById('avatarIcon');
 
-    // Если blur выключен в настройках — сразу показываем фото
     if (!window._blurEnabled) {
         placeholder.style.display = 'none';
         avatarImg.classList.add('clear');
         return;
     }
 
-    // Blur включён — оригинальная 11-секундная последовательность
     placeholder.style.display = 'flex';
     textEl.style.display = 'block';
     iconEl.style.display = 'none';
@@ -311,7 +388,6 @@ function initAvatarAnimation() {
    BOOT
    ──────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
-    // Сначала дефолты (мгновенно), потом подтягиваем из БД
     applyContent();
     await loadContent();
     initAvatarAnimation();

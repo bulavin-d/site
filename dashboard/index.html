@@ -133,7 +133,7 @@
             <i class="fa-solid fa-power-off" style="font-size:13px;"></i>
         </button>
         <h1 id="userNameDisplay">@USER</h1>
-        <div class="soul-text">
+        <div class="soul-text" id="soulTextBlock">
             <p>Здесь нет лишних глаз.</p>
             <p>Только ты и твои мысли.</p>
             <p>Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
@@ -142,7 +142,7 @@
         <button class="anon-btn" onclick="openAnon()">
             <i class="fa-solid fa-mask"></i> АНОНИМНОЕ СООБЩЕНИЕ
         </button>
-        <a href="https://t.me/imbulavin_bot" target="_blank" rel="noopener" class="merge-link">
+        <a id="mergeLink" href="https://t.me/imbulavin_bot" target="_blank" rel="noopener" class="merge-link">
             <i class="fa-solid fa-fingerprint"></i> СЛИЯНИЕ
         </a>
     </div>
@@ -170,7 +170,45 @@
         document.getElementById('dashboardContent').style.display = 'flex';
         currentUsername = user.user_metadata?.username || ('@' + user.email.split('@')[0]);
         document.getElementById('userNameDisplay').innerText = currentUsername.toUpperCase();
+        loadDashContent();
     }
+
+    async function loadDashContent() {
+        try {
+            const { data, error } = await _supabase
+                .from('site_content')
+                .select('key, value')
+                .in('key', ['dashboard_soul_text', 'dashboard_merge_url', 'avatar_url']);
+            if (error) throw error;
+
+            const c = {};
+            data.forEach(r => { c[r.key] = r.value; });
+
+            // Soul text — каждая строка = новый <p>
+            if (c.dashboard_soul_text) {
+                const block = document.getElementById('soulTextBlock');
+                const lines = c.dashboard_soul_text.split('\n').filter(l => l.trim());
+                if (lines.length) {
+                    block.innerHTML = lines.map(l => `<p>${l}</p>`).join('');
+                }
+            }
+
+            // Merge link
+            if (c.dashboard_merge_url) {
+                const ml = document.getElementById('mergeLink');
+                if (ml) ml.href = c.dashboard_merge_url;
+            }
+
+            // Dynamic bg from avatar
+            if (c.avatar_url) {
+                const bg = document.querySelector('.dynamic-bg');
+                if (bg) bg.style.backgroundImage = `url('${c.avatar_url}')`;
+            }
+        } catch(e) {
+            console.warn('[DASHBOARD] loadContent error:', e);
+        }
+    }
+
     async function logOut() { await _supabase.auth.signOut(); window.location.href = '../'; }
     checkUser();
 

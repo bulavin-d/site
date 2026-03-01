@@ -24,7 +24,7 @@
         <input  class="input" type="password" id="passInput" placeholder="ADMIN PASSWORD" style="margin-bottom:14px;">
         <button class="btn-action" id="loginBtn" onclick="handleLogin()">AUTHORIZE</button>
         <div class="status-line" id="loginStatus"></div>
-        <a href="/" class="back-link" style="margin-top:12px;">← ВЕРНУТЬСЯ НА САЙТ</a>
+        <a href="/" class="back-link" style="margin-top:4px;">← ВЕРНУТЬСЯ НА САЙТ</a>
     </div>
 </div>
 
@@ -35,151 +35,277 @@
 
     <!-- HEADER -->
     <div class="admin-header">
-        <div class="admin-logo">BULAVIN <span>SYSTEM</span></div>
-        <div style="display:flex;align-items:center;gap:14px;">
+        <div class="admin-logo">BULAVIN <span>CMS</span></div>
+        <div style="display:flex;align-items:center;gap:12px;">
             <div class="admin-session" id="adminEmail"></div>
             <button class="logout-btn" onclick="handleLogout()">ВЫЙТИ</button>
         </div>
     </div>
 
-    <!-- ── SECTION 1: VIDEO STORY ────────────────── -->
-    <div class="admin-section">
-        <div class="section-title"><i class="fa-solid fa-circle-play"></i>ВИДЕО-КРУЖОК (STORY)</div>
-        <p style="font-size:11px;color:rgba(255,255,255,0.38);line-height:1.5;">
-            Загрузи MP4 — заменит <code style="color:rgba(255,255,255,0.55);">story.mp4</code> в бакете <code style="color:rgba(255,255,255,0.55);">stories</code>.
-        </p>
-        <label class="upload-label" for="videoFileInput">
-            <i class="fa-solid fa-film"></i> ВЫБРАТЬ ВИДЕО (MP4)
-        </label>
-        <input type="file" id="videoFileInput" accept="video/mp4,video/quicktime">
-        <div class="status-line" id="videoStatus"></div>
+    <!-- TABS NAV -->
+    <div class="admin-tabs" role="tablist">
+        <button class="tab-btn active" onclick="switchTab('tab-main', this)" role="tab">
+            <i class="fa-solid fa-house"></i>Главная
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-dash', this)" role="tab">
+            <i class="fa-solid fa-id-badge"></i>Dashboard
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-media', this)" role="tab">
+            <i class="fa-solid fa-photo-film"></i>Медиа
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-links', this)" role="tab">
+            <i class="fa-solid fa-link"></i>Ссылки
+        </button>
     </div>
 
-    <!-- ── SECTION 2: АВАТАРКА ───────────────────── -->
-    <div class="admin-section">
-        <div class="section-title"><i class="fa-solid fa-image"></i>АВАТАРКА</div>
+    <!-- ════════════════════════════════════════
+         ВК: ГЛАВНАЯ
+    ════════════════════════════════════════ -->
+    <div class="tab-content active" id="tab-main">
 
-        <label class="upload-label" for="avatarFileInput">
-            <i class="fa-solid fa-upload"></i> ЗАГРУЗИТЬ ФАЙЛ
-        </label>
-        <input type="file" id="avatarFileInput" accept="image/*">
+        <!-- ВИЗУАЛ -->
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-sliders"></i>Визуальные настройки</div>
 
-        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,0.25);letter-spacing:1px;text-transform:uppercase;">
-            <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
-            ИЛИ ВСТАВЬ ССЫЛКУ
-            <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
-        </div>
-
-        <div style="display:flex;gap:8px;">
-            <input class="input" type="url" id="avatarUrlInput" placeholder="https://..." style="flex:1;">
-            <button class="btn-action" style="width:auto;padding:16px 18px;white-space:nowrap;flex-shrink:0;" onclick="saveAvatarUrl()">
-                СОХРАНИТЬ
-            </button>
-        </div>
-        <div class="status-line" id="avatarStatus"></div>
-    </div>
-
-    <!-- ── SECTION 3: НАСТРОЙКИ ВИЗУАЛА ──────────── -->
-    <div class="admin-section">
-        <div class="section-title"><i class="fa-solid fa-sliders"></i>ВИЗУАЛЬНЫЕ НАСТРОЙКИ</div>
-
-        <!-- Blur toggle -->
-        <div class="toggle-row">
-            <div>
-                <div class="toggle-label-text">Эффект EXCLUSIVE</div>
-                <div class="toggle-sub">15-секундное размытие аватарки при загрузке</div>
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label-text">Эффект EXCLUSIVE</div>
+                    <div class="toggle-sub">15-секундное размытие аватарки при загрузке</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="blurToggle" onchange="saveBlurSetting()">
+                    <span class="toggle-slider"></span>
+                </label>
             </div>
-            <label class="toggle">
-                <input type="checkbox" id="blurToggle" onchange="saveBlurSetting()">
-                <span class="toggle-slider"></span>
+            <div class="status-line" id="blurStatus"></div>
+
+            <div class="field-label">ЦВЕТ КОЛЬЦА АВАТАРКИ</div>
+            <div class="color-row">
+                <div class="color-preview" id="ringColorSwatch" style="background:linear-gradient(45deg,#f09433,#bc1888);">
+                    <input type="color" id="ringColorInput" value="#f09433" oninput="onColorChange(this)">
+                </div>
+                <div class="color-info">
+                    <div class="toggle-label-text">Акцентный цвет</div>
+                    <div class="color-value" id="ringColorValue">#f09433</div>
+                </div>
+                <button class="btn-action" style="width:auto;padding:12px 16px;" onclick="saveRingColor()">OK</button>
+            </div>
+            <div class="status-line" id="colorStatus"></div>
+        </div>
+
+        <!-- ТЕКСТЫ -->
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-pen"></i>Тексты страницы</div>
+
+            <div class="field-row">
+                <div class="field-label">BIO (подпись)</div>
+                <input class="input" type="text" id="fieldBio" placeholder="Казахстанский исполнитель...">
+            </div>
+            <button class="btn-action" onclick="saveField('fieldBio', 'bio', 'textStatus')">СОХРАНИТЬ BIO</button>
+
+            <div class="field-row">
+                <div class="field-label">FOOTER</div>
+                <input class="input" type="text" id="fieldFooter" placeholder="© 2026 BULAVIN">
+            </div>
+            <button class="btn-action" onclick="saveField('fieldFooter', 'footer_text', 'textStatus')">СОХРАНИТЬ FOOTER</button>
+
+            <div class="status-line" id="textStatus"></div>
+        </div>
+
+        <!-- АФИША -->
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-calendar-check"></i>Афиша</div>
+
+            <div class="field-row">
+                <div class="field-label">Текст когда нет выступлений</div>
+                <input class="input" type="text" id="fieldAfisha" placeholder="На данный момент выступлений не запланировано.">
+            </div>
+            <div class="field-row">
+                <div class="field-label">Ссылка «Я организатор»</div>
+                <input class="input" type="url" id="fieldOrgUrl" placeholder="https://t.me/...">
+            </div>
+            <button class="btn-action" onclick="saveAfishaTexts()">СОХРАНИТЬ</button>
+            <div class="status-line" id="afishaTextStatus"></div>
+
+            <div class="admin-divider"></div>
+
+            <div class="field-label">ПОСТЕР АФИШИ</div>
+            <p class="help-text">Загрузи постер — он появится в аккордеоне вместо текста. Убери ссылки — вернётся кнопка «Я организатор».</p>
+
+            <label class="upload-label" for="posterFileInput">
+                <i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ПОСТЕР (JPG/PNG)
             </label>
-        </div>
-        <div class="status-line" id="blurStatus"></div>
+            <input type="file" id="posterFileInput" accept="image/*">
 
-        <!-- Ring color -->
-        <div class="field-label" style="margin-top:6px;">ЦВЕТ КОЛЬЦА АВАТАРКИ</div>
-        <div class="color-row">
-            <div class="color-preview" id="ringColorSwatch"
-                 style="background:linear-gradient(45deg,#f09433,#bc1888);">
-                <input type="color" id="ringColorInput" value="#f09433" oninput="onColorChange(this)">
+            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+                ИЛИ URL
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
             </div>
-            <div class="color-info">
-                <div class="toggle-label-text">Акцентный цвет</div>
-                <div class="color-value" id="ringColorValue">#f09433</div>
+
+            <div class="field-row">
+                <div class="field-label">URL постера</div>
+                <input class="input" type="url" id="fieldPosterUrl" placeholder="https://...">
             </div>
-            <button class="btn-action" style="width:auto;padding:14px 18px;" onclick="saveRingColor()">OK</button>
+            <div class="field-row">
+                <div class="field-label">URL билетов (кнопка «КУПИТЬ БИЛЕТЫ»)</div>
+                <input class="input" type="url" id="fieldTicketsUrl" placeholder="https://...">
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-action" onclick="saveAfishaPoster()">СОХРАНИТЬ ПОСТЕР</button>
+                <button class="btn-action btn-danger" onclick="clearAfishaPoster()">УБРАТЬ</button>
+            </div>
+            <div class="status-line" id="posterStatus"></div>
         </div>
-        <div class="status-line" id="colorStatus"></div>
+
     </div>
 
-    <!-- ── SECTION 4: ТЕКСТЫ ─────────────────────── -->
-    <div class="admin-section">
-        <div class="section-title"><i class="fa-solid fa-pen"></i>ТЕКСТЫ</div>
+    <!-- ════════════════════════════════════════
+         ВК: DASHBOARD
+    ════════════════════════════════════════ -->
+    <div class="tab-content" id="tab-dash">
 
-        <div class="field-row">
-            <div class="field-label">BIO (подпись)</div>
-            <input class="input" type="text" id="fieldBio" placeholder="Казахстанский исполнитель...">
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-id-badge"></i>Контент страницы /dashboard/</div>
+
+            <div class="field-row">
+                <div class="field-label">Soul Text (каждая строка = новый абзац)</div>
+                <textarea class="admin-textarea" id="fieldSoulText" rows="5"
+                    placeholder="Здесь нет лишних глаз.&#10;Только ты и твои мысли.&#10;Что бы ты сказал мне...&#10;Если ты хочешь выговориться — вперёд."></textarea>
+            </div>
+
+            <div class="field-row">
+                <div class="field-label">Ссылка кнопки СЛИЯНИЕ</div>
+                <input class="input" type="url" id="fieldMergeUrl" placeholder="https://t.me/...">
+            </div>
+
+            <button class="btn-action" onclick="saveDashboard()">СОХРАНИТЬ DASHBOARD</button>
+            <div class="status-line" id="dashStatus"></div>
         </div>
-        <button class="btn-action" onclick="saveField('fieldBio','contentStatus')">СОХРАНИТЬ BIO</button>
 
-        <div class="field-row" style="margin-top:4px;">
-            <div class="field-label">FOOTER</div>
-            <input class="input" type="text" id="fieldFooter" placeholder="© 2026 BULAVIN">
-        </div>
-        <button class="btn-action" onclick="saveField('fieldFooter','contentStatus')">СОХРАНИТЬ FOOTER</button>
-
-        <div class="field-row" style="margin-top:4px;">
-            <div class="field-label">АФИША (текст когда нет концертов)</div>
-            <input class="input" type="text" id="fieldAfisha" placeholder="Выступлений не запланировано.">
-        </div>
-        <button class="btn-action" onclick="saveField('fieldAfisha','contentStatus')">СОХРАНИТЬ</button>
-
-        <div class="status-line" id="contentStatus"></div>
     </div>
 
-    <!-- ── SECTION 5: ССЫЛКИ ─────────────────────── -->
-    <div class="admin-section">
-        <div class="section-title"><i class="fa-solid fa-link"></i>ССЫЛКИ</div>
+    <!-- ════════════════════════════════════════
+         ВК: МЕДИА
+    ════════════════════════════════════════ -->
+    <div class="tab-content" id="tab-media">
 
-        <div class="field-row">
-            <div class="field-label"><i class="fa-brands fa-telegram" style="margin-right:6px;"></i>Telegram</div>
-            <input class="input" type="url" id="fieldTelegram" placeholder="https://t.me/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-brands fa-instagram" style="margin-right:6px;"></i>Instagram</div>
-            <input class="input" type="url" id="fieldInstagram" placeholder="https://instagram.com/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-solid fa-compact-disc" style="margin-right:6px;"></i>Yandex Music</div>
-            <input class="input" type="url" id="fieldYandex" placeholder="https://music.yandex.kz/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-brands fa-vk" style="margin-right:6px;"></i>VK Music</div>
-            <input class="input" type="url" id="fieldVk" placeholder="https://vk.com/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-brands fa-spotify" style="margin-right:6px;"></i>Spotify</div>
-            <input class="input" type="url" id="fieldSpotify" placeholder="https://open.spotify.com/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-brands fa-apple" style="margin-right:6px;"></i>Apple Music</div>
-            <input class="input" type="url" id="fieldApple" placeholder="https://music.apple.com/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-brands fa-youtube" style="margin-right:6px;"></i>YouTube Music</div>
-            <input class="input" type="url" id="fieldYt" placeholder="https://music.youtube.com/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-brands fa-soundcloud" style="margin-right:6px;"></i>SoundCloud</div>
-            <input class="input" type="url" id="fieldSoundcloud" placeholder="https://soundcloud.com/...">
-        </div>
-        <div class="field-row">
-            <div class="field-label"><i class="fa-solid fa-fingerprint" style="margin-right:6px;"></i>Слияние (бот)</div>
-            <input class="input" type="url" id="fieldFusion" placeholder="https://t.me/...">
+        <!-- ВИДЕО-КРУЖОК -->
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-circle-play"></i>Видео-кружок (Story)</div>
+            <p class="help-text">Загрузи MP4 — заменит story.mp4 в бакете stories.</p>
+
+            <label class="upload-label" for="videoFileInput">
+                <i class="fa-solid fa-film"></i> ВЫБРАТЬ ВИДЕО (MP4)
+            </label>
+            <input type="file" id="videoFileInput" accept="video/mp4,video/quicktime">
+
+            <button class="btn-action btn-danger" onclick="deleteVideo()">
+                <i class="fa-solid fa-trash" style="margin-right:8px;"></i>УДАЛИТЬ ВИДЕО
+            </button>
+            <div class="status-line" id="videoStatus"></div>
         </div>
 
-        <button class="btn-action" style="margin-top:4px;" onclick="saveAllLinks()">СОХРАНИТЬ ВСЕ ССЫЛКИ</button>
-        <div class="status-line" id="linksStatus"></div>
+        <!-- АВАТАРКА -->
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-image"></i>Аватарка</div>
+
+            <label class="upload-label" for="avatarFileInput">
+                <i class="fa-solid fa-upload"></i> ЗАГРУЗИТЬ ФАЙЛ
+            </label>
+            <input type="file" id="avatarFileInput" accept="image/*">
+
+            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+                ИЛИ ССЫЛКА
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+            </div>
+
+            <div style="display:flex;gap:8px;">
+                <input class="input" type="url" id="avatarUrlInput" placeholder="https://..." style="flex:1;">
+                <button class="btn-action" style="width:auto;padding:16px 14px;white-space:nowrap;" onclick="saveAvatarUrl()">OK</button>
+            </div>
+            <div class="status-line" id="avatarStatus"></div>
+        </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════════
+         ВК: ССЫЛКИ
+    ════════════════════════════════════════ -->
+    <div class="tab-content" id="tab-links">
+
+        <!-- СТАНДАРТНЫЕ ССЫЛКИ -->
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-link"></i>Стандартные ссылки</div>
+
+            <div class="field-row">
+                <div class="field-label"><i class="fa-brands fa-telegram" style="margin-right:5px;"></i>Telegram</div>
+                <input class="input" type="url" id="fieldTelegram" placeholder="https://t.me/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-brands fa-instagram" style="margin-right:5px;"></i>Instagram</div>
+                <input class="input" type="url" id="fieldInstagram" placeholder="https://instagram.com/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-solid fa-compact-disc" style="margin-right:5px;"></i>Yandex Music</div>
+                <input class="input" type="url" id="fieldYandex" placeholder="https://music.yandex.kz/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-brands fa-vk" style="margin-right:5px;"></i>VK Music</div>
+                <input class="input" type="url" id="fieldVk" placeholder="https://vk.com/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-brands fa-spotify" style="margin-right:5px;"></i>Spotify</div>
+                <input class="input" type="url" id="fieldSpotify" placeholder="https://open.spotify.com/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-brands fa-apple" style="margin-right:5px;"></i>Apple Music</div>
+                <input class="input" type="url" id="fieldApple" placeholder="https://music.apple.com/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-brands fa-youtube" style="margin-right:5px;"></i>YouTube Music</div>
+                <input class="input" type="url" id="fieldYt" placeholder="https://music.youtube.com/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-brands fa-soundcloud" style="margin-right:5px;"></i>SoundCloud</div>
+                <input class="input" type="url" id="fieldSoundcloud" placeholder="https://soundcloud.com/...">
+            </div>
+            <div class="field-row">
+                <div class="field-label"><i class="fa-solid fa-fingerprint" style="margin-right:5px;"></i>Слияние (бот)</div>
+                <input class="input" type="url" id="fieldFusion" placeholder="https://t.me/...">
+            </div>
+
+            <button class="btn-action" onclick="saveAllLinks()">СОХРАНИТЬ ВСЕ ССЫЛКИ</button>
+            <div class="status-line" id="linksStatus"></div>
+        </div>
+
+        <!-- КАСТОМНЫЕ КНОПКИ -->
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-plus"></i>Дополнительные кнопки</div>
+            <p class="help-text">Эти кнопки появятся на главной странице под кнопкой «СЛИЯНИЕ». Иконки — классы Font Awesome 6, например: <code style="color:rgba(255,255,255,0.5);">fa-solid fa-star</code></p>
+
+            <!-- Список существующих -->
+            <div class="custom-btn-list" id="customBtnList">
+                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:12px 0;">Загрузка...</div>
+            </div>
+
+            <div class="admin-divider"></div>
+
+            <!-- Форма добавления -->
+            <div class="add-btn-form">
+                <div class="field-label" style="margin-bottom:2px;">Добавить новую кнопку</div>
+                <input class="input" type="text" id="newBtnLabel" placeholder="Название кнопки" style="margin-bottom:8px;">
+                <input class="input" type="url"  id="newBtnUrl"   placeholder="https://..." style="margin-bottom:8px;">
+                <input class="input" type="text" id="newBtnIcon"  placeholder="fa-solid fa-link" style="margin-bottom:8px;">
+                <button class="btn-action" onclick="addCustomButton()">
+                    <i class="fa-solid fa-plus" style="margin-right:8px;"></i>ДОБАВИТЬ
+                </button>
+            </div>
+            <div class="status-line" id="customBtnStatus"></div>
+        </div>
+
     </div>
 
     <a href="/" class="back-link">← ВЕРНУТЬСЯ НА САЙТ</a>
@@ -187,32 +313,6 @@
 
 <script src="/js/config.js"></script>
 <script src="/js/admin.js"></script>
-<script>
-    // Сохраняет все ссылки разом (batch upsert)
-    async function saveAllLinks() {
-        setStatus('linksStatus', 'СОХРАНЯЮ...', 'busy');
-        const rows = [
-            { key: 'telegram_url',    value: document.getElementById('fieldTelegram').value.trim() },
-            { key: 'instagram_url',   value: document.getElementById('fieldInstagram').value.trim() },
-            { key: 'yandex_music_url',value: document.getElementById('fieldYandex').value.trim() },
-            { key: 'vk_music_url',    value: document.getElementById('fieldVk').value.trim() },
-            { key: 'spotify_url',     value: document.getElementById('fieldSpotify').value.trim() },
-            { key: 'apple_music_url', value: document.getElementById('fieldApple').value.trim() },
-            { key: 'yt_music_url',    value: document.getElementById('fieldYt').value.trim() },
-            { key: 'soundcloud_url',  value: document.getElementById('fieldSoundcloud').value.trim() },
-            { key: 'fusion_url',      value: document.getElementById('fieldFusion').value.trim() },
-        ].filter(r => r.value);
-        try {
-            const { error } = await _supabase
-                .from('site_content')
-                .upsert(rows, { onConflict: 'key' });
-            if (error) throw error;
-            setStatus('linksStatus', '✓ ВСЕ ССЫЛКИ СОХРАНЕНЫ', 'ok');
-        } catch(e) {
-            setStatus('linksStatus', 'ОШИБКА: ' + e.message, 'err');
-        }
-    }
-</script>
 
 </body>
 </html>

@@ -1,5 +1,5 @@
 /* ================================================
-   BULAVIN SYSTEM — ADMIN PANEL STYLES
+   BULAVIN SYSTEM — ADMIN PANEL STYLES (CMS)
    ================================================ */
 
 body {
@@ -8,94 +8,134 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 40px 16px 60px;
+    padding: 32px 16px 80px;
 }
 
 /* ── LAYOUT ──────────────────────────────────────── */
 .admin-layout {
     width: 100%;
-    max-width: 520px;
+    max-width: 540px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
     opacity: 0;
-    animation: fadeUp 0.55s ease forwards;
+    animation: fadeUp 0.5s ease forwards;
 }
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ── HEADER ──────────────────────────────────────── */
 .admin-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 22px 26px 20px;
+    padding: 20px 24px 18px;
     background: rgba(255,255,255,0.032);
     border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 28px;
+    border-radius: 24px 24px 0 0;
     backdrop-filter: blur(28px);
+    margin-bottom: 0;
 }
-.admin-logo { font-size: 14px; letter-spacing: 4px; font-weight: 900; }
+.admin-logo { font-size: 13px; letter-spacing: 4px; font-weight: 900; }
 .admin-logo span { color: rgba(255,75,43,0.85); }
-.admin-session { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 1px; }
+.admin-session { font-size: 10px; color: rgba(255,255,255,0.32); letter-spacing: 1px; }
 
-/* ── SECTION CARD ────────────────────────────────── */
-.admin-section {
-    background: rgba(255,255,255,0.032);
+/* ── TABS ────────────────────────────────────────── */
+.admin-tabs {
+    display: flex;
+    background: rgba(255,255,255,0.028);
+    border-left: 1px solid rgba(255,255,255,0.09);
+    border-right: 1px solid rgba(255,255,255,0.09);
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.admin-tabs::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+    flex: 1; min-width: 80px;
+    padding: 13px 8px;
+    background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: rgba(255,255,255,0.35);
+    font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; cursor: pointer;
+    font-family: inherit;
+    transition: color 0.22s ease, border-color 0.22s ease;
+    white-space: nowrap;
+}
+.tab-btn:hover { color: rgba(255,255,255,0.65); }
+.tab-btn.active {
+    color: #fff;
+    border-bottom-color: rgba(255,255,255,0.7);
+}
+.tab-btn i { display: block; font-size: 14px; margin-bottom: 4px; }
+
+/* ── TAB CONTENT ─────────────────────────────────── */
+.tab-content {
+    display: none;
+    background: rgba(255,255,255,0.022);
     border: 1px solid rgba(255,255,255,0.09);
-    border-radius: 24px;
-    padding: 26px 24px;
-    backdrop-filter: blur(28px);
+    border-top: none;
+    padding: 24px 22px;
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 0 0 24px 24px;
+}
+.tab-content.active { display: flex; }
+
+/* ── SECTION INSIDE TAB ──────────────────────────── */
+.admin-section {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
 }
+.admin-section:last-child { border-bottom: none; padding-bottom: 0; }
 
 .section-title {
-    font-size: 10px; font-weight: 800;
-    letter-spacing: 3px; color: rgba(255,255,255,0.38);
-    text-transform: uppercase; padding-bottom: 4px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-size: 9px; font-weight: 800;
+    letter-spacing: 3px; color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
     margin-bottom: 2px;
 }
-.section-title i { margin-right: 8px; opacity: 0.7; }
+.section-title i { margin-right: 7px; opacity: 0.7; }
 
 /* ── STATUS BADGE ────────────────────────────────── */
 .status-line {
     font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.35); text-align: center; padding: 10px 0 2px;
-    min-height: 32px; transition: color 0.3s ease;
+    color: rgba(255,255,255,0.35); text-align: center;
+    min-height: 28px; transition: color 0.3s ease;
+    padding: 4px 0;
 }
 .status-line.ok   { color: #1ed760; }
 .status-line.err  { color: #ff4b2b; }
 .status-line.busy { color: #ffcc00; }
 
-/* ── UPLOAD BUTTON (красивая, но логика не трогается) */
+/* ── UPLOAD BUTTON ───────────────────────────────── */
 .upload-label {
     display: flex; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; padding: 18px; border-radius: 18px;
-    background: rgba(255,255,255,0.06);
-    border: 1px dashed rgba(255,255,255,0.22);
-    color: rgba(255,255,255,0.75);
-    font-weight: 800; font-size: 12px; letter-spacing: 2px;
-    cursor: pointer; transition: all 0.25s ease;
+    width: 100%; padding: 16px; border-radius: 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px dashed rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.65);
+    font-weight: 800; font-size: 11px; letter-spacing: 2px;
+    cursor: pointer; transition: all 0.22s ease;
     text-transform: uppercase;
 }
 .upload-label:hover {
-    background: rgba(255,255,255,0.1);
-    border-color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(255,255,255,0.4);
     color: #fff;
 }
-.upload-label i { font-size: 16px; }
 input[type="file"] { display: none; }
 
-/* ── ROW (label + input) ─────────────────────────── */
-.field-row {
-    display: flex; flex-direction: column; gap: 7px;
-}
+/* ── FIELD ROW ───────────────────────────────────── */
+.field-row { display: flex; flex-direction: column; gap: 6px; }
 .field-label {
-    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.38); text-transform: uppercase;
+    font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35); text-transform: uppercase;
 }
 
 /* ── TOGGLE SWITCH ───────────────────────────────── */
@@ -103,64 +143,130 @@ input[type="file"] { display: none; }
     display: flex; align-items: center; justify-content: space-between;
     padding: 4px 0;
 }
-.toggle-label-text {
-    font-size: 13px; font-weight: 600;
-    color: rgba(255,255,255,0.82);
-}
-.toggle-sub {
-    font-size: 10px; color: rgba(255,255,255,0.32);
-    margin-top: 2px; letter-spacing: 0.5px;
-}
+.toggle-label-text { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.82); }
+.toggle-sub { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 2px; letter-spacing: 0.5px; }
 
-.toggle {
-    position: relative; width: 48px; height: 26px; flex-shrink: 0;
-}
+.toggle { position: relative; width: 46px; height: 25px; flex-shrink: 0; }
 .toggle input { opacity: 0; width: 0; height: 0; }
 .toggle-slider {
     position: absolute; inset: 0; cursor: pointer;
     background: rgba(255,255,255,0.1);
     border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 26px;
+    border-radius: 25px;
     transition: background 0.3s ease, border-color 0.3s ease;
 }
 .toggle-slider::before {
     content: ''; position: absolute;
-    width: 18px; height: 18px; border-radius: 50%;
-    background: rgba(255,255,255,0.6);
+    width: 17px; height: 17px; border-radius: 50%;
+    background: rgba(255,255,255,0.55);
     top: 3px; left: 3px;
     transition: transform 0.3s ease, background 0.3s ease;
 }
-.toggle input:checked + .toggle-slider { background: rgba(30,215,96,0.3); border-color: rgba(30,215,96,0.5); }
-.toggle input:checked + .toggle-slider::before { transform: translateX(22px); background: #1ed760; }
+.toggle input:checked + .toggle-slider { background: rgba(30,215,96,0.28); border-color: rgba(30,215,96,0.5); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(21px); background: #1ed760; }
 
 /* ── COLOR ROW ───────────────────────────────────── */
-.color-row {
-    display: flex; align-items: center; gap: 12px;
-}
-.color-row .color-preview {
-    width: 44px; height: 44px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.2);
+.color-row { display: flex; align-items: center; gap: 12px; }
+.color-preview {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.18);
     flex-shrink: 0; overflow: hidden; cursor: pointer;
     position: relative;
 }
-.color-row .color-preview input[type="color"] {
+.color-preview input[type="color"] {
     position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px);
     opacity: 0; cursor: pointer; border: none;
 }
-.color-row .color-info { flex: 1; }
-.color-row .color-value {
-    font-size: 12px; color: rgba(255,255,255,0.5); font-family: monospace;
-    letter-spacing: 1px;
+.color-info { flex: 1; }
+.color-value { font-size: 11px; color: rgba(255,255,255,0.45); font-family: monospace; letter-spacing: 1px; margin-top: 2px; }
+
+/* ── BTN ROW ─────────────────────────────────────── */
+.btn-row { display: flex; gap: 8px; }
+.btn-row .btn-action { flex: 1; }
+
+/* Красная кнопка (удалить) */
+.btn-danger {
+    background: rgba(255,75,43,0.08) !important;
+    border-color: rgba(255,75,43,0.28) !important;
+    color: rgba(255,75,43,0.8) !important;
 }
+.btn-danger:hover {
+    background: rgba(255,75,43,0.2) !important;
+    border-color: #ff4b2b !important;
+    color: #ff4b2b !important;
+}
+
+/* ── CUSTOM BUTTONS LIST ─────────────────────────── */
+.custom-btn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.custom-btn-item {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px 14px;
+    transition: border-color 0.2s;
+}
+.custom-btn-item:hover { border-color: rgba(255,255,255,0.16); }
+.custom-btn-item .cb-icon {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+    color: rgba(255,255,255,0.6);
+}
+.custom-btn-item .cb-info { flex: 1; min-width: 0; }
+.custom-btn-item .cb-label {
+    font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.85);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.custom-btn-item .cb-url {
+    font-size: 10px; color: rgba(255,255,255,0.3);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 2px;
+}
+.custom-btn-item .cb-actions {
+    display: flex; gap: 6px; flex-shrink: 0;
+}
+.cb-act-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.45);
+    cursor: pointer; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+.cb-act-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.cb-act-btn.del:hover { background: rgba(255,75,43,0.15); border-color: rgba(255,75,43,0.4); color: #ff4b2b; }
+.cb-act-btn.toggle-vis { }
+.cb-act-btn.toggle-vis.hidden { opacity: 0.4; }
+
+/* Форма добавления новой кнопки */
+.add-btn-form {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.add-btn-form .field-label { margin-bottom: 0; }
 
 /* ── BACK LINK ───────────────────────────────────── */
 .back-link {
-    text-align: center; font-size: 10px; color: rgba(255,255,255,0.22);
+    text-align: center; font-size: 10px; color: rgba(255,255,255,0.2);
     letter-spacing: 1.5px; cursor: pointer; transition: color 0.2s ease;
-    text-decoration: none; display: block; padding: 8px;
+    text-decoration: none; display: block; padding: 16px 8px 0;
     text-transform: uppercase;
 }
-.back-link:hover { color: rgba(255,255,255,0.55); }
+.back-link:hover { color: rgba(255,255,255,0.5); }
 
 /* ── LOGIN FORM ──────────────────────────────────── */
 .login-wrap {
@@ -175,17 +281,48 @@ input[type="file"] { display: none; }
     backdrop-filter: blur(30px); text-align: center;
     box-shadow: 0 30px 60px -15px rgba(0,0,0,0.8);
 }
-.login-title {
-    font-size: 16px; letter-spacing: 5px; font-weight: 900;
-    margin-bottom: 8px; text-transform: uppercase;
-}
+.login-title { font-size: 16px; letter-spacing: 5px; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; }
 .login-sub { font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 1px; margin-bottom: 32px; }
 
 /* ── LOGOUT BTN ──────────────────────────────────── */
 .logout-btn {
     background: none; border: 1px solid rgba(255,75,43,0.3);
-    color: rgba(255,75,43,0.7); font-size: 10px; letter-spacing: 1.5px;
-    padding: 8px 16px; border-radius: 10px; cursor: pointer;
+    color: rgba(255,75,43,0.7); font-size: 9px; letter-spacing: 1.5px;
+    padding: 7px 14px; border-radius: 9px; cursor: pointer;
     transition: all 0.2s ease; font-family: inherit; text-transform: uppercase;
 }
 .logout-btn:hover { background: rgba(255,75,43,0.1); color: #ff4b2b; border-color: #ff4b2b; }
+
+/* ── TEXTAREA ────────────────────────────────────── */
+.admin-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.055);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: var(--text);
+    resize: vertical;
+    outline: none;
+    font-size: 12px;
+    line-height: 1.55;
+    font-family: inherit;
+    min-height: 80px;
+    transition: border-color 0.25s ease;
+}
+.admin-textarea:focus { border-color: rgba(255,255,255,0.26); }
+.admin-textarea::placeholder { color: rgba(255,255,255,0.28); }
+
+/* ── HELP TEXT ───────────────────────────────────── */
+.help-text {
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+}
+
+/* ── DIVIDER ─────────────────────────────────────── */
+.admin-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 4px 0;
+}

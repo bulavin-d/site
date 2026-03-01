@@ -82,10 +82,10 @@ body { display: flex; justify-content: center; }
 }
 .avatar-link:hover { transform: scale(1.05); }
 
-/* Rotating gradient ring */
+/* Тонкое градиентное кольцо — плотно к фото, как в Instagram */
 .avatar-link::before {
     content: '';
-    position: absolute; inset: -3px;
+    position: absolute; inset: -2px;
     background: var(--ring-gradient);
     border-radius: 50%;
     animation: rotate-gradient 4s linear infinite;
@@ -94,11 +94,11 @@ body { display: flex; justify-content: center; }
 @keyframes rotate-gradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 .avatar-inner-border {
-    position: absolute; inset: 4px;
+    position: absolute; inset: 2px;
     background: #05050a;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    padding: 3px; overflow: hidden;
+    overflow: hidden;
 }
 
 .avatar {
@@ -137,13 +137,36 @@ body { display: flex; justify-content: center; }
 }
 
 /* ── NAME / BIO ──────────────────────────────────── */
+/* Имя центрировано по тексту; верификация — абсолютно сбоку */
 .name-wrapper {
-    display: flex; align-items: center; justify-content: center;
-    gap: 7px; margin-bottom: 9px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 9px;
 }
-h1 { font-size: 24px; letter-spacing: 5px; text-transform: uppercase; font-weight: 900; }
-.verify-icon { width: 18px; height: 18px; fill: var(--blue); flex-shrink: 0; }
-.bio { font-size: 12px; color: var(--text-dim); line-height: 1.45; }
+.name-inner {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+h1 {
+    font-size: 24px; letter-spacing: 5px;
+    text-transform: uppercase; font-weight: 900;
+    line-height: 1;
+}
+.verify-icon {
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%; transform: translateY(-50%);
+    width: 17px; height: 17px;
+    fill: var(--blue);
+    flex-shrink: 0;
+}
+.bio {
+    font-size: 12px; color: var(--text-dim); line-height: 1.45;
+    word-break: break-word; overflow-wrap: break-word;
+    max-width: 100%;
+}
 
 /* ── GRID (2-COL) ────────────────────────────────── */
 .grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
@@ -203,6 +226,26 @@ h1 { font-size: 24px; letter-spacing: 5px; text-transform: uppercase; font-weigh
 }
 .organizer-link:hover { background: rgba(255,75,43,0.1); transform: translateY(-2px); }
 
+/* Постер афиши */
+.afisha-poster-img {
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+#afisha-poster-wrap:hover .afisha-poster-img {
+    transform: scale(1.02);
+    box-shadow: 0 16px 40px -8px rgba(0,0,0,0.7);
+}
+.poster-badge {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 18px; border-radius: 20px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    color: #fff; white-space: nowrap;
+    display: flex; align-items: center; gap: 7px;
+    text-transform: uppercase;
+}
+
 /* ── PREDICTION ──────────────────────────────────── */
 .prediction-card {
     background: rgba(255,255,255,0.025);
@@ -258,24 +301,83 @@ h1 { font-size: 24px; letter-spacing: 5px; text-transform: uppercase; font-weigh
 }
 .forgot-link:hover { color: var(--blue); }
 
-/* ── STORY MODAL ─────────────────────────────────── */
-.story-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+/* Remember me */
+.remember-row {
+    display: flex; align-items: center;
+    margin-bottom: 14px; width: 100%;
+}
+.remember-label {
+    display: flex; align-items: center; gap: 9px;
+    cursor: pointer; user-select: none;
+}
+.remember-label input[type="checkbox"] { display: none; }
+.remember-checkbox {
+    width: 16px; height: 16px;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 5px;
+    background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.remember-label input:checked + .remember-checkbox {
+    background: rgba(0,149,246,0.35);
+    border-color: var(--blue);
+}
+.remember-label input:checked + .remember-checkbox::after {
+    content: '✓';
+    font-size: 10px; color: var(--blue); font-weight: 900;
+}
+.remember-text {
+    font-size: 11px; color: rgba(255,255,255,0.45);
+    letter-spacing: 0.5px; text-transform: uppercase;
+}
+
+/* ── STORY MODAL — PREMIUM ───────────────────────── */
+.story-wrapper { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
 .story-container {
-    width: 252px; height: 252px; border-radius: 50%; overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.25);
+    width: 258px; height: 258px; border-radius: 50%; overflow: hidden;
     background: #000; z-index: 5; position: relative;
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,0.15),
+        0 20px 60px -10px rgba(0,0,0,0.9),
+        0 0 40px -5px rgba(255,255,255,0.08);
 }
-#storyVideo { width: 100%; height: 100%; object-fit: cover; }
+#storyVideo { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Минималистичный крестик — иконка */
 .story-close {
-    position: absolute; top: -44px; right: -20px;
-    font-size: 32px; color: rgba(255,255,255,0.45);
-    cursor: pointer; transition: color 0.25s, transform 0.25s;
-    font-weight: 100; z-index: 10; padding: 10px;
+    position: absolute; top: -48px; right: -16px;
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 50%;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.22s ease;
+    z-index: 10;
+    font-size: 14px;
+    backdrop-filter: blur(8px);
 }
-.story-close:hover { color: #fff; transform: scale(1.2); }
+.story-close:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.16);
+    border-color: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
+/* Тонкий стильный прогресс-бар */
 .progress-bar-container {
-    width: 252px; height: 3px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 3px; overflow: hidden;
+    width: 258px; height: 2px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px; overflow: hidden;
 }
-#progress-bar { height: 100%; width: 0%; background: #fff; transition: width 0.1s linear; }
+#progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.95));
+    transition: width 0.1s linear;
+    border-radius: 2px;
+    box-shadow: 0 0 6px rgba(255,255,255,0.4);
+}

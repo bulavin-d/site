@@ -56,7 +56,7 @@
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Favicon — обновлённый -->
+    <!-- Favicon -->
     <link rel="icon" href="https://raw.githubusercontent.com/bulavin-d/site/refs/heads/main/logo.bulavin.space.png">
 
     <!-- Иконки -->
@@ -101,11 +101,14 @@
             </div>
         </div>
 
+        <!-- Имя: h1 центрирован, верификация — абсолютно снаружи -->
         <div class="name-wrapper">
-            <h1>BULAVIN</h1>
-            <svg class="verify-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/>
-            </svg>
+            <div class="name-inner">
+                <h1>BULAVIN</h1>
+                <svg class="verify-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/>
+                </svg>
+            </div>
         </div>
         <p class="bio">Казахстанский исполнитель и музыкальный продюсер.</p>
     </div>
@@ -142,13 +145,22 @@
     <div class="collapse-wrapper" id="afisha-wrapper">
         <div class="collapse-content">
             <div class="afisha-card">
+                <!-- Текст (когда нет постера) -->
                 <p id="afisha-text" style="font-size:12px;color:var(--text-dim);text-align:center;">
                     На данный момент выступлений не запланировано.
                 </p>
-                <div style="text-align:center;">
+                <!-- Кнопка организатора (когда нет постера) -->
+                <div id="organizer-wrap" style="text-align:center;">
                     <a id="link-organizer" href="https://t.me/imbulavin" target="_blank" rel="noopener" class="organizer-link">
                         <i class="fa-solid fa-briefcase"></i> Я организатор
                     </a>
+                </div>
+                <!-- Постер афиши (когда есть) -->
+                <div id="afisha-poster-wrap" style="display:none;position:relative;">
+                    <img class="afisha-poster-img" src="" alt="Афиша" style="width:100%;border-radius:16px;display:block;">
+                    <div class="poster-badge" style="display:none;">
+                        <i class="fa-solid fa-ticket"></i> КУПИТЬ БИЛЕТЫ
+                    </div>
                 </div>
             </div>
         </div>
@@ -159,6 +171,9 @@
        class="btn btn-fusion" style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
         <i class="fa-solid fa-fingerprint"></i><span>СЛИЯНИЕ</span>
     </a>
+
+    <!-- ДИНАМИЧЕСКИЕ КНОПКИ ИЗ АДМИНКИ -->
+    <div id="custom-buttons-container"></div>
 
     <!-- BULAVIN SYSTEM — API БАЗА ДНЯ -->
     <div class="prediction-card">
@@ -203,6 +218,14 @@
             <input class="input" type="email"    id="authEmail"    placeholder="EMAIL"    style="margin-bottom:12px;">
             <input class="input" type="password" id="authPassword" placeholder="ПАРОЛЬ"  style="margin-bottom:12px;">
             <p id="forgotPasswordLink" class="forgot-link" onclick="resetPasswordTrigger()">Забыли пароль?</p>
+            <!-- REMEMBER ME -->
+            <div id="rememberMeRow" class="remember-row">
+                <label class="remember-label">
+                    <input type="checkbox" id="rememberMeCheck" checked>
+                    <span class="remember-checkbox"></span>
+                    <span class="remember-text">Запомнить меня</span>
+                </label>
+            </div>
             <button class="btn-action" id="authBtn" onclick="executeAuth()">ПРОДОЛЖИТЬ</button>
         </div>
         <div id="authSuccess" style="display:none;text-align:center;width:100%;">
@@ -217,7 +240,9 @@
 <div class="glass-modal" id="storyModal" onclick="closeStory()">
     <div class="story-wrapper" onclick="event.stopPropagation()">
         <div style="position:relative;">
-            <div class="story-close" onclick="closeStory()">×</div>
+            <button class="story-close" onclick="closeStory()" aria-label="Закрыть">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
             <div class="story-container">
                 <video id="storyVideo" playsinline>
                     <source src="https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4" type="video/mp4">
