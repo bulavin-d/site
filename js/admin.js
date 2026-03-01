@@ -174,11 +174,10 @@ async function saveAfishaPoster() {
     const ticketsUrl = document.getElementById('fieldTicketsUrl').value.trim();
     setStatus('posterStatus', 'СОХРАНЯЮ...', 'busy');
     try {
-        const { error } = await _supabase.from('site_content').upsert([
+        await _saveMulti([
             { key: 'afisha_poster_url',  value: posterUrl },
             { key: 'afisha_tickets_url', value: ticketsUrl },
-        ], { onConflict: 'key' });
-        if (error) throw error;
+        ]);
         setStatus('posterStatus', '✓ СОХРАНЕНО', 'ok');
     } catch(e) { setStatus('posterStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
@@ -187,11 +186,10 @@ async function clearAfishaPoster() {
     document.getElementById('fieldPosterUrl').value = '';
     document.getElementById('fieldTicketsUrl').value = '';
     try {
-        const { error } = await _supabase.from('site_content').upsert([
+        await _saveMulti([
             { key: 'afisha_poster_url',  value: '' },
             { key: 'afisha_tickets_url', value: '' },
-        ], { onConflict: 'key' });
-        if (error) throw error;
+        ]);
         setStatus('posterStatus', '✓ ПОСТЕР УБРАН', 'ok');
     } catch(e) { setStatus('posterStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
@@ -199,14 +197,11 @@ async function clearAfishaPoster() {
 /* ── DASHBOARD ───────────────────────────────── */
 async function saveDashboard() {
     setStatus('dashStatus', 'СОХРАНЯЮ...', 'busy');
-    const soulText = document.getElementById('fieldSoulText').value.trim();
-    const mergeUrl = document.getElementById('fieldMergeUrl').value.trim();
     try {
-        const { error } = await _supabase.from('site_content').upsert([
-            { key: 'dashboard_soul_text', value: soulText },
-            { key: 'dashboard_merge_url', value: mergeUrl || 'https://t.me/imbulavin_bot' },
-        ], { onConflict: 'key' });
-        if (error) throw error;
+        await _saveMulti([
+            { key: 'dashboard_soul_text', value: document.getElementById('fieldSoulText').value.trim() },
+            { key: 'dashboard_merge_url', value: document.getElementById('fieldMergeUrl').value.trim() || 'https://t.me/imbulavin_bot' },
+        ]);
         setStatus('dashStatus', '✓ DASHBOARD ОБНОВЛЁН', 'ok');
     } catch(e) { setStatus('dashStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
@@ -215,11 +210,10 @@ async function saveDashboard() {
 async function saveAfishaTexts() {
     setStatus('afishaTextStatus', 'СОХРАНЯЮ...', 'busy');
     try {
-        const { error } = await _supabase.from('site_content').upsert([
+        await _saveMulti([
             { key: 'afisha_text',   value: document.getElementById('fieldAfisha').value.trim() },
             { key: 'organizer_url', value: document.getElementById('fieldOrgUrl').value.trim() },
-        ], { onConflict: 'key' });
-        if (error) throw error;
+        ]);
         setStatus('afishaTextStatus', '✓ СОХРАНЕНО', 'ok');
     } catch(e) { setStatus('afishaTextStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
@@ -265,12 +259,24 @@ function _fill(id, val) {
     if (el && val !== undefined && val !== null) el.value = val;
 }
 
-/* ── СОХРАНЕНИЕ ПОЛЯ ─────────────────────────── */
+/* ── СОХРАНЕНИЕ ПОЛЯ — безопасный update→insert ─ */
 async function saveContent(key, value, statusId) {
     if (statusId) setStatus(statusId, 'СОХРАНЯЮ...', 'busy');
     try {
-        const { error } = await _supabase.from('site_content').upsert({ key, value }, { onConflict: 'key' });
-        if (error) throw error;
+        // Сначала UPDATE (не нарушает INSERT-политику)
+        const { data: updated, error: upErr } = await _supabase
+            .from('site_content')
+            .update({ value })
+            .eq('key', key)
+            .select();
+        if (upErr) throw upErr;
+        // Если строка не существовала — INSERT
+        if (!updated || updated.length === 0) {
+            const { error: insErr } = await _supabase
+                .from('site_content')
+                .insert({ key, value });
+            if (insErr) throw insErr;
+        }
         if (statusId) setStatus(statusId, '✓ СОХРАНЕНО', 'ok');
     } catch(e) {
         if (statusId) setStatus(statusId, 'ОШИБКА: ' + e.message, 'err');
@@ -305,10 +311,22 @@ async function saveAllLinks() {
         { key: 'fusion_url',       value: document.getElementById('fieldFusion').value.trim() },
     ].filter(r => r.value);
     try {
-        const { error } = await _supabase.from('site_content').upsert(rows, { onConflict: 'key' });
-        if (error) throw error;
+        await _saveMulti(rows);
         setStatus('linksStatus', '✓ СОХРАНЕНО', 'ok');
     } catch(e) { setStatus('linksStatus', 'ОШИБКА: ' + e.message, 'err'); }
+}
+
+/* ── УТИЛИТА: безопасное батч-сохранение ─────── */
+async function _saveMulti(rows) {
+    for (const { key, value } of rows) {
+        const { data: updated, error: upErr } = await _supabase
+            .from('site_content').update({ value }).eq('key', key).select();
+        if (upErr) throw upErr;
+        if (!updated || updated.length === 0) {
+            const { error: insErr } = await _supabase.from('site_content').insert({ key, value });
+            if (insErr) throw insErr;
+        }
+    }
 }
 
 /* ── КАСТОМНЫЕ КНОПКИ ────────────────────────── */

@@ -18,7 +18,6 @@
     <title>BULAVIN | INNER CIRCLE</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Cropper.js для загрузки фото -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 
@@ -43,29 +42,34 @@
         <p class="dash-welcome">INNER CIRCLE · SYSTEM ACCESS</p>
     </div>
 
-    <!-- ── SECRET GALLERY ──────────────────────── -->
+    <!-- ── B.S. STORY ──────────────────────────── -->
     <div class="dash-card">
         <div class="gallery-header">
-            <span class="gallery-label">SECRET GALLERY</span>
+            <span class="gallery-label">B.S. STORY</span>
             <div class="gallery-info-wrap">
-                <button class="gallery-info-btn" id="galleryInfoBtn" onclick="toggleGalleryTooltip()">
-                    <i class="fa-solid fa-question"></i>
-                </button>
+                <button class="gallery-info-btn" id="galleryInfoBtn" onclick="toggleGalleryTooltip()">?</button>
                 <div class="gallery-tooltip" id="galleryTooltip">
-                    Каждые 24 часа здесь появляется случайная фотография от участников Inner Circle.
+                    Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.
                 </div>
             </div>
         </div>
 
-        <!-- Фото из галереи -->
+        <!-- TikTok-рамка со scroll snap -->
         <div class="gallery-frame" id="galleryFrame">
-            <!-- Заглушка-скелетон -->
+            <!-- Скелетон (пока грузится) -->
             <div class="gallery-skeleton" id="gallerySkeleton">
-                <i class="fa-solid fa-image"></i>
+                <div class="skeleton-pulse-icon"></div>
             </div>
-            <!-- Реальное фото -->
-            <img class="gallery-photo" id="galleryPhoto" src="" alt="Secret Gallery" style="display:none;">
-            <!-- Световой блик — CSS-анимация -->
+
+            <!-- Лента фоток — scroll snap контейнер -->
+            <div class="story-reel" id="storyReel"></div>
+
+            <!-- CSS-анимация обучения (палец-свайп) -->
+            <div class="swipe-hint" id="swipeHint">
+                <div class="swipe-finger"></div>
+            </div>
+
+            <!-- Световой блик -->
             <div class="gallery-flare"></div>
         </div>
 
@@ -93,7 +97,8 @@
     </div>
 
     <!-- ── СЛИЯНИЕ ────────────────────────────── -->
-    <a id="mergeLink" href="https://t.me/imbulavin_bot" target="_blank" rel="noopener" class="btn btn-fusion" style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
+    <a id="mergeLink" href="https://t.me/imbulavin_bot" target="_blank" rel="noopener"
+       class="btn btn-fusion" style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
         <i class="fa-solid fa-fingerprint"></i><span>СЛИЯНИЕ</span>
     </a>
 
@@ -111,8 +116,8 @@
     </div>
 </div>
 
-<!-- CROPPER MODAL (для загрузки фото в галерею) -->
-<div class="glass-modal" id="cropperModal" onclick="">
+<!-- CROPPER MODAL -->
+<div class="glass-modal" id="cropperModal">
     <div class="cropper-card" onclick="event.stopPropagation()">
         <div class="cropper-header">
             <span class="modal-title" style="font-size:14px;">КАДРИРОВАТЬ ФОТО</span>
@@ -123,11 +128,9 @@
         <div class="cropper-wrap">
             <img id="cropperImage" src="" alt="">
         </div>
-        <div class="cropper-actions">
-            <button class="btn-action" onclick="confirmCrop()">
-                <i class="fa-solid fa-check" style="margin-right:8px;"></i>ГОТОВО
-            </button>
-        </div>
+        <button class="btn-action" onclick="confirmCrop()">
+            <i class="fa-solid fa-check" style="margin-right:8px;"></i>ГОТОВО
+        </button>
         <div class="status-line" id="cropperStatus"></div>
     </div>
 </div>
@@ -135,15 +138,14 @@
 <script src="/js/config.js"></script>
 <script>
 /* ════════════════════════════════════════════════
-   DASHBOARD — LOGIC
-   !! НЕ ТРОГАТЬ: анонимные сообщения, Google Script
+   DASHBOARD v4 — B.S. STORY + FIXES
    ════════════════════════════════════════════════ */
 
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyWjPndo7PxgFsZRXK7SmqS9K3pHPD2A4OjuBrDoz7kmG82XOeZc_2zrlx7083yOEEMIw/exec';
 let currentUser = null;
 let currentUsername = '@Unknown';
 let _cropper = null;
-let _croppingForGallery = false;
+let _swipeHintDismissed = false;
 
 /* ── INIT ─────────────────────────────────────── */
 async function initDashboard() {
@@ -155,9 +157,8 @@ async function initDashboard() {
     document.getElementById('userNameDisplay').innerText = currentUsername.toUpperCase();
     document.getElementById('dashboardContent').style.display = 'flex';
 
-    // Загружаем контент параллельно
     loadDashContent();
-    loadSecretGallery();
+    loadBSStory();
 }
 initDashboard();
 
@@ -177,7 +178,7 @@ async function loadDashContent() {
             const lines = c.dashboard_soul_text.split('\n').filter(l => l.trim());
             if (lines.length) {
                 block.innerHTML = lines.map((l, i) =>
-                    `<p${i === lines.length - 1 ? ' class="soul-highlight"' : ''}>${l}</p>`
+                    `<p${i === lines.length-1 ? ' class="soul-highlight"' : ''}>${l}</p>`
                 ).join('');
             }
         }
@@ -192,50 +193,94 @@ async function loadDashContent() {
     } catch(e) { console.warn('[DASHBOARD] loadDashContent:', e); }
 }
 
-/* ── SECRET GALLERY ───────────────────────────── */
-async function loadSecretGallery() {
-    const skeleton  = document.getElementById('gallerySkeleton');
-    const photoEl   = document.getElementById('galleryPhoto');
+/* ── B.S. STORY — TikTok лента ───────────────── */
+async function loadBSStory() {
+    const skeleton = document.getElementById('gallerySkeleton');
+    const reel     = document.getElementById('storyReel');
 
     try {
-        // Берём рандомное фото (один запрос — берём все, выбираем случайное)
+        // Только фото за последние 24 часа
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
         const { data, error } = await _supabase
             .from('community_photos')
-            .select('image_url')
-            .limit(50);
+            .select('id, image_url, username, email, created_at')
+            .gte('created_at', since)
+            .order('created_at', { ascending: false });
 
         if (error) throw error;
+
+        // Скрываем скелетон
+        skeleton.style.transition = 'opacity 0.4s ease';
+        skeleton.style.opacity = '0';
+        setTimeout(() => { skeleton.style.display = 'none'; }, 420);
+
         if (!data || data.length === 0) {
-            skeleton.innerHTML = '<i class="fa-solid fa-image"></i><p style="font-size:10px;color:rgba(255,255,255,0.25);margin-top:10px;letter-spacing:1px;">ПОКА ПУСТО</p>';
+            reel.innerHTML = `
+                <div class="reel-empty">
+                    <div class="reel-empty-icon"></div>
+                    <p>ПОКА ПУСТО</p>
+                    <span>Будь первым — загрузи фото</span>
+                </div>`;
             return;
         }
 
-        // Детерминированный "рандом" по дате (меняется раз в 24 часа)
-        const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-        const photo = data[dayIndex % data.length];
+        // Строим слайды
+        reel.innerHTML = '';
+        data.forEach(photo => {
+            const slide = document.createElement('div');
+            slide.className = 'reel-slide';
+            slide.dataset.id = photo.id;
+            const name = photo.username || ('@' + (photo.email || 'anon').split('@')[0]);
+            const ago  = timeAgo(photo.created_at);
+            slide.innerHTML = `
+                <img src="${escHtml(photo.image_url)}" alt="" loading="lazy"
+                     onerror="this.closest('.reel-slide').style.display='none'">
+                <div class="reel-meta">
+                    <span class="reel-author">${escHtml(name)}</span>
+                    <span class="reel-time">${ago}</span>
+                </div>`;
+            reel.appendChild(slide);
+        });
 
-        photoEl.src = photo.image_url;
-        photoEl.onload = () => {
-            skeleton.style.transition = 'opacity 0.55s ease';
-            skeleton.style.opacity = '0';
-            setTimeout(() => { skeleton.style.display = 'none'; }, 560);
-            photoEl.style.display = 'block';
-            photoEl.style.animation = 'photoFadeIn 0.55s ease forwards';
-        };
-        photoEl.onerror = () => {
-            skeleton.innerHTML = '<i class="fa-solid fa-image"></i>';
-        };
+        // Анимация обучения — показываем только один раз
+        if (!_swipeHintDismissed && data.length > 1) {
+            showSwipeHint();
+        } else {
+            document.getElementById('swipeHint').style.display = 'none';
+        }
+
+        // Dismiss hint on first scroll
+        reel.addEventListener('scroll', () => dismissSwipeHint(), { once: true });
+
     } catch(e) {
-        console.warn('[GALLERY] load error:', e);
-        skeleton.innerHTML = '<i class="fa-solid fa-image"></i>';
+        console.warn('[BS STORY] load error:', e);
+        skeleton.innerHTML = '<p style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:1px;">ОШИБКА ЗАГРУЗКИ</p>';
     }
+}
+
+function showSwipeHint() {
+    const hint = document.getElementById('swipeHint');
+    hint.style.display = 'flex';
+    // Удаляем из DOM через 3.5 секунды
+    setTimeout(() => dismissSwipeHint(), 3500);
+}
+
+function dismissSwipeHint() {
+    if (_swipeHintDismissed) return;
+    _swipeHintDismissed = true;
+    const hint = document.getElementById('swipeHint');
+    hint.style.transition = 'opacity 0.5s ease';
+    hint.style.opacity = '0';
+    setTimeout(() => { hint.remove(); }, 550);
 }
 
 /* ── GALLERY TOOLTIP ──────────────────────────── */
 function toggleGalleryTooltip() {
     const t = document.getElementById('galleryTooltip');
     t.classList.toggle('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
+    if (t.classList.contains('show')) {
+        setTimeout(() => t.classList.remove('show'), 4000);
+    }
 }
 document.addEventListener('click', e => {
     if (!e.target.closest('#galleryInfoBtn')) {
@@ -245,18 +290,18 @@ document.addEventListener('click', e => {
 
 /* ── GALLERY UPLOAD ───────────────────────────── */
 function triggerPhotoUpload() {
+    if (!currentUser) { setStatus('galleryStatus', 'НУЖНА АВТОРИЗАЦИЯ', 'err'); return; }
     document.getElementById('galleryPhotoInput').click();
 }
 
 document.getElementById('galleryPhotoInput').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
-    _croppingForGallery = true;
-    openCropper(file, 3/4); // Вертикальные пропорции
+    openCropper(file);
     this.value = '';
 });
 
-function openCropper(file, aspectRatio = 1) {
+function openCropper(file) {
     const modal = document.getElementById('cropperModal');
     const img   = document.getElementById('cropperImage');
     modal.classList.add('show');
@@ -268,7 +313,7 @@ function openCropper(file, aspectRatio = 1) {
         img.src = e.target.result;
         img.onload = () => {
             _cropper = new Cropper(img, {
-                aspectRatio,
+                aspectRatio: 3/4,
                 viewMode: 1,
                 dragMode: 'move',
                 autoCropArea: 0.85,
@@ -288,7 +333,6 @@ function openCropper(file, aspectRatio = 1) {
 function closeCropper() {
     document.getElementById('cropperModal').classList.remove('show');
     if (_cropper) { _cropper.destroy(); _cropper = null; }
-    _croppingForGallery = false;
     setStatus('cropperStatus', '', '');
 }
 
@@ -299,40 +343,39 @@ async function confirmCrop() {
     _cropper.getCroppedCanvas({ maxWidth: 1080, maxHeight: 1440 }).toBlob(async blob => {
         if (!blob) { setStatus('cropperStatus', 'ОШИБКА ОБРЕЗКИ', 'err'); return; }
 
-        if (_croppingForGallery) {
-            await uploadCommunityPhoto(blob);
-        }
+        const path = `${currentUser.id}/${Date.now()}.jpg`;
+
+        const { error: storageErr } = await _supabase.storage
+            .from('community_photos')
+            .upload(path, blob, { contentType: 'image/jpeg', upsert: false });
+
+        if (storageErr) { setStatus('cropperStatus', 'ОШИБКА: ' + storageErr.message, 'err'); return; }
+
+        const publicUrl = `${_supabase.supabaseUrl}/storage/v1/object/public/community_photos/${path}`;
+
+        const { error: dbErr } = await _supabase
+            .from('community_photos')
+            .insert({
+                user_id:      currentUser.id,
+                email:        currentUser.email,
+                username:     currentUsername,
+                image_url:    publicUrl,
+                storage_path: path,
+            });
+
+        if (dbErr) { setStatus('cropperStatus', 'ОШИБКА БД: ' + dbErr.message, 'err'); return; }
+
+        setStatus('cropperStatus', '✓ ФОТО ДОБАВЛЕНО!', 'ok');
+        setTimeout(() => {
+            closeCropper();
+            // Перезагружаем ленту чтобы фото сразу появилось сверху
+            const reel = document.getElementById('storyReel');
+            reel.innerHTML = '';
+            document.getElementById('gallerySkeleton').style.display = 'flex';
+            document.getElementById('gallerySkeleton').style.opacity = '1';
+            loadBSStory();
+        }, 1200);
     }, 'image/jpeg', 0.88);
-}
-
-async function uploadCommunityPhoto(blob) {
-    if (!currentUser) { setStatus('cropperStatus', 'ВОЙДИ В АККАУНТ', 'err'); return; }
-
-    const path = `${currentUser.id}/${Date.now()}.jpg`;
-
-    const { error: storageErr } = await _supabase.storage
-        .from('community_photos')
-        .upload(path, blob, { contentType: 'image/jpeg', upsert: false });
-
-    if (storageErr) { setStatus('cropperStatus', 'ОШИБКА: ' + storageErr.message, 'err'); return; }
-
-    const publicUrl = `${_supabase.supabaseUrl}/storage/v1/object/public/community_photos/${path}`;
-
-    const { error: dbErr } = await _supabase
-        .from('community_photos')
-        .insert({
-            user_id:      currentUser.id,
-            email:        currentUser.email,
-            username:     currentUsername,
-            image_url:    publicUrl,
-            storage_path: path,
-        });
-
-    if (dbErr) { setStatus('cropperStatus', 'ОШИБКА БД: ' + dbErr.message, 'err'); return; }
-
-    setStatus('cropperStatus', '✓ ФОТО ДОБАВЛЕНО!', 'ok');
-    setStatus('galleryStatus', '✓ Фото добавлено в галерею', 'ok');
-    setTimeout(() => { closeCropper(); }, 1500);
 }
 
 /* ── ANON MESSAGE — НЕ ТРОГАТЬ ────────────────── */
@@ -381,8 +424,7 @@ class FloatingEmoji {
     }
     update() {
         this.x += this.vx; this.y += this.vy; this.rot += this.rs;
-        if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50)
-            this.init(false);
+        if (this.y > window.innerHeight+50 || this.x < -50 || this.x > window.innerWidth+50) this.init(false);
     }
     draw() {
         ctx.save();
@@ -415,6 +457,18 @@ function setStatus(id, msg, type = '') {
     el.textContent = msg;
     el.className = 'status-line ' + type;
     if (type === 'ok') setTimeout(() => { el.textContent = ''; el.className = 'status-line'; }, 3500);
+}
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function timeAgo(iso) {
+    const diff = Date.now() - new Date(iso).getTime();
+    const m = Math.floor(diff / 60000);
+    if (m < 1)  return 'только что';
+    if (m < 60) return `${m} мин назад`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h} ч назад`;
+    return `${Math.floor(h/24)} дн назад`;
 }
 </script>
 </body>

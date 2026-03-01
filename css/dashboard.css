@@ -1,5 +1,5 @@
 /* ================================================
-   BULAVIN SYSTEM — DASHBOARD STYLES
+   BULAVIN SYSTEM — DASHBOARD STYLES v4
    Дизайн идентичен главной странице
    ================================================ */
 
@@ -10,7 +10,6 @@ body {
     min-height: 100vh;
 }
 
-/* Полноэкранный canvas поверх всего (копия главной) */
 #global-canvas {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
@@ -28,7 +27,6 @@ body {
     transition: background-image 0.8s ease;
 }
 
-/* Container */
 .container {
     width: 100%; max-width: 420px;
     padding: 40px 18px 60px;
@@ -42,7 +40,7 @@ body {
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── PROFILE HEADER CARD ─────────────────────── */
+/* ── PROFILE HEADER ──────────────────────────── */
 .dash-profile-card {
     background: var(--glass);
     backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
@@ -63,11 +61,7 @@ body {
     cursor: pointer; font-size: 12px;
     transition: all 0.25s ease;
 }
-.dash-logout-btn:hover {
-    color: var(--red);
-    border-color: rgba(255,75,43,0.35);
-    background: rgba(255,75,43,0.08);
-}
+.dash-logout-btn:hover { color: var(--red); border-color: rgba(255,75,43,0.35); background: rgba(255,75,43,0.08); }
 .dash-username {
     font-size: 20px; letter-spacing: 4px; font-weight: 900;
     margin-bottom: 6px; text-transform: uppercase;
@@ -87,44 +81,46 @@ body {
     display: flex; flex-direction: column; gap: 14px;
 }
 
-/* ── SECRET GALLERY ──────────────────────────── */
+/* ── B.S. STORY HEADER ───────────────────────── */
 .gallery-header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 2px;
 }
 .gallery-label {
-    font-size: 9px; font-weight: 800; letter-spacing: 3px;
+    font-size: 9px; font-weight: 900; letter-spacing: 4px;
     color: var(--blue); text-transform: uppercase;
 }
+
+/* Info кнопка — чисто CSS, без иконки FA */
 .gallery-info-wrap { position: relative; }
 .gallery-info-btn {
-    width: 24px; height: 24px; border-radius: 50%;
-    background: rgba(255,255,255,0.07);
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.14);
-    color: rgba(255,255,255,0.4);
-    font-size: 10px; cursor: pointer;
+    color: rgba(255,255,255,0.45);
+    font-size: 11px; font-weight: 700;
+    cursor: pointer; line-height: 1;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.22s ease;
+    font-family: inherit;
 }
 .gallery-info-btn:hover { color: #fff; background: rgba(255,255,255,0.12); }
 .gallery-tooltip {
-    position: absolute; right: 0; top: 32px;
-    background: rgba(10,10,18,0.95);
+    position: absolute; right: 0; top: 30px;
+    background: rgba(8,8,18,0.96);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 14px;
     padding: 12px 14px;
-    font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.75);
-    width: 220px; z-index: 100;
+    font-size: 11px; line-height: 1.55; color: rgba(255,255,255,0.75);
+    width: 230px; z-index: 100;
     pointer-events: none;
     opacity: 0; transform: translateY(-6px) scale(0.96);
     transition: opacity 0.22s ease, transform 0.22s ease;
     backdrop-filter: blur(20px);
 }
-.gallery-tooltip.show {
-    opacity: 1; transform: translateY(0) scale(1);
-}
+.gallery-tooltip.show { opacity: 1; transform: translateY(0) scale(1); }
 
-/* Рамка галереи — вертикальная, стекло */
+/* ── GALLERY FRAME (TikTok рамка) ────────────── */
 .gallery-frame {
     width: 100%;
     aspect-ratio: 3/4;
@@ -134,49 +130,188 @@ body {
     background: rgba(255,255,255,0.025);
     border: 1px solid rgba(255,255,255,0.09);
 }
+
+/* Скелетон */
 .gallery-skeleton {
-    width: 100%; height: 100%;
+    position: absolute; inset: 0;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.18); font-size: 32px;
+    z-index: 5;
     animation: skeletonPulse 2s ease-in-out infinite;
 }
-@keyframes skeletonPulse {
-    0%, 100% { opacity: 0.4; }
-    50%       { opacity: 0.85; }
+@keyframes skeletonPulse { 0%,100%{opacity:.35} 50%{opacity:.8} }
+
+/* Минималистичная CSS-иконка изображения */
+.skeleton-pulse-icon {
+    width: 38px; height: 30px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    position: relative;
 }
-.gallery-photo {
+.skeleton-pulse-icon::before {
+    content: '';
+    position: absolute; top: 6px; left: 6px;
+    width: 8px; height: 8px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+}
+.skeleton-pulse-icon::after {
+    content: '';
+    position: absolute; bottom: 4px; left: 4px; right: 4px;
+    height: 10px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
+    border-radius: 3px;
+}
+
+/* ── STORY REEL (TikTok scroll snap) ─────────── */
+.story-reel {
+    width: 100%; height: 100%;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+/* Скрываем скроллбар */
+.story-reel::-webkit-scrollbar { display: none; }
+.story-reel { scrollbar-width: none; -ms-overflow-style: none; }
+
+/* Слайд */
+.reel-slide {
+    width: 100%; height: 100%;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+}
+.reel-slide img {
     width: 100%; height: 100%;
     object-fit: cover; display: block;
 }
-@keyframes photoFadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+/* Градиент снизу */
+.reel-slide::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    pointer-events: none;
+}
+.reel-meta {
+    position: absolute; bottom: 12px; left: 14px; right: 14px;
+    z-index: 2;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.reel-author {
+    font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9);
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+}
+.reel-time {
+    font-size: 9px; color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
 
-/* Световой блик */
+/* Заглушка пусто */
+.reel-empty {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px;
+}
+.reel-empty-icon {
+    width: 40px; height: 32px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    position: relative;
+    margin-bottom: 4px;
+}
+.reel-empty-icon::before {
+    content: '';
+    position: absolute; top: 7px; left: 7px;
+    width: 8px; height: 8px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 50%;
+}
+.reel-empty-icon::after {
+    content: '';
+    position: absolute; bottom: 5px; left: 4px; right: 4px;
+    height: 9px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 3px;
+}
+.reel-empty p {
+    font-size: 11px; font-weight: 800; letter-spacing: 3px;
+    color: rgba(255,255,255,0.28); text-transform: uppercase;
+}
+.reel-empty span {
+    font-size: 10px; color: rgba(255,255,255,0.18); letter-spacing: 1px;
+}
+
+/* ── SWIPE HINT — CSS-only анимация пальца ────── */
+.swipe-hint {
+    position: absolute; inset: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    background: rgba(0,0,0,0.18);
+    border-radius: 20px;
+}
+
+/* Палец (CSS-силуэт) */
+.swipe-finger {
+    width: 24px; height: 38px;
+    border: 2.5px solid rgba(255,255,255,0.85);
+    border-radius: 12px;
+    position: relative;
+    animation: fingerSwipeUp 1.2s ease-in-out 0.3s infinite;
+}
+/* "Ноготь" сверху */
+.swipe-finger::before {
+    content: '';
+    position: absolute; top: 4px; left: 50%; transform: translateX(-50%);
+    width: 10px; height: 5px;
+    border: 2px solid rgba(255,255,255,0.85);
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+}
+/* Стрелка вверх */
+.swipe-finger::after {
+    content: '';
+    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 9px solid rgba(255,255,255,0.75);
+}
+
+@keyframes fingerSwipeUp {
+    0%   { transform: translateY(12px); opacity: 0; }
+    20%  { opacity: 1; }
+    70%  { transform: translateY(-16px); opacity: 0.9; }
+    100% { transform: translateY(-24px); opacity: 0; }
+}
+
+/* ── СВЕТОВОЙ БЛИК ───────────────────────────── */
 .gallery-flare {
-    position: absolute; inset: 0; pointer-events: none;
+    position: absolute; inset: 0; pointer-events: none; z-index: 10;
     background: linear-gradient(
         115deg,
         transparent 25%,
-        rgba(255,255,255,0.07) 45%,
-        rgba(255,255,255,0.13) 50%,
-        rgba(255,255,255,0.07) 55%,
+        rgba(255,255,255,0.055) 45%,
+        rgba(255,255,255,0.1) 50%,
+        rgba(255,255,255,0.055) 55%,
         transparent 75%
     );
     background-size: 200% 100%;
-    animation: flareSlide 5s ease-in-out infinite;
+    animation: flareSlide 6s ease-in-out infinite;
     border-radius: 20px;
 }
 @keyframes flareSlide {
     0%   { background-position: 200% 0; opacity: 0; }
     10%  { opacity: 1; }
-    50%  { background-position: -200% 0; opacity: 1; }
-    60%  { opacity: 0; }
+    55%  { background-position: -200% 0; opacity: 1; }
+    65%  { opacity: 0; }
     100% { background-position: -200% 0; opacity: 0; }
 }
 
-/* Кнопка загрузки в галерею */
+/* ── UPLOAD BTN ──────────────────────────────── */
 .gallery-upload-btn {
     width: 100%;
     padding: 14px;
@@ -189,24 +324,13 @@ body {
     display: flex; align-items: center; justify-content: center; gap: 10px;
     transition: all 0.25s ease;
 }
-.gallery-upload-btn:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.35);
-    color: #fff;
-}
-.gallery-upload-btn i { font-size: 13px; }
+.gallery-upload-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.35); color: #fff; }
 
 /* ── SOUL CARD ───────────────────────────────── */
 .dash-soul-card { gap: 16px; }
-.soul-text {
-    font-size: 12px; font-weight: 300; line-height: 1.65;
-    color: rgba(255,255,255,0.6);
-}
+.soul-text { font-size: 12px; font-weight: 300; line-height: 1.65; color: rgba(255,255,255,0.6); }
 .soul-text p { margin-bottom: 4px; }
-.soul-highlight {
-    color: rgba(255,255,255,0.88) !important;
-    font-weight: 500 !important;
-}
+.soul-highlight { color: rgba(255,255,255,0.88) !important; font-weight: 500 !important; }
 
 /* ── ANON BTN ────────────────────────────────── */
 .anon-btn {
@@ -218,9 +342,8 @@ body {
     transition: all 0.28s ease; font-family: inherit;
 }
 .anon-btn:hover { background: rgba(255,255,255,0.13); border-color: #fff; transform: translateY(-2px); }
-.anon-btn i { font-size: 16px; }
 
-/* ── BTN (FUSION — копия с главной) ──────────── */
+/* ── BTN (Fusion) ────────────────────────────── */
 .btn {
     position: relative;
     background: var(--glass);
@@ -242,13 +365,6 @@ body {
     100% { text-shadow: 0 0 10px rgba(255,255,255,.8), 0 0 22px rgba(255,255,255,.5); transform: scale(1.1); }
 }
 
-/* ── FOOTER ──────────────────────────────────── */
-.footer {
-    text-align: center; font-size: 10px;
-    color: var(--text-dimmer); letter-spacing: 2px;
-    margin-top: 8px; padding-bottom: 10px;
-}
-
 /* ── ANON TEXTAREA ───────────────────────────── */
 .anon-textarea {
     width: 100%;
@@ -260,40 +376,40 @@ body {
 .anon-textarea:focus { border-color: rgba(255,255,255,0.28); }
 .anon-textarea::placeholder { color: rgba(255,255,255,0.28); }
 
-/* ── STATUS LINE ──────────────────────────────── */
-.status-line {
-    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.35); text-align: center;
-    min-height: 24px; transition: color 0.3s ease;
-}
-.status-line.ok   { color: #1ed760; }
-.status-line.err  { color: #ff4b2b; }
-.status-line.busy { color: #ffcc00; }
-
 /* ── CROPPER MODAL ───────────────────────────── */
 .cropper-card {
     width: 92%; max-width: 420px;
     background: rgba(8,8,16,0.96);
     border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 28px;
-    padding: 20px;
+    border-radius: 28px; padding: 20px;
     display: flex; flex-direction: column; gap: 16px;
     backdrop-filter: blur(36px);
 }
-.cropper-header {
-    display: flex; align-items: center; justify-content: space-between;
-}
+.cropper-header { display: flex; align-items: center; justify-content: space-between; }
 .cropper-close-btn {
     width: 32px; height: 32px; border-radius: 10px;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.5); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     font-size: 14px; transition: all 0.2s ease;
 }
 .cropper-close-btn:hover { background: rgba(255,75,43,0.15); color: var(--red); }
-.cropper-wrap {
-    width: 100%; border-radius: 16px; overflow: hidden;
-    background: #000; max-height: 60vh;
-}
+.cropper-wrap { width: 100%; border-radius: 16px; overflow: hidden; background: #000; max-height: 60vh; }
 .cropper-wrap img { max-width: 100%; display: block; }
+
+/* ── STATUS LINE ──────────────────────────────── */
+.status-line {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35); text-align: center; min-height: 24px;
+    transition: color 0.3s ease;
+}
+.status-line.ok   { color: #1ed760; }
+.status-line.err  { color: #ff4b2b; }
+.status-line.busy { color: #ffcc00; }
+
+/* ── FOOTER ──────────────────────────────────── */
+.footer {
+    text-align: center; font-size: 10px;
+    color: var(--text-dimmer); letter-spacing: 2px;
+    margin-top: 8px; padding-bottom: 10px;
+}

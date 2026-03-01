@@ -90,13 +90,18 @@ function applyContent() {
             avatarImg.src = avatarUrl;
             avatarImg.style.transition = 'opacity 0.55s ease';
             avatarImg.style.opacity = '1';
-            if (avatarSilhouette) avatarSilhouette.style.opacity = '0';
             // Показываем кольцо
             if (avatarLink) {
                 avatarLink.classList.remove('avatar-loading');
                 avatarLink.classList.add('avatar-ready');
             }
             if (dynBg) dynBg.style.backgroundImage = `url('${avatarUrl}')`;
+            // Убираем заглушку — сначала fade, потом display:none
+            if (avatarSilhouette) {
+                avatarSilhouette.style.transition = 'opacity 0.55s ease';
+                avatarSilhouette.style.opacity = '0';
+                setTimeout(() => { avatarSilhouette.style.display = 'none'; }, 600);
+            }
         };
         img.onerror = () => {
             // Оставляем силуэт, кольцо не показываем
@@ -384,20 +389,25 @@ function initAvatarAnimation() {
     const textEl      = document.getElementById('avatarText');
     const iconEl      = document.getElementById('avatarIcon');
 
-    if (!window._blurEnabled || !avatarImg.src || !avatarImg.src.startsWith('http')) return;
+    // Нет аватарки или blur выключен — ничего не делаем
+    if (!window._blurEnabled) return;
+    if (!avatarImg.src || !avatarImg.src.startsWith('http')) return;
 
     placeholder.style.display = 'flex';
+    placeholder.style.zIndex  = '3';
     textEl.style.display = 'block';
     iconEl.style.display = 'none';
-    // Перекрываем прозрачный img
-    avatarImg.style.filter = 'blur(4px) brightness(0.35)';
+    // Лёгкое размытие поверх фото
+    avatarImg.style.filter = 'blur(6px) brightness(0.3)';
 
     setTimeout(() => { textEl.style.display = 'none'; iconEl.style.display = 'block'; }, 3500);
     setTimeout(() => { iconEl.style.display = 'none'; textEl.style.display = 'block'; }, 7000);
     setTimeout(() => {
-        placeholder.style.display = 'none';
+        placeholder.style.transition = 'opacity 0.6s ease';
+        placeholder.style.opacity = '0';
         avatarImg.style.transition = 'filter 0.8s ease, opacity 0.8s ease';
         avatarImg.style.filter = 'blur(0px) brightness(1)';
+        setTimeout(() => { placeholder.style.display = 'none'; }, 700);
     }, 11000);
 }
 
