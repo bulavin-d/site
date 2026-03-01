@@ -84,31 +84,8 @@ function applyContent() {
 
     const avatarUrl = c.avatar_url && c.avatar_url.trim();
 
-    if (avatarUrl) {
-        const img = new Image();
-        img.onload = () => {
-            avatarImg.src = avatarUrl;
-            avatarImg.style.transition = 'opacity 0.55s ease';
-            avatarImg.style.opacity = '1';
-            // Показываем кольцо
-            if (avatarLink) {
-                avatarLink.classList.remove('avatar-loading');
-                avatarLink.classList.add('avatar-ready');
-            }
-            if (dynBg) dynBg.style.backgroundImage = `url('${avatarUrl}')`;
-            // Убираем заглушку — сначала fade, потом display:none
-            if (avatarSilhouette) {
-                avatarSilhouette.style.transition = 'opacity 0.55s ease';
-                avatarSilhouette.style.opacity = '0';
-                setTimeout(() => { avatarSilhouette.style.display = 'none'; }, 600);
-            }
-        };
-        img.onerror = () => {
-            // Оставляем силуэт, кольцо не показываем
-        };
-        img.src = avatarUrl;
-    }
-    // Если нет аватарки — силуэт остаётся, кольцо не появляется
+    // Blur toggle — устанавливаем ДО img.onload, чтобы initAvatarAnimation его увидел
+    window._blurEnabled = c.exclusive_blur_enabled !== 'false';
 
     // Ring gradient color
     if (c.ring_color && c.ring_color.trim()) {
@@ -119,8 +96,32 @@ function applyContent() {
         );
     }
 
-    // Blur toggle
-    window._blurEnabled = c.exclusive_blur_enabled !== 'false';
+    if (avatarUrl) {
+        const img = new Image();
+        img.onload = () => {
+            // 1. Ставим src и делаем фото видимым
+            avatarImg.src = avatarUrl;
+            avatarImg.style.opacity = '1';
+            // 2. Показываем градиентное кольцо
+            if (avatarLink) {
+                avatarLink.classList.remove('avatar-loading');
+                avatarLink.classList.add('avatar-ready');
+            }
+            // 3. Фон страницы
+            if (dynBg) dynBg.style.backgroundImage = `url('${avatarUrl}')`;
+            // 4. Убираем силуэт полностью
+            if (avatarSilhouette) {
+                avatarSilhouette.style.transition = 'opacity 0.4s ease';
+                avatarSilhouette.style.opacity = '0';
+                setTimeout(() => { avatarSilhouette.style.display = 'none'; }, 450);
+            }
+            // 5. Теперь запускаем EXCLUSIVE-анимацию — фото точно загружено
+            initAvatarAnimation();
+        };
+        img.onerror = () => { /* силуэт остаётся, кольцо не показываем */ };
+        img.src = avatarUrl;
+    }
+    // Если нет аватарки — силуэт остаётся, кольцо не появляется
 }
 
 function applyAfisha(c) {
@@ -389,25 +390,35 @@ function initAvatarAnimation() {
     const textEl      = document.getElementById('avatarText');
     const iconEl      = document.getElementById('avatarIcon');
 
-    // Нет аватарки или blur выключен — ничего не делаем
+    // Blur выключен в настройках — фото уже видно чистым
     if (!window._blurEnabled) return;
-    if (!avatarImg.src || !avatarImg.src.startsWith('http')) return;
 
+    // Накладываем блюр поверх уже загруженного фото
+    avatarImg.style.transition = 'none';
+    avatarImg.style.filter = 'blur(7px) brightness(0.28)';
+
+    // Показываем оверлей EXCLUSIVE
     placeholder.style.display = 'flex';
+    placeholder.style.opacity = '1';
     placeholder.style.zIndex  = '3';
     textEl.style.display = 'block';
     iconEl.style.display = 'none';
-    // Лёгкое размытие поверх фото
-    avatarImg.style.filter = 'blur(6px) brightness(0.3)';
 
-    setTimeout(() => { textEl.style.display = 'none'; iconEl.style.display = 'block'; }, 3500);
-    setTimeout(() => { iconEl.style.display = 'none'; textEl.style.display = 'block'; }, 7000);
     setTimeout(() => {
-        placeholder.style.transition = 'opacity 0.6s ease';
+        textEl.style.display = 'none';
+        iconEl.style.display = 'block';
+    }, 3500);
+    setTimeout(() => {
+        iconEl.style.display = 'none';
+        textEl.style.display = 'block';
+    }, 7000);
+    // На 11 секунде — убираем всё
+    setTimeout(() => {
+        placeholder.style.transition = 'opacity 0.7s ease';
         placeholder.style.opacity = '0';
-        avatarImg.style.transition = 'filter 0.8s ease, opacity 0.8s ease';
+        avatarImg.style.transition = 'filter 0.9s ease';
         avatarImg.style.filter = 'blur(0px) brightness(1)';
-        setTimeout(() => { placeholder.style.display = 'none'; }, 700);
+        setTimeout(() => { placeholder.style.display = 'none'; }, 750);
     }, 11000);
 }
 
@@ -415,7 +426,7 @@ function initAvatarAnimation() {
    BOOT
    ──────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
-    // НЕ показываем старые данные — ждём БД
     await loadContent();
-    initAvatarAnimation();
+    // initAvatarAnimation() вызывается изнутри img.onload в applyContent()
+    // — только когда фото точно загружено
 });
