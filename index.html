@@ -82,13 +82,10 @@
         <!-- Avatar: кольцо скрыто (класс avatar-loading), силуэт-заглушка -->
         <div class="avatar-link avatar-loading" onclick="openStory()" id="avatarLink">
             <div class="avatar-inner-border">
-                <!-- Силуэт-заглушка, скрывается когда появляется фото -->
+        <!-- Силуэт-заглушка — показывается пока нет аватарки -->
                 <div class="avatar-silhouette" id="avatarSilhouette">
-                    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="40" cy="28" r="16" fill="rgba(255,255,255,0.13)"/>
-                        <path d="M10 72c0-16.569 13.431-30 30-30s30 13.431 30 30" stroke="none" fill="rgba(255,255,255,0.1)"/>
-                        <ellipse cx="40" cy="70" rx="28" ry="18" fill="rgba(255,255,255,0.1)"/>
-                    </svg>
+                    <div class="silhouette-head"></div>
+                    <div class="silhouette-body"></div>
                 </div>
                 <!-- EXCLUSIVE overlay -->
                 <div id="avatarPlaceholder" class="avatar-placeholder" style="display:none;">
