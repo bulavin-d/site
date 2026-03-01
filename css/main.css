@@ -407,18 +407,30 @@ h1 {
 /* ── AVATAR SILHOUETTE ────────────────────────── */
 .avatar-silhouette {
     position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     z-index: 1;
-    animation: skeletonPulseAvatar 2s ease-in-out infinite;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.4s ease;
     border-radius: 50%;
-    background: rgba(255,255,255,0.035);
+    background: rgba(255,255,255,0.03);
+    gap: 0;
+    animation: skeletonPulseAvatar 2.2s ease-in-out infinite;
 }
-.avatar-silhouette svg {
-    width: 72%; height: 72%;
+.silhouette-head {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    flex-shrink: 0;
+    margin-bottom: -2px;
+}
+.silhouette-body {
+    width: 58px; height: 29px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 29px 29px 0 0;
+    flex-shrink: 0;
 }
 @keyframes skeletonPulseAvatar {
-    0%, 100% { opacity: 0.5; }
+    0%, 100% { opacity: 0.45; }
     50%       { opacity: 0.9; }
 }
 
