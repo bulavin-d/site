@@ -225,6 +225,18 @@ async function clearAfishaPoster() {
     } catch(e) { setStatus('posterStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
 
+/* ── B.S. STORY GLOBAL TOGGLE ────────────────── */
+async function saveBsGlobal() {
+    const val = String(document.getElementById('bsGlobalToggle').checked);
+    setStatus('bsGlobalStatus', 'СОХРАНЯЮ...', 'busy');
+    await saveContent('bs_story_global_enabled', val, 'bsGlobalStatus');
+    // Обновляем подсказку
+    const hint = document.getElementById('storyModeHint');
+    if (hint) hint.textContent = val === 'true'
+        ? 'B.S. STORY (Лента сообщества)'
+        : 'Личная сторис (видео/фото)';
+}
+
 /* ── B.S. STORY SETTINGS ─────────────────────── */
 async function saveBsStory() {
     setStatus('bsStoryStatus', 'СОХРАНЯЮ...', 'busy');
@@ -317,7 +329,16 @@ async function loadSettings() {
         document.querySelectorAll('input[name="releaseStatus"]').forEach(r => {
             r.checked = r.value === rs;
         });
-        // B.S. Story
+        // B.S. Story Global Toggle
+        const bsGlobalToggle = document.getElementById('bsGlobalToggle');
+        if (bsGlobalToggle) {
+            bsGlobalToggle.checked = c.bs_story_global_enabled === 'true';
+            const hint = document.getElementById('storyModeHint');
+            if (hint) hint.textContent = bsGlobalToggle.checked
+                ? 'B.S. STORY — лента сообщества открывается при клике на аватарку'
+                : 'Личная сторис — видео/фото открывается при клике на аватарку';
+        }
+        // B.S. Story Label / Tooltip
         _fill('fieldBsLabel',   c.bs_story_label);
         _fill('fieldBsTooltip', c.bs_tooltip_text);
         if (c.bs_story_label_color) {

@@ -53,6 +53,10 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Cropper.js — для загрузки фото в B.S. STORY -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
     <link rel="icon" href="https://raw.githubusercontent.com/bulavin-d/site/refs/heads/main/logo.bulavin.space.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/shared.css">
@@ -74,15 +78,19 @@
             </button>
         </div>
         <div class="auth-nav">
-            <button class="nav-btn has-dot" onclick="openAuthChoice()" aria-label="Войти">
-                <i class="fa-regular fa-user"></i>
+            <!-- Кнопка меняется после авторизации -->
+            <button class="nav-btn has-dot" id="authNavBtn" onclick="onAuthNavClick()" aria-label="Профиль">
+                <i class="fa-regular fa-user" id="authNavIcon"></i>
             </button>
         </div>
 
+        <!-- Бейдж юзера над аватаркой (показывается только если залогинен) -->
+        <div class="user-badge" id="userBadge" style="display:none;"></div>
+
         <!-- Avatar: кольцо скрыто (класс avatar-loading), силуэт-заглушка -->
-        <div class="avatar-link avatar-loading" onclick="handleStoryOpen()" id="avatarLink">
+        <div class="avatar-link avatar-loading" onclick="handleAvatarClick()" id="avatarLink">
             <div class="avatar-inner-border">
-        <!-- Силуэт-заглушка — показывается пока нет аватарки -->
+                <!-- Силуэт-заглушка — показывается пока нет аватарки -->
                 <div class="avatar-silhouette" id="avatarSilhouette">
                     <div class="silhouette-head"></div>
                     <div class="silhouette-body"></div>
@@ -125,17 +133,13 @@
         <div class="release-cover-wrap">
             <img class="release-cover" id="releaseCover" src="" alt="Release">
             <div class="release-shine"></div>
-            <!-- Название трека (если задано) -->
             <div class="release-meta">
                 <span class="release-title-text" id="releaseTitle"></span>
             </div>
-            <!-- CTA-кнопка (текст и цвет из БД) -->
             <div class="release-cta-wrap">
                 <span class="release-cta-btn" id="releaseCTA">ПРЕСЕЙВ</span>
             </div>
-            <!-- Tap-hint: CSS-анимация первые 10 сек -->
             <div class="release-tap-hint" id="releaseTapHint" style="display:none;"></div>
-            <!-- Glow-ring -->
             <div class="release-pulse-ring"></div>
         </div>
     </div>
@@ -198,7 +202,9 @@
     <p class="footer" id="footerEl">© 2026 BULAVIN</p>
 </div>
 
-<!-- ── МОДАЛЬНЫЕ ОКНА ─────────────────────────── -->
+<!-- ══════════════════════════════════════════════
+     МОДАЛЬНЫЕ ОКНА
+══════════════════════════════════════════════ -->
 
 <!-- QR -->
 <div class="glass-modal" id="qrModal" onclick="closeQR()">
@@ -211,12 +217,12 @@
     </div>
 </div>
 
-<!-- AUTH CHOICE — добавлен заголовок SYSTEM ACCESS -->
+<!-- AUTH CHOICE -->
 <div class="glass-modal" id="authChoiceModal" onclick="closeAuthChoice()">
     <div class="glass-card" style="padding:32px 26px;display:flex;flex-direction:column;gap:12px;width:90%;max-width:330px;" onclick="event.stopPropagation()">
         <div class="auth-choice-header">
-            <div class="auth-choice-badge">SYSTEM ACCESS</div>
-            <p class="auth-choice-sub">BULAVIN INNER CIRCLE</p>
+            <div class="auth-choice-badge" id="authChoiceBadge">SYSTEM ACCESS</div>
+            <p class="auth-choice-sub" id="authChoiceSub">BULAVIN INNER CIRCLE</p>
         </div>
         <button class="choice-btn" onclick="openAuth(true)">
             <i class="fa-solid fa-right-to-bracket"></i> ВХОД
@@ -253,10 +259,9 @@
     </div>
 </div>
 
-<!-- STORY MODAL — Instagram 9:16 Format -->
+<!-- STORY MODAL — Instagram 9:16 Format (личная сторис) -->
 <div class="glass-modal story-modal-v2" id="storyModal" onclick="handleStoryClose()">
     <div class="story-v2-container" onclick="event.stopPropagation()">
-        <!-- Timebar -->
         <div class="story-v2-topbar">
             <div class="story-v2-timebar-track">
                 <div class="story-v2-timebar-fill" id="progress-bar"></div>
@@ -265,11 +270,84 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <!-- Медиа -->
         <video id="storyVideo" playsinline style="display:block;"></video>
         <img id="storyImage" src="" alt="" style="display:none;">
-        <!-- Нижний градиент -->
         <div class="story-v2-gradient"></div>
+    </div>
+</div>
+
+<!-- ══ B.S. STORY MODAL (TikTok-лента на главной) ══ -->
+<div class="glass-modal bs-modal" id="bsStoryModal" onclick="closeBSStory()">
+    <div class="bs-modal-inner" onclick="event.stopPropagation()">
+
+        <!-- Заголовок -->
+        <div class="bs-modal-header">
+            <span class="bs-modal-label" id="bsModalLabel">B.S. STORY</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <!-- Tooltip "?" -->
+                <div class="bs-tooltip-wrap">
+                    <button class="bs-tooltip-btn" id="bsTooltipBtn" onclick="toggleBSTooltip()">?</button>
+                    <div class="bs-tooltip-box" id="bsTooltipBox">
+                        Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.
+                    </div>
+                </div>
+                <!-- Кнопка добавить фото -->
+                <button class="bs-upload-btn" id="bsUploadBtn" onclick="triggerBSPhotoUpload()" title="Добавить фото">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <!-- Закрыть -->
+                <button class="bs-close-btn" onclick="closeBSStory()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- TikTok-рамка -->
+        <div class="bs-frame" id="bsFrame">
+            <!-- Скелетон -->
+            <div class="gallery-skeleton" id="bsSkeleton">
+                <div class="skeleton-pulse-icon"></div>
+            </div>
+            <!-- Лента scroll-snap -->
+            <div class="story-reel" id="bsReel"></div>
+            <!-- CSS свайп-подсказка -->
+            <div class="swipe-hint" id="bsSwipeHint">
+                <div class="swipe-finger"></div>
+            </div>
+            <!-- Световой блик -->
+            <div class="gallery-flare"></div>
+        </div>
+
+        <!-- Инпут загрузки фото (скрыт) -->
+        <input type="file" id="bsPhotoInput" accept="image/*" style="display:none;">
+        <div class="bs-upload-status" id="bsUploadStatus"></div>
+
+    </div>
+</div>
+
+<!-- ══ CROPPER MODAL для B.S. STORY ══ -->
+<div class="glass-modal" id="bsCropperModal">
+    <div class="cropper-card" onclick="event.stopPropagation()">
+        <div class="cropper-header">
+            <span class="modal-title" style="font-size:14px;">КАДРИРОВАТЬ ФОТО</span>
+            <button class="cropper-close-btn" onclick="closeBSCropper()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="cropper-wrap">
+            <img id="bsCropperImage" src="" alt="">
+        </div>
+        <div class="comment-field-wrap">
+            <textarea class="comment-textarea" id="bsPhotoComment"
+                maxlength="150"
+                oninput="updateBSCommentCounter()"
+                placeholder="Комментарий (необязательно)..."></textarea>
+            <span class="comment-counter" id="bsCommentCounter">0 / 150</span>
+        </div>
+        <button class="btn-action" onclick="confirmBSCrop()">
+            <i class="fa-solid fa-check" style="margin-right:8px;"></i>ОПУБЛИКОВАТЬ
+        </button>
+        <div class="status-line" id="bsCropperStatus"></div>
     </div>
 </div>
 

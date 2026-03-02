@@ -392,7 +392,7 @@ async function confirmCrop() {
 
         if (storageErr) { setStatus('cropperStatus', 'ОШИБКА: ' + storageErr.message, 'err'); return; }
 
-        const publicUrl = `${_supabase.supabaseUrl}/storage/v1/object/public/community_photos/${path}`;
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
 
         const commentVal = (document.getElementById('photoComment')?.value || '').trim();
         const { error: dbErr } = await _supabase

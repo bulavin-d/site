@@ -1,5 +1,5 @@
 /* ================================================
-   BULAVIN SYSTEM — MAIN PAGE STYLES
+   BULAVIN SYSTEM — MAIN PAGE STYLES v6
    ================================================ */
 
 /* ── LAYOUT ─────────────────────────────────────── */
@@ -72,6 +72,22 @@ body { display: flex; justify-content: center; }
     text-align: center;
 }
 
+/* ── USER BADGE (над аватаркой, если залогинен) ──── */
+.user-badge {
+    font-size: 9px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 4px 12px;
+    display: inline-block; margin-bottom: 10px;
+    backdrop-filter: blur(8px);
+    animation: fadeInUp 0.4s ease;
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── AVATAR ──────────────────────────────────────── */
 .avatar-link {
     display: block; width: 110px; height: 110px;
@@ -82,7 +98,6 @@ body { display: flex; justify-content: center; }
 }
 .avatar-link:hover { transform: scale(1.05); }
 
-/* Тонкое градиентное кольцо — плотно к фото, как в Instagram */
 .avatar-link::before {
     content: '';
     position: absolute; inset: -2px;
@@ -109,7 +124,6 @@ body { display: flex; justify-content: center; }
 }
 .avatar.clear { filter: blur(0px) brightness(1); }
 
-/* Text overlay inside avatar */
 .avatar-placeholder {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
@@ -137,35 +151,24 @@ body { display: flex; justify-content: center; }
 }
 
 /* ── NAME / BIO ──────────────────────────────────── */
-/* Имя центрировано по тексту; верификация — абсолютно сбоку */
 .name-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex; justify-content: center; align-items: center;
     margin-bottom: 9px;
 }
-.name-inner {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-}
+.name-inner { position: relative; display: inline-flex; align-items: center; }
 h1 {
     font-size: 24px; letter-spacing: 5px;
-    text-transform: uppercase; font-weight: 900;
-    line-height: 1;
+    text-transform: uppercase; font-weight: 900; line-height: 1;
 }
 .verify-icon {
-    position: absolute;
-    left: calc(100% + 6px);
+    position: absolute; left: calc(100% + 6px);
     top: 50%; transform: translateY(-50%);
     width: 17px; height: 17px;
-    fill: var(--blue);
-    flex-shrink: 0;
+    fill: var(--blue); flex-shrink: 0;
 }
 .bio {
     font-size: 12px; color: var(--text-dim); line-height: 1.45;
-    word-break: break-word; overflow-wrap: break-word;
-    max-width: 100%;
+    word-break: break-word; overflow-wrap: break-word; max-width: 100%;
 }
 
 /* ── GRID (2-COL) ────────────────────────────────── */
@@ -201,6 +204,11 @@ h1 {
     100% { text-shadow: 0 0 10px rgba(255,255,255,.8), 0 0 22px rgba(255,255,255,.5); transform: scale(1.1); }
 }
 
+/* ── КАСТОМНЫЕ КНОПКИ — ровный spacing ──────────── */
+#custom-buttons-container {
+    display: flex; flex-direction: column; gap: 10px;
+}
+
 /* ── ACCORDION ───────────────────────────────────── */
 .collapse-wrapper {
     display: grid; grid-template-rows: 0fr;
@@ -225,16 +233,8 @@ h1 {
     transition: all 0.22s ease;
 }
 .organizer-link:hover { background: rgba(255,75,43,0.1); transform: translateY(-2px); }
-
-/* Постер афиши */
-.afisha-poster-img {
-    border-radius: 16px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-#afisha-poster-wrap:hover .afisha-poster-img {
-    transform: scale(1.02);
-    box-shadow: 0 16px 40px -8px rgba(0,0,0,0.7);
-}
+.afisha-poster-img { border-radius: 16px; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+#afisha-poster-wrap:hover .afisha-poster-img { transform: scale(1.02); box-shadow: 0 16px 40px -8px rgba(0,0,0,0.7); }
 .poster-badge {
     position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
     background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
@@ -242,16 +242,14 @@ h1 {
     padding: 8px 18px; border-radius: 20px;
     font-size: 11px; font-weight: 800; letter-spacing: 2px;
     color: #fff; white-space: nowrap;
-    display: flex; align-items: center; gap: 7px;
-    text-transform: uppercase;
+    display: flex; align-items: center; gap: 7px; text-transform: uppercase;
 }
 
 /* ── PREDICTION ──────────────────────────────────── */
 .prediction-card {
     background: rgba(255,255,255,0.025);
     border: 1px solid var(--glass-border);
-    border-radius: 28px; padding: 28px 22px;
-    text-align: center; margin-top: 4px;
+    border-radius: 28px; padding: 28px 22px; text-align: center; margin-top: 4px;
 }
 .prediction-label {
     font-size: 9px; letter-spacing: 2px; color: var(--blue);
@@ -300,350 +298,103 @@ h1 {
     transition: color 0.2s ease; text-transform: uppercase; letter-spacing: 1px;
 }
 .forgot-link:hover { color: var(--blue); }
-
-/* Remember me */
-.remember-row {
-    display: flex; align-items: center;
-    margin-bottom: 14px; width: 100%;
-}
-.remember-label {
-    display: flex; align-items: center; gap: 9px;
-    cursor: pointer; user-select: none;
-}
+.remember-row { display: flex; align-items: center; margin-bottom: 14px; width: 100%; }
+.remember-label { display: flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; }
 .remember-label input[type="checkbox"] { display: none; }
 .remember-checkbox {
-    width: 16px; height: 16px;
-    border: 1px solid rgba(255,255,255,0.28);
-    border-radius: 5px;
-    background: rgba(255,255,255,0.06);
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
+    width: 16px; height: 16px; border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 5px; background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; flex-shrink: 0;
 }
-.remember-label input:checked + .remember-checkbox {
-    background: rgba(0,149,246,0.35);
-    border-color: var(--blue);
-}
-.remember-label input:checked + .remember-checkbox::after {
-    content: '✓';
-    font-size: 10px; color: var(--blue); font-weight: 900;
-}
-.remember-text {
-    font-size: 11px; color: rgba(255,255,255,0.45);
-    letter-spacing: 0.5px; text-transform: uppercase;
-}
+.remember-label input:checked + .remember-checkbox { background: rgba(0,149,246,0.35); border-color: var(--blue); }
+.remember-label input:checked + .remember-checkbox::after { content: '✓'; font-size: 10px; color: var(--blue); font-weight: 900; }
+.remember-text { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 0.5px; text-transform: uppercase; }
+.auth-choice-header { text-align: center; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.07); margin-bottom: 4px; }
+.auth-choice-badge { font-size: 14px; letter-spacing: 5px; font-weight: 900; color: #fff; text-transform: uppercase; margin-bottom: 6px; }
+.auth-choice-sub { font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 3px; text-transform: uppercase; }
 
-/* ── STORY MODAL — PREMIUM ───────────────────────── */
-.story-wrapper { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-
-.story-container {
-    width: 258px; height: 258px; border-radius: 50%; overflow: hidden;
-    background: #000; z-index: 5; position: relative;
-    box-shadow:
-        0 0 0 2px rgba(255,255,255,0.15),
-        0 20px 60px -10px rgba(0,0,0,0.9),
-        0 0 40px -5px rgba(255,255,255,0.08);
-}
-#storyVideo { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-/* Минималистичный крестик — иконка */
-.story-close {
-    position: absolute; top: -48px; right: -16px;
-    width: 36px; height: 36px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 50%;
-    color: rgba(255,255,255,0.6);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.22s ease;
-    z-index: 10;
-    font-size: 14px;
-    backdrop-filter: blur(8px);
-}
-.story-close:hover {
-    color: #fff;
-    background: rgba(255,255,255,0.16);
-    border-color: rgba(255,255,255,0.3);
-    transform: scale(1.1);
-}
-
-/* Тонкий стильный прогресс-бар */
-.progress-bar-container {
-    width: 258px; height: 2px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px; overflow: hidden;
-}
-#progress-bar {
-    height: 100%; width: 0%;
-    background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.95));
-    transition: width 0.1s linear;
-    border-radius: 2px;
-    box-shadow: 0 0 6px rgba(255,255,255,0.4);
-}
-
-/* ── SKELETON LOADERS ────────────────────────── */
+/* ── SKELETON LOADERS ────────────────────────────── */
 @keyframes shimmer {
     0%   { background-position: -200% 0; }
     100% { background-position: 200% 0; }
 }
-
 .skeleton-text {
-    background: linear-gradient(
-        90deg,
-        rgba(255,255,255,0.05) 25%,
-        rgba(255,255,255,0.12) 50%,
-        rgba(255,255,255,0.05) 75%
-    );
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.8s ease-in-out infinite;
-    border-radius: 8px;
-    color: transparent !important;
-    min-height: 14px;
-    min-width: 180px;
-    user-select: none;
+    border-radius: 8px; color: transparent !important;
+    min-height: 14px; min-width: 180px; user-select: none;
 }
 
-/* ── AVATAR SILHOUETTE ────────────────────────── */
+/* ── AVATAR SILHOUETTE ───────────────────────────── */
 .avatar-silhouette {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    z-index: 1;
-    transition: opacity 0.4s ease;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.03);
-    gap: 0;
+    z-index: 1; transition: opacity 0.4s ease; border-radius: 50%;
+    background: rgba(255,255,255,0.03); gap: 0;
     animation: skeletonPulseAvatar 2.2s ease-in-out infinite;
 }
-.silhouette-head {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-    flex-shrink: 0;
-    margin-bottom: -2px;
-}
-.silhouette-body {
-    width: 58px; height: 29px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 29px 29px 0 0;
-    flex-shrink: 0;
-}
-@keyframes skeletonPulseAvatar {
-    0%, 100% { opacity: 0.45; }
-    50%       { opacity: 0.9; }
-}
+.silhouette-head { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.15); flex-shrink: 0; margin-bottom: -2px; }
+.silhouette-body { width: 58px; height: 29px; background: rgba(255,255,255,0.1); border-radius: 29px 29px 0 0; flex-shrink: 0; }
+@keyframes skeletonPulseAvatar { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+.avatar-loading::before { display: none !important; }
+.avatar-ready::before   { display: block !important; }
 
-/* Скрываем кольцо пока аватарка не загружена */
-.avatar-loading::before {
-    display: none !important;
-}
-/* Кольцо появляется после загрузки */
-.avatar-ready::before {
-    display: block !important;
-}
-
-/* ── AUTH CHOICE HEADER ───────────────────────── */
-.auth-choice-header {
-    text-align: center;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    margin-bottom: 4px;
-}
-.auth-choice-badge {
-    font-size: 14px; letter-spacing: 5px; font-weight: 900;
-    color: #fff; text-transform: uppercase; margin-bottom: 6px;
-}
-.auth-choice-sub {
-    font-size: 9px; color: rgba(255,255,255,0.28); letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-/* ── AFISHA POSTER ───────────────────────────── */
-.afisha-poster-img {
-    border-radius: 16px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-#afisha-poster-wrap:hover .afisha-poster-img {
-    transform: scale(1.02);
-    box-shadow: 0 16px 40px -8px rgba(0,0,0,0.7);
-}
-.poster-badge {
-    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
-    background: rgba(0,0,0,0.75); backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 8px 18px; border-radius: 20px;
-    font-size: 11px; font-weight: 800; letter-spacing: 2px;
-    color: #fff; white-space: nowrap;
-    display: flex; align-items: center; gap: 7px;
-    text-transform: uppercase;
-}
-
-/* ── RELEASE BLOCK (Bandlink killer) ─────────────
-   Появляется когда release_status != disabled.
-   Квадратная карточка с обложкой, заголовком и
-   пульсирующим glow-эффектом.
-   ──────────────────────────────────────────────── */
+/* ── RELEASE BLOCK v2 ────────────────────────────── */
 .release-block {
-    border-radius: 24px;
-    overflow: hidden;
-    cursor: pointer;
+    border-radius: 24px; overflow: hidden; cursor: pointer;
     transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
     position: relative;
-    /* Тонкая рамка */
     border: 1px solid rgba(255,255,255,0.1);
     box-shadow: 0 8px 32px -8px rgba(0,0,0,0.6);
 }
-.release-block:hover {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 18px 50px -10px rgba(0,0,0,0.8),
-                0 0 30px -5px rgba(255,255,255,0.06);
-}
+.release-block:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 18px 50px -10px rgba(0,0,0,0.8), 0 0 30px -5px rgba(255,255,255,0.06); }
 .release-block:active { transform: scale(0.97); }
-
-.release-cover-wrap {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    border-radius: 24px;
-}
-
-.release-cover {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-    transition: transform 0.5s var(--ease-out);
-}
+.release-cover-wrap { position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 24px; }
+.release-cover { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s var(--ease-out); }
 .release-block:hover .release-cover { transform: scale(1.04); }
-
-/* Стеклянный блик в верхней части */
 .release-shine {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 42%;
-    background: linear-gradient(
-        180deg,
-        rgba(255,255,255,0.14) 0%,
-        rgba(255,255,255,0) 100%
-    );
-    border-radius: 24px 24px 0 0;
-    pointer-events: none;
-    z-index: 2;
+    position: absolute; top: 0; left: 0; right: 0; height: 42%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 24px 24px 0 0; pointer-events: none; z-index: 2;
 }
-
-/* Нижний градиент под текст */
+/* Метаданные — нижний оверлей */
 .release-meta {
     position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 40px 16px 16px;
-    background: linear-gradient(
-        0deg,
-        rgba(0,0,0,0.78) 0%,
-        rgba(0,0,0,0.35) 60%,
-        rgba(0,0,0,0) 100%
-    );
+    padding: 60px 16px 68px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0) 100%);
     z-index: 3;
-    display: flex; flex-direction: column; gap: 4px;
 }
-.release-badge {
-    display: inline-block;
-    font-size: 9px; font-weight: 900; letter-spacing: 3px;
-    text-transform: uppercase; padding: 4px 10px;
-    border-radius: 20px; width: fit-content;
-    backdrop-filter: blur(8px);
+.release-title-text { font-size: 15px; font-weight: 900; letter-spacing: 1px; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.8); line-height: 1.25; }
+/* CTA-кнопка строго в низу по центру */
+.release-cta-wrap {
+    position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 5; width: calc(100% - 32px);
 }
-.release-badge-presave {
-    background: rgba(0,149,246,0.35);
-    border: 1px solid rgba(0,149,246,0.55);
-    color: #6ec6ff;
+.release-cta-btn {
+    display: block; width: 100%; text-align: center;
+    padding: 13px 24px; border-radius: 50px;
+    font-size: 11px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border: 1px solid; cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.release-badge-listen {
-    background: rgba(30,215,96,0.25);
-    border: 1px solid rgba(30,215,96,0.5);
-    color: #1ed760;
-}
-.release-title-text {
-    font-size: 15px; font-weight: 900;
-    letter-spacing: 1px; color: #fff;
-    text-shadow: 0 1px 8px rgba(0,0,0,0.8);
-    line-height: 1.25;
-}
-
-/* Пульсирующий glow-ring по краям блока */
+.release-cta-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px -4px rgba(0,0,0,0.5); }
+/* Pulse-ring */
 .release-pulse-ring {
-    position: absolute; inset: 0;
-    border-radius: 24px;
+    position: absolute; inset: 0; border-radius: 24px;
     border: 2px solid transparent;
     background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)) padding-box,
-                linear-gradient(135deg,
-                    rgba(255,255,255,0.12) 0%,
-                    rgba(255,255,255,0.04) 50%,
-                    rgba(255,255,255,0.12) 100%) border-box;
+                linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.12) 100%) border-box;
     pointer-events: none; z-index: 4;
     animation: releaseRingPulse 2.8s ease-in-out infinite;
 }
 @keyframes releaseRingPulse {
-    0%, 100% {
-        border-color: rgba(255,255,255,0.08);
-        box-shadow: inset 0 0 0 0 rgba(255,255,255,0);
-    }
-    50% {
-        border-color: rgba(255,255,255,0.22);
-        box-shadow: 0 0 22px -4px rgba(255,255,255,0.12),
-                    inset 0 0 18px -8px rgba(255,255,255,0.06);
-    }
+    0%, 100% { border-color: rgba(255,255,255,0.08); box-shadow: inset 0 0 0 0 rgba(255,255,255,0); }
+    50%       { border-color: rgba(255,255,255,0.22); box-shadow: 0 0 22px -4px rgba(255,255,255,0.12), inset 0 0 18px -8px rgba(255,255,255,0.06); }
 }
-
-/* ════════════════════════════════════════════════
-   v5 ADDITIONS
-   ════════════════════════════════════════════════ */
-
-/* ── КНОПКИ: идеальный spacing ───────────────────
-   Container уже flex+gap:10px. Для кастомных кнопок
-   контейнер тоже делаем flex-column, gap синхронен.
-   ──────────────────────────────────────────────── */
-#custom-buttons-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* ── RELEASE BLOCK v2 — Spotify/Apple Level ──── */
-
-/* Убираем старый .release-badge */
-.release-badge { display: none !important; }
-
-/* CTA-кнопка в нижнем центре */
-.release-cta-wrap {
-    position: absolute;
-    bottom: 16px; left: 50%; transform: translateX(-50%);
-    z-index: 5; width: calc(100% - 32px);
-}
-.release-cta-btn {
-    display: block; width: 100%;
-    text-align: center;
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-size: 11px; font-weight: 900; letter-spacing: 3px;
-    text-transform: uppercase;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-.release-cta-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px -4px rgba(0,0,0,0.5); }
-
-/* Нижний градиент — чуть шире для кнопки */
-.release-meta {
-    padding-bottom: 60px; /* место для CTA */
-}
-.release-title-text {
-    font-size: 15px; font-weight: 900;
-    letter-spacing: 1px; color: #fff;
-    text-shadow: 0 1px 8px rgba(0,0,0,0.8);
-    line-height: 1.25;
-}
-
-/* Tap-hint: CSS-анимация пальца/касания */
+/* Tap-hint */
 .release-tap-hint {
     position: absolute; inset: 0; z-index: 4;
     display: flex; align-items: center; justify-content: center;
@@ -651,16 +402,14 @@ h1 {
 }
 .release-tap-hint::before {
     content: '';
-    width: 52px; height: 52px;
-    border-radius: 50%;
+    width: 52px; height: 52px; border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.55);
     animation: tapRipple 1.6s ease-in-out infinite;
 }
 .release-tap-hint::after {
     content: 'TAP';
     position: absolute;
-    font-size: 8px; font-weight: 900; letter-spacing: 2.5px;
-    color: rgba(255,255,255,0.6);
+    font-size: 8px; font-weight: 900; letter-spacing: 2.5px; color: rgba(255,255,255,0.6);
 }
 @keyframes tapRipple {
     0%   { transform: scale(0.7); opacity: 0.8; }
@@ -668,94 +417,317 @@ h1 {
     100% { transform: scale(0.7); opacity: 0.8; }
 }
 
-/* ── STORY MODAL v2 — Instagram 9:16 ─────────── */
-
-/* Переопределяем стандартный .glass-modal для story */
+/* ══════════════════════════════════════════════════
+   STORY MODAL v2 — Instagram 9:16
+   ══════════════════════════════════════════════════ */
 .story-modal-v2 {
+    background: rgba(0,0,0,0.4) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
     padding: 0 !important;
     align-items: flex-start !important;
 }
-
 .story-v2-container {
     position: relative;
     width: 100%;
     max-width: 390px;
-    /* 9:16 aspect ratio, но ограничен высотой экрана */
     height: min(100dvh, calc(390px * 16 / 9));
     max-height: 100dvh;
-    border-radius: 0;
-    overflow: hidden;
-    background: #000;
+    border-radius: 0; overflow: hidden; background: #000;
     display: flex; align-items: center; justify-content: center;
 }
-
-/* На широких экранах — округлые углы, вертикально центрирован */
 @media (min-width: 480px) {
     .story-modal-v2 { align-items: center !important; }
     .story-v2-container {
-        border-radius: 20px;
-        max-height: 95dvh;
-        box-shadow:
-            0 0 0 1px rgba(255,255,255,0.1),
-            0 40px 80px -20px rgba(0,0,0,0.9);
+        border-radius: 20px; max-height: 95dvh;
+        box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 40px 80px -20px rgba(0,0,0,0.9);
     }
 }
-
-/* Видео */
-#storyVideo {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-}
-/* Фото */
-#storyImage {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-}
-
-/* Топбар: таймбар + кнопка закрыть */
+#storyVideo { width: 100%; height: 100%; object-fit: cover; display: block; }
+#storyImage { width: 100%; height: 100%; object-fit: cover; display: block; }
 .story-v2-topbar {
-    position: absolute; top: 0; left: 0; right: 0;
-    z-index: 10;
+    position: absolute; top: 0; left: 0; right: 0; z-index: 10;
     padding: 14px 12px 10px;
     display: flex; align-items: center; gap: 12px;
-    /* Градиент сверху */
     background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, transparent 100%);
 }
 .story-v2-timebar-track {
     flex: 1; height: 2.5px;
-    background: rgba(255,255,255,0.28);
-    border-radius: 2px;
-    overflow: hidden;
+    background: rgba(255,255,255,0.28); border-radius: 2px; overflow: hidden;
 }
 .story-v2-timebar-fill {
     height: 100%; width: 0%;
-    background: rgba(255,255,255,0.9);
-    border-radius: 2px;
+    background: rgba(255,255,255,0.9); border-radius: 2px;
     transition: width 0.1s linear;
     box-shadow: 0 0 5px rgba(255,255,255,0.5);
 }
-
-/* Кнопка закрытия */
 .story-v2-close {
     width: 32px; height: 32px;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);
     border-radius: 50%; color: rgba(255,255,255,0.85);
     cursor: pointer; display: flex; align-items: center; justify-content: center;
-    font-size: 13px; flex-shrink: 0;
-    transition: background 0.2s ease;
+    font-size: 13px; flex-shrink: 0; transition: background 0.2s ease;
     backdrop-filter: blur(8px);
 }
 .story-v2-close:hover { background: rgba(255,255,255,0.22); }
-
-/* Нижний затемняющий градиент */
 .story-v2-gradient {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 80px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
     background: linear-gradient(transparent, rgba(0,0,0,0.35));
     pointer-events: none; z-index: 2;
 }
+/* Убираем старые story-обёртки */
+.story-wrapper, .story-container, .progress-bar-container, .story-close { display: none !important; }
 
-/* Удаляем старые story-стили (теперь не нужны) */
-.story-wrapper, .story-container,
-.progress-bar-container, .story-close { display: none !important; }
+/* ══════════════════════════════════════════════════
+   B.S. STORY MODAL — TikTok-лента на Главной
+   ══════════════════════════════════════════════════ */
+.bs-modal {
+    background: rgba(0,0,0,0.65) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    align-items: center !important;
+    padding: 0 !important;
+}
+.bs-modal-inner {
+    width: 100%;
+    max-width: 400px;
+    height: 100dvh;
+    max-height: 100dvh;
+    display: flex; flex-direction: column;
+    background: rgba(8,8,16,0.82);
+    position: relative;
+    overflow: hidden;
+}
+@media (min-width: 480px) {
+    .bs-modal-inner {
+        height: 92dvh;
+        max-height: 800px;
+        border-radius: 24px;
+        border: 1px solid rgba(255,255,255,0.08);
+        box-shadow: 0 40px 80px -20px rgba(0,0,0,0.95);
+    }
+}
+
+/* Заголовок */
+.bs-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 16px 12px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+    z-index: 10;
+}
+.bs-modal-label {
+    font-size: 9px; font-weight: 900; letter-spacing: 4px;
+    color: var(--blue); text-transform: uppercase;
+}
+
+/* Тултип "?" */
+.bs-tooltip-wrap { position: relative; }
+.bs-tooltip-btn {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+    color: rgba(255,255,255,0.45); font-size: 11px; font-weight: 700;
+    cursor: pointer; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.22s ease; font-family: inherit;
+}
+.bs-tooltip-btn:hover { color: #fff; background: rgba(255,255,255,0.12); }
+.bs-tooltip-box {
+    position: absolute; right: 0; top: 30px;
+    background: rgba(8,8,18,0.96); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 12px 14px;
+    font-size: 11px; line-height: 1.55; color: rgba(255,255,255,0.75);
+    width: 230px; z-index: 200;
+    pointer-events: none;
+    opacity: 0; transform: translateY(-6px) scale(0.96);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    backdrop-filter: blur(20px);
+    white-space: normal; word-break: break-word;
+}
+.bs-tooltip-box.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+/* Кнопка "+" — добавить фото, красноватая */
+.bs-upload-btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255, 75, 43, 0.15);
+    border: 1px solid rgba(255, 75, 43, 0.35);
+    color: rgba(255, 130, 100, 0.9);
+    font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s ease;
+}
+.bs-upload-btn:hover { background: rgba(255,75,43,0.28); border-color: rgba(255,75,43,0.6); color: #fff; transform: scale(1.1); }
+.bs-upload-btn:active { transform: scale(0.93); }
+
+/* Кнопка закрыть */
+.bs-close-btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.55); font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.22s ease;
+}
+.bs-close-btn:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+/* TikTok-рамка */
+.bs-frame {
+    flex: 1; position: relative; overflow: hidden;
+    background: rgba(255,255,255,0.012);
+}
+
+/* Галерея — scroll snap лента */
+.story-reel {
+    width: 100%; height: 100%;
+    overflow-y: scroll; scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch; scroll-behavior: smooth;
+    scrollbar-width: none; -ms-overflow-style: none;
+}
+.story-reel::-webkit-scrollbar { display: none; }
+
+/* Слайд */
+.reel-slide {
+    width: 100%; height: 100%;
+    flex-shrink: 0; scroll-snap-align: start;
+    position: relative; overflow: hidden; background: #000;
+}
+.reel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.reel-slide::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.65));
+    pointer-events: none;
+}
+.reel-meta {
+    position: absolute; bottom: 14px; left: 14px; right: 14px;
+    z-index: 2; display: flex; align-items: center; justify-content: space-between;
+}
+.reel-author { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.reel-time   { font-size: 9px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+
+/* Пустая лента */
+.reel-empty { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.reel-empty-icon { width: 40px; height: 32px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; position: relative; margin-bottom: 4px; }
+.reel-empty-icon::before { content: ''; position: absolute; top: 7px; left: 7px; width: 8px; height: 8px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; }
+.reel-empty-icon::after  { content: ''; position: absolute; bottom: 5px; left: 4px; right: 4px; height: 9px; background: rgba(255,255,255,0.12); border-radius: 3px; }
+.reel-empty p    { font-size: 11px; font-weight: 800; letter-spacing: 3px; color: rgba(255,255,255,0.28); text-transform: uppercase; }
+.reel-empty span { font-size: 10px; color: rgba(255,255,255,0.18); letter-spacing: 1px; }
+
+/* Скелетон */
+.gallery-skeleton {
+    position: absolute; inset: 0; display: flex;
+    flex-direction: column; align-items: center; justify-content: center;
+    z-index: 5; animation: skeletonPulse 2s ease-in-out infinite;
+}
+@keyframes skeletonPulse { 0%,100%{opacity:.35} 50%{opacity:.8} }
+.skeleton-pulse-icon { width: 38px; height: 30px; border: 2px solid rgba(255,255,255,0.25); border-radius: 6px; position: relative; }
+.skeleton-pulse-icon::before { content: ''; position: absolute; top: 6px; left: 6px; width: 8px; height: 8px; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%; }
+.skeleton-pulse-icon::after  { content: ''; position: absolute; bottom: 4px; left: 4px; right: 4px; height: 10px; background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%); border-radius: 3px; }
+
+/* Световой блик */
+.gallery-flare {
+    position: absolute; inset: 0; pointer-events: none; z-index: 10;
+    background: linear-gradient(115deg, transparent 25%, rgba(255,255,255,0.055) 45%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.055) 55%, transparent 75%);
+    background-size: 200% 100%;
+    animation: flareSlide 6s ease-in-out infinite; border-radius: 0;
+}
+@keyframes flareSlide {
+    0%   { background-position: 200% 0; opacity: 0; }
+    10%  { opacity: 1; }
+    55%  { background-position: -200% 0; opacity: 1; }
+    65%  { opacity: 0; }
+    100% { background-position: -200% 0; opacity: 0; }
+}
+
+/* Свайп-подсказка */
+.swipe-hint {
+    position: absolute; inset: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; background: rgba(0,0,0,0.18);
+}
+.swipe-finger {
+    width: 24px; height: 38px;
+    border: 2.5px solid rgba(255,255,255,0.85); border-radius: 12px;
+    position: relative; animation: fingerSwipeUp 1.2s ease-in-out 0.3s infinite;
+}
+.swipe-finger::before { content: ''; position: absolute; top: 4px; left: 50%; transform: translateX(-50%); width: 10px; height: 5px; border: 2px solid rgba(255,255,255,0.85); border-bottom: none; border-radius: 5px 5px 0 0; }
+.swipe-finger::after  { content: ''; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 9px solid rgba(255,255,255,0.75); }
+@keyframes fingerSwipeUp {
+    0%   { transform: translateY(12px); opacity: 0; }
+    20%  { opacity: 1; }
+    70%  { transform: translateY(-16px); opacity: 0.9; }
+    100% { transform: translateY(-24px); opacity: 0; }
+}
+
+/* Комментарий поверх слайда */
+.reel-comment {
+    position: absolute; bottom: 52px; left: 12px; right: 12px;
+    background: rgba(8,8,14,0.72); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+    padding: 8px 12px; z-index: 4; cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    max-height: 36px; overflow: hidden;
+}
+.reel-comment.expanded { max-height: 200px; }
+.reel-comment-text {
+    font-size: 12px; color: rgba(255,255,255,0.82); line-height: 1.45;
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    transition: white-space 0.1s;
+}
+.reel-comment.expanded .reel-comment-text { white-space: normal; text-overflow: unset; }
+
+/* Статус загрузки фото */
+.bs-upload-status {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35); text-align: center;
+    padding: 8px 16px; min-height: 28px; flex-shrink: 0;
+}
+.bs-upload-status.ok   { color: #1ed760; }
+.bs-upload-status.err  { color: #ff4b2b; }
+.bs-upload-status.busy { color: #ffcc00; }
+
+/* ══════════════════════════════════════════════════
+   CROPPER MODAL (для B.S. STORY на Главной)
+   ══════════════════════════════════════════════════ */
+.cropper-card {
+    width: 92%; max-width: 420px;
+    background: rgba(8,8,16,0.96); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px; padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    backdrop-filter: blur(36px);
+}
+.cropper-header { display: flex; align-items: center; justify-content: space-between; }
+.cropper-close-btn {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: all 0.2s ease;
+}
+.cropper-close-btn:hover { background: rgba(255,75,43,0.15); color: var(--red); }
+.cropper-wrap { width: 100%; border-radius: 16px; overflow: hidden; background: #000; max-height: 55vh; }
+.cropper-wrap img { max-width: 100%; display: block; }
+
+/* Поле комментария в Cropper */
+.comment-field-wrap { position: relative; width: 100%; }
+.comment-textarea {
+    width: 100%; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+    padding: 12px 14px; color: var(--text); font-family: inherit;
+    font-size: 13px; line-height: 1.5; resize: none; outline: none;
+    height: 72px; transition: border-color 0.2s;
+}
+.comment-textarea:focus { border-color: rgba(255,255,255,0.26); }
+.comment-textarea::placeholder { color: rgba(255,255,255,0.22); }
+.comment-counter {
+    position: absolute; bottom: 8px; right: 12px;
+    font-size: 9px; color: rgba(255,255,255,0.22); letter-spacing: 0.5px; pointer-events: none;
+}
+.status-line {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35); text-align: center; min-height: 22px;
+    transition: color 0.3s ease;
+}
+.status-line.ok   { color: #1ed760; }
+.status-line.err  { color: #ff4b2b; }
+.status-line.busy { color: #ffcc00; }

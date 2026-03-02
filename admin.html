@@ -7,7 +7,6 @@
     <meta name="robots" content="noindex, nofollow">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Cropper.js -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 
@@ -18,7 +17,7 @@
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ══ LOGIN ════════════════════════════════════ -->
 <div class="login-wrap" id="loginWrap">
     <div class="login-card">
         <div class="login-title">SYSTEM ACCESS</div>
@@ -30,7 +29,7 @@
     </div>
 </div>
 
-<!-- ADMIN PANEL -->
+<!-- ══ ADMIN PANEL ══════════════════════════════ -->
 <div class="admin-layout" id="adminWrap" style="display:none;">
 
     <div class="admin-header">
@@ -62,11 +61,30 @@
         </button>
     </div>
 
-    <!-- ════ ВК: ГЛАВНАЯ ════ -->
+    <!-- ════ ГЛАВНАЯ ════ -->
     <div class="tab-content active" id="tab-main">
 
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-sliders"></i>Визуальные настройки</div>
+
+            <!-- B.S. STORY режим — главный тумблер -->
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label-text">Режим аватарки</div>
+                    <div class="toggle-sub" id="storyModeHint">Личная сторис (видео/фото)</div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="bsGlobalToggle" onchange="saveBsGlobal()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <p class="help-text" id="storyModeDesc">
+                OFF — при клике на аватарку открывается личная сторис.<br>
+                ON — открывается B.S. STORY (TikTok-лента сообщества).
+            </p>
+            <div class="status-line" id="bsGlobalStatus"></div>
+            <div class="admin-divider"></div>
+
             <div class="toggle-row">
                 <div>
                     <div class="toggle-label-text">Эффект EXCLUSIVE</div>
@@ -78,6 +96,7 @@
                 </label>
             </div>
             <div class="status-line" id="blurStatus"></div>
+
             <div class="field-label">ЦВЕТ КОЛЬЦА АВАТАРКИ</div>
             <div class="color-row">
                 <div class="color-preview" id="ringColorSwatch" style="background:linear-gradient(45deg,#f09433,#bc1888);">
@@ -142,15 +161,15 @@
 
     </div>
 
-    <!-- ════ ВК: DASHBOARD ════ -->
+    <!-- ════ DASHBOARD ════ -->
     <div class="tab-content" id="tab-dash">
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-id-badge"></i>Контент /dashboard/</div>
+            <div class="section-title"><i class="fa-solid fa-film"></i>B.S. STORY — настройки</div>
             <div class="field-row">
-                <div class="field-label">ЗАГОЛОВОК B.S. STORY</div>
+                <div class="field-label">ЗАГОЛОВОК ЛЕНТЫ</div>
                 <div style="display:flex;gap:8px;">
                     <input class="input" type="text" id="fieldBsLabel" placeholder="B.S. STORY" style="flex:1;">
-                    <div class="color-preview" id="bsLabelColorSwatch" style="background:#0095f6;flex-shrink:0;">
+                    <div id="bsLabelColorSwatch" style="background:#0095f6;">
                         <input type="color" id="bsLabelColorInput" value="#0095f6"
                             oninput="document.getElementById('bsLabelColorSwatch').style.background=this.value;">
                     </div>
@@ -161,9 +180,12 @@
                 <textarea class="admin-textarea" id="fieldBsTooltip" rows="3"
                     placeholder="Здесь публикуются ваши фото..."></textarea>
             </div>
-            <button class="btn-action" onclick="saveBsStory()" style="margin-bottom:0;">СОХРАНИТЬ B.S. STORY</button>
+            <button class="btn-action" onclick="saveBsStory()">СОХРАНИТЬ B.S. STORY</button>
             <div class="status-line" id="bsStoryStatus"></div>
-            <div class="admin-divider"></div>
+        </div>
+
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-id-badge"></i>Контент /dashboard/</div>
             <div class="field-row">
                 <div class="field-label">Soul Text (каждая строка = абзац)</div>
                 <textarea class="admin-textarea" id="fieldSoulText" rows="5"
@@ -178,21 +200,21 @@
         </div>
     </div>
 
-    <!-- ════ ВК: МЕДИА ════ -->
+    <!-- ════ МЕДИА ════ -->
     <div class="tab-content" id="tab-media">
 
-        <!-- ВИДЕО-КРУЖОК -->
+        <!-- STORY (Instagram Format) -->
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-circle-play"></i>STORY (INSTAGRAM FORMAT)</div>
-            <p class="help-text">Загрузи видео (MP4) или фото. Отобразится в вертикальном 9:16 формате. Видео сохраняется как story.mp4 для совместимости.</p>
+            <p class="help-text">Загрузи видео (MP4) или фото. Отобразится в вертикальном 9:16 формате.</p>
             <label class="upload-label" for="storyMediaInput">
                 <i class="fa-solid fa-photo-film"></i> ВЫБРАТЬ ВИДЕО ИЛИ ФОТО
             </label>
             <input type="file" id="storyMediaInput" accept="video/mp4,video/quicktime,image/jpeg,image/png,image/webp">
-            <!-- Скрытый старый инпут — НЕ УДАЛЯТЬ (слушатель НЕ ТРОГАТЬ) -->
+            <!-- Скрытый old input — НЕ УДАЛЯТЬ -->
             <input type="file" id="videoFileInput" accept="video/mp4" style="display:none;">
             <button class="btn-action btn-danger" onclick="deleteVideo()">
-                <i class="fa-solid fa-trash" style="margin-right:8px;"></i>УДАЛИТЬ ВИДЕО
+                <i class="fa-solid fa-trash" style="margin-right:8px;"></i>УДАЛИТЬ СТОРИС
             </button>
             <div class="status-line" id="videoStatus"></div>
         </div>
@@ -201,23 +223,19 @@
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-image"></i>Аватарка</div>
             <p class="help-text">При выборе файла откроется окно кадрирования (1:1). Файл сохраняется в бакет <code>avatars</code>.</p>
-
             <label class="upload-label" for="avatarFileInput">
                 <i class="fa-solid fa-upload"></i> ВЫБРАТЬ ФОТО
             </label>
             <input type="file" id="avatarFileInput" accept="image/*">
-
             <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
                 <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
                 ИЛИ ССЫЛКА
                 <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
             </div>
-
             <div style="display:flex;gap:8px;">
                 <input class="input" type="url" id="avatarUrlInput" placeholder="https://..." style="flex:1;">
                 <button class="btn-action" style="width:auto;padding:16px 14px;" onclick="saveAvatarUrl()">OK</button>
             </div>
-
             <button class="btn-action btn-danger" onclick="deleteAvatar()">
                 <i class="fa-solid fa-user-slash" style="margin-right:8px;"></i>УДАЛИТЬ АВАТАРКУ
             </button>
@@ -226,7 +244,7 @@
 
     </div>
 
-    <!-- ════ ВК: ССЫЛКИ ════ -->
+    <!-- ════ ССЫЛКИ ════ -->
     <div class="tab-content" id="tab-links">
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-link"></i>Стандартные ссылки</div>
@@ -261,78 +279,67 @@
         </div>
     </div>
 
-    <!-- ════ ВК: РЕЛИЗЫ / ПРЕСЕЙВ ════ -->
+    <!-- ════ РЕЛИЗЫ ════ -->
     <div class="tab-content" id="tab-release">
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-record-vinyl"></i>Блок релиза на главной</div>
-            <p class="help-text">Появится между сеткой соцсетей и кнопкой «Слушать музыку». Выберите статус «Выключен», чтобы скрыть блок.</p>
+            <p class="help-text">Появится над «Слушать музыку». Статус «Выключен» скрывает блок.</p>
 
             <div class="field-row">
                 <div class="field-label">СТАТУС</div>
                 <div class="radio-group" id="releaseStatusGroup">
                     <label class="radio-label">
                         <input type="radio" name="releaseStatus" value="disabled" checked>
-                        <span class="radio-custom"></span>
-                        <span>Выключен</span>
+                        <span class="radio-custom"></span><span>Выключен</span>
                     </label>
                     <label class="radio-label">
                         <input type="radio" name="releaseStatus" value="presave">
-                        <span class="radio-custom"></span>
-                        <span>Пресейв</span>
+                        <span class="radio-custom"></span><span>Пресейв</span>
                     </label>
                     <label class="radio-label">
                         <input type="radio" name="releaseStatus" value="listen">
-                        <span class="radio-custom"></span>
-                        <span>Слушать</span>
+                        <span class="radio-custom"></span><span>Слушать</span>
                     </label>
                 </div>
             </div>
 
             <div class="field-row">
-                <div class="field-label">НАЗВАНИЕ (отображается поверх обложки)</div>
+                <div class="field-label">НАЗВАНИЕ (поверх обложки)</div>
                 <input class="input" type="text" id="fieldReleaseTitle" placeholder="BULAVIN — ТРЕК">
             </div>
 
-            <div class="field-row">
-                <div class="field-label">URL ОБЛОЖКИ</div>
-            </div>
+            <div class="field-label">ОБЛОЖКА</div>
             <label class="upload-label" for="releaseCoverFile">
                 <i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ОБЛОЖКУ
             </label>
             <input type="file" id="releaseCoverFile" accept="image/*">
             <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div> ИЛИ ССЫЛКА <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>ИЛИ ССЫЛКА<div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
             </div>
-            <div style="display:flex;gap:8px;">
-                <input class="input" type="url" id="fieldReleaseCover" placeholder="https://..." style="flex:1;">
-            </div>
+            <input class="input" type="url" id="fieldReleaseCover" placeholder="https://...">
 
-            <div class="field-row" style="margin-top:4px;">
+            <div class="field-row">
                 <div class="field-label">URL ТРЕКА (Bandlink / площадки)</div>
                 <input class="input" type="url" id="fieldReleaseTrack" placeholder="https://bandlink.ru/...">
             </div>
 
             <div class="field-row">
-                <div class="field-label">ТЕКСТ КНОПКИ (напр. "ПРЕСЕЙВ", "СЛУШАТЬ")</div>
+                <div class="field-label">ТЕКСТ КНОПКИ</div>
                 <input class="input" type="text" id="fieldReleaseBtnLabel" placeholder="ПРЕСЕЙВ">
             </div>
-            <div class="field-row">
-                <div class="field-label">ЦВЕТ КНОПКИ (hex)</div>
-                <div class="color-row" style="margin-top:0;">
-                    <div class="color-preview" id="releaseBtnColorSwatch" style="background:#6ec6ff;">
-                        <input type="color" id="releaseBtnColorInput" value="#6ec6ff"
-                            oninput="document.getElementById('releaseBtnColorSwatch').style.background=this.value;">
-                    </div>
-                    <div class="color-info">
-                        <div class="toggle-label-text">Акцент кнопки</div>
-                        <div class="color-value" id="releaseBtnColorValue">#6ec6ff</div>
-                    </div>
-                    <button class="btn-action" style="width:auto;padding:12px 16px;"
-                        onclick="document.getElementById('releaseBtnColorValue').textContent=document.getElementById('releaseBtnColorInput').value;">
-                        ●
-                    </button>
+
+            <div class="field-label">ЦВЕТ КНОПКИ</div>
+            <div class="color-row">
+                <div class="color-preview" id="releaseBtnColorSwatch" style="background:#6ec6ff;">
+                    <input type="color" id="releaseBtnColorInput" value="#6ec6ff"
+                        oninput="document.getElementById('releaseBtnColorSwatch').style.background=this.value;document.getElementById('releaseBtnColorValue').textContent=this.value;">
+                </div>
+                <div class="color-info">
+                    <div class="toggle-label-text">Акцент кнопки</div>
+                    <div class="color-value" id="releaseBtnColorValue">#6ec6ff</div>
                 </div>
             </div>
+
             <div class="btn-row">
                 <button class="btn-action" onclick="saveRelease()">СОХРАНИТЬ</button>
                 <button class="btn-action btn-danger" onclick="clearRelease()">ВЫКЛЮЧИТЬ</button>
@@ -341,14 +348,14 @@
         </div>
     </div>
 
-    <!-- ════ ВК: КОМЬЮНИТИ ════ -->
+    <!-- ════ КОМЬЮНИТИ ════ -->
     <div class="tab-content" id="tab-community">
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-users"></i>Secret Gallery — модерация</div>
             <p class="help-text">Все фото загруженные участниками Inner Circle. Удаляй нежелательный контент.</p>
             <div class="community-stats" id="communityStats">Загрузка...</div>
             <div class="community-grid" id="communityGrid">
-                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:20px 0;">Загрузка...</div>
+                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:20px 0;grid-column:1/-1;">Загрузка...</div>
             </div>
             <div class="status-line" id="communityStatus"></div>
         </div>
@@ -357,7 +364,7 @@
     <a href="/" class="back-link">← ВЕРНУТЬСЯ НА САЙТ</a>
 </div>
 
-<!-- CROPPER MODAL (для аватарки) -->
+<!-- ══ CROPPER MODAL (аватарка) ══ -->
 <div class="glass-modal" id="avatarCropperModal">
     <div class="cropper-card" onclick="event.stopPropagation()">
         <div class="cropper-header">
