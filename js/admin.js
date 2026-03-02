@@ -252,6 +252,15 @@ async function loadSettings() {
         _fill('fieldSoundcloud', c.soundcloud_url);
         _fill('fieldFusion',     c.fusion_url);
         _fill('avatarUrlInput',  c.avatar_url);
+
+        // Release block
+        _fill('fieldReleaseTitle', c.release_title);
+        _fill('fieldReleaseCover', c.release_cover_url);
+        _fill('fieldReleaseTrack', c.release_track_url);
+        const rs = c.release_status || 'disabled';
+        document.querySelectorAll('input[name="releaseStatus"]').forEach(r => {
+            r.checked = r.value === rs;
+        });
     } catch(e) { console.warn('[ADMIN] loadSettings:', e); }
 }
 function _fill(id, val) {
@@ -473,6 +482,47 @@ async function deleteCommunityPhoto(id, storagePath, btn) {
         btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-trash"></i>УДАЛИТЬ';
         setStatus('communityStatus', 'ОШИБКА: ' + e.message, 'err');
     }
+}
+
+
+/* ── РЕЛИЗ ────────────────────────────────────── */
+document.getElementById('releaseCoverFile')?.addEventListener('change', uploadReleaseCover);
+async function uploadReleaseCover() {
+    const file = document.getElementById('releaseCoverFile').files[0];
+    if (!file) return;
+    setStatus('releaseStatus', 'ЗАГРУЗКА...', 'busy');
+    const ext = file.name.split('.').pop() || 'jpg';
+    const { error } = await _supabase.storage
+        .from('stories')
+        .upload(`release-cover.${ext}`, file, { upsert: true, cacheControl: '0' });
+    if (error) { setStatus('releaseStatus', 'ERROR: ' + error.message, 'err'); return; }
+    const url = `${SUPABASE_URL}/storage/v1/object/public/stories/release-cover.${ext}?v=${Date.now()}`;
+    document.getElementById('fieldReleaseCover').value = url;
+    setStatus('releaseStatus', '✓ ФАЙЛ ЗАГРУЖЕН — нажми «СОХРАНИТЬ»', 'ok');
+}
+
+async function saveRelease() {
+    setStatus('releaseStatus', 'СОХРАНЯЮ...', 'busy');
+    const checkedRadio = document.querySelector('input[name="releaseStatus"]:checked');
+    const status = checkedRadio ? checkedRadio.value : 'disabled';
+    try {
+        await _saveMulti([
+            { key: 'release_status',    value: status },
+            { key: 'release_title',     value: document.getElementById('fieldReleaseTitle').value.trim() },
+            { key: 'release_cover_url', value: document.getElementById('fieldReleaseCover').value.trim() },
+            { key: 'release_track_url', value: document.getElementById('fieldReleaseTrack').value.trim() },
+        ]);
+        setStatus('releaseStatus', '✓ РЕЛИЗ СОХРАНЁН', 'ok');
+    } catch(e) { setStatus('releaseStatus', 'ОШИБКА: ' + e.message, 'err'); }
+}
+
+async function clearRelease() {
+    setStatus('releaseStatus', 'ВЫКЛЮЧАЮ...', 'busy');
+    document.querySelectorAll('input[name="releaseStatus"]').forEach(r => { r.checked = r.value === 'disabled'; });
+    try {
+        await _saveMulti([{ key: 'release_status', value: 'disabled' }]);
+        setStatus('releaseStatus', '✓ БЛОК ВЫКЛЮЧЕН', 'ok');
+    } catch(e) { setStatus('releaseStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
 
 /* ── УТИЛИТЫ ─────────────────────────────────── */

@@ -120,6 +120,22 @@
         </a>
     </div>
 
+    <!-- RELEASE BLOCK (управляется из admin → Релизы) -->
+    <div class="release-block" id="releaseBlock" style="display:none;" onclick="openRelease()">
+        <div class="release-cover-wrap">
+            <img class="release-cover" id="releaseCover" src="" alt="Release">
+            <!-- Стеклянный блик сверху -->
+            <div class="release-shine"></div>
+            <!-- Заголовок + бейдж -->
+            <div class="release-meta">
+                <span class="release-badge" id="releaseBadge">ПРЕСЕЙВ</span>
+                <span class="release-title-text" id="releaseTitle">BULAVIN — ТРЕК</span>
+            </div>
+            <!-- Пульсирующий glow-ring -->
+            <div class="release-pulse-ring"></div>
+        </div>
+    </div>
+
     <!-- MUSIC ACCORDION -->
     <button class="btn" id="music-btn">
         <i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span>

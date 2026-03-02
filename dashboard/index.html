@@ -82,25 +82,35 @@
         <div class="status-line" id="galleryStatus"></div>
     </div>
 
-    <!-- ── АНОНИМНОЕ СООБЩЕНИЕ ───────────────── -->
-    <div class="dash-card dash-soul-card">
-        <div class="soul-text" id="soulTextBlock">
-            <p>Здесь нет лишних глаз.</p>
-            <p>Только ты и твои мысли.</p>
-            <p>Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
-            <p class="soul-highlight">Если ты хочешь выговориться — вперёд.</p>
-        </div>
-        <button class="anon-btn" onclick="openAnon()">
-            <i class="fa-solid fa-mask"></i>
-            <span>АНОНИМНОЕ СООБЩЕНИЕ</span>
+    <!-- ── ГАРМОШКА (Soul text + Anon + Merge) ─ -->
+    <div class="dash-accordion-wrap">
+        <!-- Кнопка-триггер всегда видна -->
+        <button class="dash-accordion-trigger" id="dashAccordionTrigger" onclick="toggleDashAccordion()">
+            <span class="acc-label" id="accLabel">РАЗВЕРНУТЬ</span>
+            <i class="fa-solid fa-chevron-down acc-chevron" id="accChevron"></i>
         </button>
+        <!-- Тело гармошки -->
+        <div class="dash-accordion-body" id="dashAccordionBody">
+            <div class="dash-accordion-inner">
+                <div class="dash-card dash-soul-card">
+                    <div class="soul-text" id="soulTextBlock">
+                        <p>Здесь нет лишних глаз.</p>
+                        <p>Только ты и твои мысли.</p>
+                        <p>Что бы ты сказал мне, если бы знал, что я точно услышу?</p>
+                        <p class="soul-highlight">Если ты хочешь выговориться — вперёд.</p>
+                    </div>
+                    <button class="anon-btn" onclick="openAnon()">
+                        <i class="fa-solid fa-mask"></i>
+                        <span>АНОНИМНОЕ СООБЩЕНИЕ</span>
+                    </button>
+                </div>
+                <a id="mergeLink" href="https://t.me/imbulavin_bot" target="_blank" rel="noopener"
+                   class="btn btn-fusion" style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
+                    <i class="fa-solid fa-fingerprint"></i><span>СЛИЯНИЕ</span>
+                </a>
+            </div>
+        </div>
     </div>
-
-    <!-- ── СЛИЯНИЕ ────────────────────────────── -->
-    <a id="mergeLink" href="https://t.me/imbulavin_bot" target="_blank" rel="noopener"
-       class="btn btn-fusion" style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
-        <i class="fa-solid fa-fingerprint"></i><span>СЛИЯНИЕ</span>
-    </a>
 
     <p class="footer">© 2026 BULAVIN SYSTEM</p>
 </div>
@@ -127,6 +137,13 @@
         </div>
         <div class="cropper-wrap">
             <img id="cropperImage" src="" alt="">
+        </div>
+        <div class="comment-field-wrap">
+            <textarea class="comment-textarea" id="photoComment"
+                maxlength="150"
+                oninput="updateCommentCounter()"
+                placeholder="Комментарий (не обязательно)..."></textarea>
+            <span class="comment-counter" id="commentCounter">0 / 150</span>
         </div>
         <button class="btn-action" onclick="confirmCrop()">
             <i class="fa-solid fa-check" style="margin-right:8px;"></i>ГОТОВО
@@ -203,7 +220,7 @@ async function loadBSStory() {
         const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
         const { data, error } = await _supabase
             .from('community_photos')
-            .select('id, image_url, username, email, created_at')
+            .select('id, image_url, username, email, created_at, comment')
             .gte('created_at', since)
             .order('created_at', { ascending: false });
 
@@ -232,9 +249,14 @@ async function loadBSStory() {
             slide.dataset.id = photo.id;
             const name = photo.username || ('@' + (photo.email || 'anon').split('@')[0]);
             const ago  = timeAgo(photo.created_at);
+            const commentHTML = photo.comment ? `
+                <div class="reel-comment" onclick="toggleComment(event, this)">
+                    <span class="reel-comment-text">${escHtml(photo.comment)}</span>
+                </div>` : '';
             slide.innerHTML = `
                 <img src="${escHtml(photo.image_url)}" alt="" loading="lazy"
                      onerror="this.closest('.reel-slide').style.display='none'">
+                ${commentHTML}
                 <div class="reel-meta">
                     <span class="reel-author">${escHtml(name)}</span>
                     <span class="reel-time">${ago}</span>
@@ -334,6 +356,8 @@ function closeCropper() {
     document.getElementById('cropperModal').classList.remove('show');
     if (_cropper) { _cropper.destroy(); _cropper = null; }
     setStatus('cropperStatus', '', '');
+    const commentEl = document.getElementById('photoComment');
+    if (commentEl) { commentEl.value = ''; updateCommentCounter(); }
 }
 
 async function confirmCrop() {
@@ -353,6 +377,7 @@ async function confirmCrop() {
 
         const publicUrl = `${_supabase.supabaseUrl}/storage/v1/object/public/community_photos/${path}`;
 
+        const commentVal = (document.getElementById('photoComment')?.value || '').trim();
         const { error: dbErr } = await _supabase
             .from('community_photos')
             .insert({
@@ -361,6 +386,7 @@ async function confirmCrop() {
                 username:     currentUsername,
                 image_url:    publicUrl,
                 storage_path: path,
+                comment:      commentVal || null,
             });
 
         if (dbErr) { setStatus('cropperStatus', 'ОШИБКА БД: ' + dbErr.message, 'err'); return; }
@@ -397,6 +423,30 @@ document.getElementById('anonForm').addEventListener('submit', e => {
         })
         .catch(() => { alert('Ошибка системы'); btn.disabled = false; btn.innerText = 'ОТПРАВИТЬ'; });
 });
+
+/* ── ГАРМОШКА DASHBOARD ──────────────────────── */
+let _dashAccordionOpen = false;
+function toggleDashAccordion() {
+    _dashAccordionOpen = !_dashAccordionOpen;
+    const body     = document.getElementById('dashAccordionBody');
+    const chevron  = document.getElementById('accChevron');
+    const label    = document.getElementById('accLabel');
+    const trigger  = document.getElementById('dashAccordionTrigger');
+
+    if (_dashAccordionOpen) {
+        body.style.gridTemplateRows = '1fr';
+        body.style.opacity = '1';
+        chevron.style.transform = 'rotate(180deg)';
+        label.textContent = 'СВЕРНУТЬ';
+        trigger.classList.add('open');
+    } else {
+        body.style.gridTemplateRows = '0fr';
+        body.style.opacity = '0';
+        chevron.style.transform = 'rotate(0deg)';
+        label.textContent = 'РАЗВЕРНУТЬ';
+        trigger.classList.remove('open');
+    }
+}
 
 /* ── LOG OUT ──────────────────────────────────── */
 async function logOut() {
@@ -451,6 +501,19 @@ window.addEventListener('resize', initEmojis);
 initEmojis(); animEmojis();
 
 /* ── UTILS ────────────────────────────────────── */
+/* ── КОММЕНТАРИЙ — счётчик символов ──────────── */
+function updateCommentCounter() {
+    const el = document.getElementById('photoComment');
+    const counter = document.getElementById('commentCounter');
+    if (el && counter) counter.textContent = el.value.length + ' / 150';
+}
+
+/* ── TOGGLE COMMENT EXPAND ────────────────────── */
+function toggleComment(e, el) {
+    e.stopPropagation();
+    el.classList.toggle('expanded');
+}
+
 function setStatus(id, msg, type = '') {
     const el = document.getElementById(id);
     if (!el) return;

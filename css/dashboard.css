@@ -413,3 +413,148 @@ body {
     color: var(--text-dimmer); letter-spacing: 2px;
     margin-top: 8px; padding-bottom: 10px;
 }
+
+/* ═══════════════════════════════════════════════
+   КОММЕНТАРИИ К ФОТО (B.S. STORY)
+   ═══════════════════════════════════════════════ */
+
+/* Поле комментария в модалке Cropper */
+.comment-field-wrap {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.comment-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+    height: 72px;
+    transition: border-color 0.2s;
+}
+.comment-textarea:focus { border-color: rgba(255,255,255,0.26); }
+.comment-textarea::placeholder { color: rgba(255,255,255,0.22); }
+.comment-counter {
+    position: absolute;
+    bottom: 8px; right: 12px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.22);
+    letter-spacing: 0.5px;
+    pointer-events: none;
+}
+
+/* Оверлей комментария поверх слайда */
+.reel-comment {
+    position: absolute;
+    bottom: 52px; /* выше .reel-meta */
+    left: 12px; right: 12px;
+    background: rgba(8, 8, 14, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 8px 12px;
+    z-index: 4;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    /* По умолчанию — одна строка с ellipsis */
+    max-height: 36px;
+    overflow: hidden;
+}
+.reel-comment.expanded {
+    max-height: 200px;
+}
+.reel-comment-text {
+    font-size: 12px;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.45;
+    display: block;
+    overflow: hidden;
+    /* Ellipsis в свёрнутом состоянии */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: white-space 0.1s;
+}
+.reel-comment.expanded .reel-comment-text {
+    white-space: normal;
+    text-overflow: unset;
+}
+
+/* ═══════════════════════════════════════════════
+   ГАРМОШКА DASHBOARD (Soul text / Anon / Merge)
+   ═══════════════════════════════════════════════ */
+
+.dash-accordion-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.dash-accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 20px;
+    background: rgba(255,255,255,0.036);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 22px;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.25s, color 0.25s, border-color 0.25s,
+                border-radius 0.3s ease;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+.dash-accordion-trigger:hover {
+    background: rgba(255,255,255,0.065);
+    color: rgba(255,255,255,0.8);
+    border-color: rgba(255,255,255,0.15);
+}
+/* Когда открыта — нижние углы прямые (сливается с телом) */
+.dash-accordion-trigger.open {
+    border-radius: 22px 22px 0 0;
+    border-bottom-color: transparent;
+    color: rgba(255,255,255,0.85);
+}
+
+.acc-chevron {
+    font-size: 11px;
+    transition: transform 0.35s var(--ease-out);
+}
+
+/* Тело аккордеона — grid-trick для плавного открытия */
+.dash-accordion-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+        grid-template-rows 0.42s var(--ease-out),
+        opacity 0.35s ease;
+    overflow: hidden;
+}
+
+.dash-accordion-inner {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Верхние углы скруглены как у триггера когда открыто */
+    padding-top: 1px; /* чуть видна линия стыка */
+}
+
+/* Первый child inner-контента прячет верхние углы */
+.dash-accordion-inner > .dash-card:first-child {
+    border-radius: 0 0 28px 28px;
+    border-top: none;
+}

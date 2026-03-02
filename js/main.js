@@ -25,6 +25,11 @@ const DEFAULTS = {
     afisha_tickets_url:    '',
     exclusive_blur_enabled:'true',
     ring_color:            '',
+    // Блок релиза
+    release_status:        'disabled', // 'disabled' | 'presave' | 'listen'
+    release_cover_url:     '',
+    release_track_url:     '',
+    release_title:         '',
 };
 
 const FALLBACK_AVATAR = ''; // пусто = силуэт-заглушка
@@ -75,6 +80,9 @@ function applyContent() {
 
     // Afisha
     applyAfisha(c);
+
+    // Release block
+    applyRelease(c);
 
     // Avatar
     const avatarImg      = document.getElementById('mainAvatarImage');
@@ -155,6 +163,45 @@ function applyAfisha(c) {
         if (orgLink && c.organizer_url) orgLink.href = c.organizer_url;
         if (posterWrap) posterWrap.style.display = 'none';
     }
+}
+
+
+/* ────────────────────────────────────────────────
+   RELEASE BLOCK — Bandlink killer
+   ──────────────────────────────────────────────── */
+let _releaseUrl = '';
+function applyRelease(c) {
+    const block  = document.getElementById('releaseBlock');
+    if (!block) return;
+
+    const status = c.release_status || 'disabled';
+    if (status === 'disabled' || !c.release_cover_url) {
+        block.style.display = 'none';
+        return;
+    }
+
+    _releaseUrl = c.release_track_url || '';
+
+    // Обложка
+    const cover = document.getElementById('releaseCover');
+    if (cover) cover.src = c.release_cover_url;
+
+    // Заголовок
+    const titleEl = document.getElementById('releaseTitle');
+    if (titleEl) titleEl.textContent = c.release_title || 'НОВЫЙ РЕЛИЗ';
+
+    // Бейдж статуса
+    const badge = document.getElementById('releaseBadge');
+    if (badge) {
+        badge.textContent = status === 'presave' ? 'ПРЕСЕЙВ' : 'СЛУШАТЬ';
+        badge.className   = 'release-badge release-badge-' + status;
+    }
+
+    block.style.display = 'block';
+}
+
+function openRelease() {
+    if (_releaseUrl) window.open(_releaseUrl, '_blank', 'noopener');
 }
 
 function _setLink(id, url) {
@@ -390,8 +437,13 @@ function initAvatarAnimation() {
     const textEl      = document.getElementById('avatarText');
     const iconEl      = document.getElementById('avatarIcon');
 
-    // Blur выключен в настройках — фото уже видно чистым
-    if (!window._blurEnabled) return;
+    // Blur выключен в настройках — сразу убираем CSS-фильтр (fix вечного блюра)
+    if (!window._blurEnabled) {
+        avatarImg.style.transition = 'filter 0.35s ease';
+        avatarImg.style.filter = 'blur(0px) brightness(1)';
+        if (placeholder) placeholder.style.display = 'none';
+        return;
+    }
 
     // Накладываем блюр поверх уже загруженного фото
     avatarImg.style.transition = 'none';

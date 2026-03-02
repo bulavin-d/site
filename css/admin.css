@@ -403,3 +403,31 @@ input[type="file"] { display: none; }
     font-size: 10px !important;
     border-radius: 10px !important;
 }
+
+/* ── RADIO GROUP (для выбора статуса релиза) ──── */
+.radio-group {
+    display: flex; flex-direction: column; gap: 8px; padding: 4px 0;
+}
+.radio-label {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer; user-select: none;
+    font-size: 13px; color: rgba(255,255,255,0.7);
+    font-weight: 500;
+}
+.radio-label input[type="radio"] { display: none; }
+.radio-custom {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.05);
+    flex-shrink: 0; transition: all 0.2s ease;
+    position: relative;
+}
+.radio-label input:checked + .radio-custom {
+    border-color: var(--blue);
+    background: rgba(0,149,246,0.25);
+}
+.radio-label input:checked + .radio-custom::after {
+    content: ''; position: absolute;
+    inset: 3px; border-radius: 50%;
+    background: var(--blue);
+}

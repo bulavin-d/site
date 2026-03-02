@@ -478,3 +478,116 @@ h1 {
     display: flex; align-items: center; gap: 7px;
     text-transform: uppercase;
 }
+
+/* ── RELEASE BLOCK (Bandlink killer) ─────────────
+   Появляется когда release_status != disabled.
+   Квадратная карточка с обложкой, заголовком и
+   пульсирующим glow-эффектом.
+   ──────────────────────────────────────────────── */
+.release-block {
+    border-radius: 24px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
+    position: relative;
+    /* Тонкая рамка */
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 32px -8px rgba(0,0,0,0.6);
+}
+.release-block:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 18px 50px -10px rgba(0,0,0,0.8),
+                0 0 30px -5px rgba(255,255,255,0.06);
+}
+.release-block:active { transform: scale(0.97); }
+
+.release-cover-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 24px;
+}
+
+.release-cover {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.5s var(--ease-out);
+}
+.release-block:hover .release-cover { transform: scale(1.04); }
+
+/* Стеклянный блик в верхней части */
+.release-shine {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 42%;
+    background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.14) 0%,
+        rgba(255,255,255,0) 100%
+    );
+    border-radius: 24px 24px 0 0;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Нижний градиент под текст */
+.release-meta {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 40px 16px 16px;
+    background: linear-gradient(
+        0deg,
+        rgba(0,0,0,0.78) 0%,
+        rgba(0,0,0,0.35) 60%,
+        rgba(0,0,0,0) 100%
+    );
+    z-index: 3;
+    display: flex; flex-direction: column; gap: 4px;
+}
+.release-badge {
+    display: inline-block;
+    font-size: 9px; font-weight: 900; letter-spacing: 3px;
+    text-transform: uppercase; padding: 4px 10px;
+    border-radius: 20px; width: fit-content;
+    backdrop-filter: blur(8px);
+}
+.release-badge-presave {
+    background: rgba(0,149,246,0.35);
+    border: 1px solid rgba(0,149,246,0.55);
+    color: #6ec6ff;
+}
+.release-badge-listen {
+    background: rgba(30,215,96,0.25);
+    border: 1px solid rgba(30,215,96,0.5);
+    color: #1ed760;
+}
+.release-title-text {
+    font-size: 15px; font-weight: 900;
+    letter-spacing: 1px; color: #fff;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+    line-height: 1.25;
+}
+
+/* Пульсирующий glow-ring по краям блока */
+.release-pulse-ring {
+    position: absolute; inset: 0;
+    border-radius: 24px;
+    border: 2px solid transparent;
+    background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0)) padding-box,
+                linear-gradient(135deg,
+                    rgba(255,255,255,0.12) 0%,
+                    rgba(255,255,255,0.04) 50%,
+                    rgba(255,255,255,0.12) 100%) border-box;
+    pointer-events: none; z-index: 4;
+    animation: releaseRingPulse 2.8s ease-in-out infinite;
+}
+@keyframes releaseRingPulse {
+    0%, 100% {
+        border-color: rgba(255,255,255,0.08);
+        box-shadow: inset 0 0 0 0 rgba(255,255,255,0);
+    }
+    50% {
+        border-color: rgba(255,255,255,0.22);
+        box-shadow: 0 0 22px -4px rgba(255,255,255,0.12),
+                    inset 0 0 18px -8px rgba(255,255,255,0.06);
+    }
+}

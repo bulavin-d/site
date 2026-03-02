@@ -57,6 +57,9 @@
         <button class="tab-btn" onclick="switchTab('tab-community', this)">
             <i class="fa-solid fa-users"></i>Комьюнити
         </button>
+        <button class="tab-btn" onclick="switchTab('tab-release', this)">
+            <i class="fa-solid fa-record-vinyl"></i>Релизы
+        </button>
     </div>
 
     <!-- ════ ВК: ГЛАВНАЯ ════ -->
@@ -235,6 +238,65 @@
                 <button class="btn-action" onclick="addCustomButton()">ДОБАВИТЬ</button>
             </div>
             <div class="status-line" id="customBtnStatus"></div>
+        </div>
+    </div>
+
+    <!-- ════ ВК: РЕЛИЗЫ / ПРЕСЕЙВ ════ -->
+    <div class="tab-content" id="tab-release">
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-record-vinyl"></i>Блок релиза на главной</div>
+            <p class="help-text">Появится между сеткой соцсетей и кнопкой «Слушать музыку». Выберите статус «Выключен», чтобы скрыть блок.</p>
+
+            <div class="field-row">
+                <div class="field-label">СТАТУС</div>
+                <div class="radio-group" id="releaseStatusGroup">
+                    <label class="radio-label">
+                        <input type="radio" name="releaseStatus" value="disabled" checked>
+                        <span class="radio-custom"></span>
+                        <span>Выключен</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="releaseStatus" value="presave">
+                        <span class="radio-custom"></span>
+                        <span>Пресейв</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="releaseStatus" value="listen">
+                        <span class="radio-custom"></span>
+                        <span>Слушать</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="field-row">
+                <div class="field-label">НАЗВАНИЕ (отображается поверх обложки)</div>
+                <input class="input" type="text" id="fieldReleaseTitle" placeholder="BULAVIN — ТРЕК">
+            </div>
+
+            <div class="field-row">
+                <div class="field-label">URL ОБЛОЖКИ</div>
+            </div>
+            <label class="upload-label" for="releaseCoverFile">
+                <i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ОБЛОЖКУ
+            </label>
+            <input type="file" id="releaseCoverFile" accept="image/*">
+            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
+                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div> ИЛИ ССЫЛКА <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <input class="input" type="url" id="fieldReleaseCover" placeholder="https://..." style="flex:1;">
+            </div>
+
+            <div class="field-row" style="margin-top:4px;">
+                <div class="field-label">URL ТРЕКА (Bandlink / площадки)</div>
+                <input class="input" type="url" id="fieldReleaseTrack" placeholder="https://bandlink.ru/...">
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-action" onclick="saveRelease()">СОХРАНИТЬ</button>
+                <button class="btn-action btn-danger" onclick="clearRelease()">ВЫКЛЮЧИТЬ</button>
+            </div>
+            <div class="status-line" id="releaseStatus"></div>
         </div>
     </div>
 
