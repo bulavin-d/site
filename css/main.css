@@ -591,3 +591,171 @@ h1 {
                     inset 0 0 18px -8px rgba(255,255,255,0.06);
     }
 }
+
+/* ════════════════════════════════════════════════
+   v5 ADDITIONS
+   ════════════════════════════════════════════════ */
+
+/* ── КНОПКИ: идеальный spacing ───────────────────
+   Container уже flex+gap:10px. Для кастомных кнопок
+   контейнер тоже делаем flex-column, gap синхронен.
+   ──────────────────────────────────────────────── */
+#custom-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* ── RELEASE BLOCK v2 — Spotify/Apple Level ──── */
+
+/* Убираем старый .release-badge */
+.release-badge { display: none !important; }
+
+/* CTA-кнопка в нижнем центре */
+.release-cta-wrap {
+    position: absolute;
+    bottom: 16px; left: 50%; transform: translateX(-50%);
+    z-index: 5; width: calc(100% - 32px);
+}
+.release-cta-btn {
+    display: block; width: 100%;
+    text-align: center;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 11px; font-weight: 900; letter-spacing: 3px;
+    text-transform: uppercase;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.release-cta-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px -4px rgba(0,0,0,0.5); }
+
+/* Нижний градиент — чуть шире для кнопки */
+.release-meta {
+    padding-bottom: 60px; /* место для CTA */
+}
+.release-title-text {
+    font-size: 15px; font-weight: 900;
+    letter-spacing: 1px; color: #fff;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+    line-height: 1.25;
+}
+
+/* Tap-hint: CSS-анимация пальца/касания */
+.release-tap-hint {
+    position: absolute; inset: 0; z-index: 4;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+}
+.release-tap-hint::before {
+    content: '';
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.55);
+    animation: tapRipple 1.6s ease-in-out infinite;
+}
+.release-tap-hint::after {
+    content: 'TAP';
+    position: absolute;
+    font-size: 8px; font-weight: 900; letter-spacing: 2.5px;
+    color: rgba(255,255,255,0.6);
+}
+@keyframes tapRipple {
+    0%   { transform: scale(0.7); opacity: 0.8; }
+    50%  { transform: scale(1.3); opacity: 0.2; }
+    100% { transform: scale(0.7); opacity: 0.8; }
+}
+
+/* ── STORY MODAL v2 — Instagram 9:16 ─────────── */
+
+/* Переопределяем стандартный .glass-modal для story */
+.story-modal-v2 {
+    padding: 0 !important;
+    align-items: flex-start !important;
+}
+
+.story-v2-container {
+    position: relative;
+    width: 100%;
+    max-width: 390px;
+    /* 9:16 aspect ratio, но ограничен высотой экрана */
+    height: min(100dvh, calc(390px * 16 / 9));
+    max-height: 100dvh;
+    border-radius: 0;
+    overflow: hidden;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* На широких экранах — округлые углы, вертикально центрирован */
+@media (min-width: 480px) {
+    .story-modal-v2 { align-items: center !important; }
+    .story-v2-container {
+        border-radius: 20px;
+        max-height: 95dvh;
+        box-shadow:
+            0 0 0 1px rgba(255,255,255,0.1),
+            0 40px 80px -20px rgba(0,0,0,0.9);
+    }
+}
+
+/* Видео */
+#storyVideo {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+}
+/* Фото */
+#storyImage {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+}
+
+/* Топбар: таймбар + кнопка закрыть */
+.story-v2-topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    z-index: 10;
+    padding: 14px 12px 10px;
+    display: flex; align-items: center; gap: 12px;
+    /* Градиент сверху */
+    background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, transparent 100%);
+}
+.story-v2-timebar-track {
+    flex: 1; height: 2.5px;
+    background: rgba(255,255,255,0.28);
+    border-radius: 2px;
+    overflow: hidden;
+}
+.story-v2-timebar-fill {
+    height: 100%; width: 0%;
+    background: rgba(255,255,255,0.9);
+    border-radius: 2px;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
+
+/* Кнопка закрытия */
+.story-v2-close {
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 50%; color: rgba(255,255,255,0.85);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+    transition: background 0.2s ease;
+    backdrop-filter: blur(8px);
+}
+.story-v2-close:hover { background: rgba(255,255,255,0.22); }
+
+/* Нижний затемняющий градиент */
+.story-v2-gradient {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.35));
+    pointer-events: none; z-index: 2;
+}
+
+/* Удаляем старые story-стили (теперь не нужны) */
+.story-wrapper, .story-container,
+.progress-bar-container, .story-close { display: none !important; }

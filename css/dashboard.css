@@ -45,14 +45,16 @@ body {
     background: var(--glass);
     backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px);
     border: 1px solid var(--glass-border);
-    border-radius: 32px;
-    padding: 32px 24px 26px;
+    border-radius: 26px;
+    padding: 18px 20px 16px;
     text-align: center;
     position: relative;
+    display: flex; align-items: center; gap: 12px;
+    justify-content: center;
 }
 .dash-logout-btn {
-    position: absolute; top: 18px; right: 18px;
     width: 34px; height: 34px;
+    flex-shrink: 0;
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.09);
     border-radius: 11px;
@@ -63,13 +65,15 @@ body {
 }
 .dash-logout-btn:hover { color: var(--red); border-color: rgba(255,75,43,0.35); background: rgba(255,75,43,0.08); }
 .dash-username {
-    font-size: 20px; letter-spacing: 4px; font-weight: 900;
-    margin-bottom: 6px; text-transform: uppercase;
+    font-size: 14px; letter-spacing: 3px; font-weight: 900;
+    text-transform: uppercase; line-height: 1;
 }
 .dash-welcome {
-    font-size: 9px; color: rgba(255,255,255,0.28);
-    letter-spacing: 3px; text-transform: uppercase;
+    font-size: 8px; color: rgba(255,255,255,0.25);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-top: 3px;
 }
+.dash-profile-text { text-align: left; flex: 1; }
 
 /* ── GENERIC CARD ────────────────────────────── */
 .dash-card {
@@ -316,15 +320,20 @@ body {
     width: 100%;
     padding: 14px;
     border-radius: 16px;
-    background: rgba(255,255,255,0.04);
-    border: 1px dashed rgba(255,255,255,0.18);
-    color: rgba(255,255,255,0.5);
+    background: rgba(255, 75, 43, 0.07);
+    border: 1px dashed rgba(255, 75, 43, 0.28);
+    color: rgba(255, 130, 100, 0.75);
     font-size: 11px; font-weight: 800; letter-spacing: 2px;
     text-transform: uppercase; cursor: pointer; font-family: inherit;
     display: flex; align-items: center; justify-content: center; gap: 10px;
     transition: all 0.25s ease;
 }
-.gallery-upload-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.35); color: #fff; }
+.gallery-upload-btn:hover {
+    background: rgba(255, 75, 43, 0.14);
+    border-color: rgba(255, 75, 43, 0.5);
+    color: rgba(255, 140, 110, 1);
+    transform: translateY(-1px);
+}
 
 /* ── SOUL CARD ───────────────────────────────── */
 .dash-soul-card { gap: 16px; }

@@ -80,7 +80,7 @@
         </div>
 
         <!-- Avatar: кольцо скрыто (класс avatar-loading), силуэт-заглушка -->
-        <div class="avatar-link avatar-loading" onclick="openStory()" id="avatarLink">
+        <div class="avatar-link avatar-loading" onclick="handleStoryOpen()" id="avatarLink">
             <div class="avatar-inner-border">
         <!-- Силуэт-заглушка — показывается пока нет аватарки -->
                 <div class="avatar-silhouette" id="avatarSilhouette">
@@ -124,14 +124,18 @@
     <div class="release-block" id="releaseBlock" style="display:none;" onclick="openRelease()">
         <div class="release-cover-wrap">
             <img class="release-cover" id="releaseCover" src="" alt="Release">
-            <!-- Стеклянный блик сверху -->
             <div class="release-shine"></div>
-            <!-- Заголовок + бейдж -->
+            <!-- Название трека (если задано) -->
             <div class="release-meta">
-                <span class="release-badge" id="releaseBadge">ПРЕСЕЙВ</span>
-                <span class="release-title-text" id="releaseTitle">BULAVIN — ТРЕК</span>
+                <span class="release-title-text" id="releaseTitle"></span>
             </div>
-            <!-- Пульсирующий glow-ring -->
+            <!-- CTA-кнопка (текст и цвет из БД) -->
+            <div class="release-cta-wrap">
+                <span class="release-cta-btn" id="releaseCTA">ПРЕСЕЙВ</span>
+            </div>
+            <!-- Tap-hint: CSS-анимация первые 10 сек -->
+            <div class="release-tap-hint" id="releaseTapHint" style="display:none;"></div>
+            <!-- Glow-ring -->
             <div class="release-pulse-ring"></div>
         </div>
     </div>
@@ -249,22 +253,23 @@
     </div>
 </div>
 
-<!-- STORY VIDEO -->
-<div class="glass-modal" id="storyModal" onclick="closeStory()">
-    <div class="story-wrapper" onclick="event.stopPropagation()">
-        <div style="position:relative;">
-            <button class="story-close" onclick="closeStory()" aria-label="Закрыть">
+<!-- STORY MODAL — Instagram 9:16 Format -->
+<div class="glass-modal story-modal-v2" id="storyModal" onclick="handleStoryClose()">
+    <div class="story-v2-container" onclick="event.stopPropagation()">
+        <!-- Timebar -->
+        <div class="story-v2-topbar">
+            <div class="story-v2-timebar-track">
+                <div class="story-v2-timebar-fill" id="progress-bar"></div>
+            </div>
+            <button class="story-v2-close" onclick="handleStoryClose()" aria-label="Закрыть">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div class="story-container">
-                <video id="storyVideo" playsinline>
-                    <source src="https://uhqxtkuriccfimcnchuj.supabase.co/storage/v1/object/public/stories/story.mp4" type="video/mp4">
-                </video>
-            </div>
         </div>
-        <div class="progress-bar-container">
-            <div id="progress-bar"></div>
-        </div>
+        <!-- Медиа -->
+        <video id="storyVideo" playsinline style="display:block;"></video>
+        <img id="storyImage" src="" alt="" style="display:none;">
+        <!-- Нижний градиент -->
+        <div class="story-v2-gradient"></div>
     </div>
 </div>
 

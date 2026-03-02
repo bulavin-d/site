@@ -147,6 +147,24 @@
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-id-badge"></i>Контент /dashboard/</div>
             <div class="field-row">
+                <div class="field-label">ЗАГОЛОВОК B.S. STORY</div>
+                <div style="display:flex;gap:8px;">
+                    <input class="input" type="text" id="fieldBsLabel" placeholder="B.S. STORY" style="flex:1;">
+                    <div class="color-preview" id="bsLabelColorSwatch" style="background:#0095f6;flex-shrink:0;">
+                        <input type="color" id="bsLabelColorInput" value="#0095f6"
+                            oninput="document.getElementById('bsLabelColorSwatch').style.background=this.value;">
+                    </div>
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field-label">ТЕКСТ ТУЛТИПА (?)</div>
+                <textarea class="admin-textarea" id="fieldBsTooltip" rows="3"
+                    placeholder="Здесь публикуются ваши фото..."></textarea>
+            </div>
+            <button class="btn-action" onclick="saveBsStory()" style="margin-bottom:0;">СОХРАНИТЬ B.S. STORY</button>
+            <div class="status-line" id="bsStoryStatus"></div>
+            <div class="admin-divider"></div>
+            <div class="field-row">
                 <div class="field-label">Soul Text (каждая строка = абзац)</div>
                 <textarea class="admin-textarea" id="fieldSoulText" rows="5"
                     placeholder="Здесь нет лишних глаз.&#10;Только ты и твои мысли."></textarea>
@@ -165,12 +183,14 @@
 
         <!-- ВИДЕО-КРУЖОК -->
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-circle-play"></i>Видео-кружок</div>
-            <p class="help-text">Загрузи MP4 — заменит story.mp4 в бакете stories.</p>
-            <label class="upload-label" for="videoFileInput">
-                <i class="fa-solid fa-film"></i> ВЫБРАТЬ ВИДЕО (MP4)
+            <div class="section-title"><i class="fa-solid fa-circle-play"></i>STORY (INSTAGRAM FORMAT)</div>
+            <p class="help-text">Загрузи видео (MP4) или фото. Отобразится в вертикальном 9:16 формате. Видео сохраняется как story.mp4 для совместимости.</p>
+            <label class="upload-label" for="storyMediaInput">
+                <i class="fa-solid fa-photo-film"></i> ВЫБРАТЬ ВИДЕО ИЛИ ФОТО
             </label>
-            <input type="file" id="videoFileInput" accept="video/mp4,video/quicktime">
+            <input type="file" id="storyMediaInput" accept="video/mp4,video/quicktime,image/jpeg,image/png,image/webp">
+            <!-- Скрытый старый инпут — НЕ УДАЛЯТЬ (слушатель НЕ ТРОГАТЬ) -->
+            <input type="file" id="videoFileInput" accept="video/mp4" style="display:none;">
             <button class="btn-action btn-danger" onclick="deleteVideo()">
                 <i class="fa-solid fa-trash" style="margin-right:8px;"></i>УДАЛИТЬ ВИДЕО
             </button>
@@ -292,6 +312,27 @@
                 <input class="input" type="url" id="fieldReleaseTrack" placeholder="https://bandlink.ru/...">
             </div>
 
+            <div class="field-row">
+                <div class="field-label">ТЕКСТ КНОПКИ (напр. "ПРЕСЕЙВ", "СЛУШАТЬ")</div>
+                <input class="input" type="text" id="fieldReleaseBtnLabel" placeholder="ПРЕСЕЙВ">
+            </div>
+            <div class="field-row">
+                <div class="field-label">ЦВЕТ КНОПКИ (hex)</div>
+                <div class="color-row" style="margin-top:0;">
+                    <div class="color-preview" id="releaseBtnColorSwatch" style="background:#6ec6ff;">
+                        <input type="color" id="releaseBtnColorInput" value="#6ec6ff"
+                            oninput="document.getElementById('releaseBtnColorSwatch').style.background=this.value;">
+                    </div>
+                    <div class="color-info">
+                        <div class="toggle-label-text">Акцент кнопки</div>
+                        <div class="color-value" id="releaseBtnColorValue">#6ec6ff</div>
+                    </div>
+                    <button class="btn-action" style="width:auto;padding:12px 16px;"
+                        onclick="document.getElementById('releaseBtnColorValue').textContent=document.getElementById('releaseBtnColorInput').value;">
+                        ●
+                    </button>
+                </div>
+            </div>
             <div class="btn-row">
                 <button class="btn-action" onclick="saveRelease()">СОХРАНИТЬ</button>
                 <button class="btn-action btn-danger" onclick="clearRelease()">ВЫКЛЮЧИТЬ</button>

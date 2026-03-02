@@ -33,24 +33,27 @@
 
 <div class="container" id="dashboardContent" style="display:none;">
 
-    <!-- PROFILE HEADER -->
+    <!-- PROFILE HEADER (compact) -->
     <div class="dash-profile-card">
+        <div class="dash-profile-text">
+            <div class="dash-username" id="userNameDisplay">@USER</div>
+            <p class="dash-welcome">INNER CIRCLE · SYSTEM ACCESS</p>
+        </div>
         <button class="dash-logout-btn" onclick="logOut()" title="Выйти">
             <i class="fa-solid fa-power-off"></i>
         </button>
-        <div class="dash-username" id="userNameDisplay">@USER</div>
-        <p class="dash-welcome">INNER CIRCLE · SYSTEM ACCESS</p>
     </div>
 
     <!-- ── B.S. STORY ──────────────────────────── -->
     <div class="dash-card">
         <div class="gallery-header">
-            <span class="gallery-label">B.S. STORY</span>
+            <span class="gallery-label" id="bsStoryLabel">B.S. STORY</span>
             <div class="gallery-info-wrap">
                 <button class="gallery-info-btn" id="galleryInfoBtn" onclick="toggleGalleryTooltip()">?</button>
                 <div class="gallery-tooltip" id="galleryTooltip">
                     Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.
                 </div>
+                <!-- Текст тултипа загружается из БД в loadDashContent() -->
             </div>
         </div>
 
@@ -185,7 +188,8 @@ async function loadDashContent() {
         const { data } = await _supabase
             .from('site_content')
             .select('key, value')
-            .in('key', ['dashboard_soul_text', 'dashboard_merge_url', 'avatar_url']);
+            .in('key', ['dashboard_soul_text', 'dashboard_merge_url', 'avatar_url',
+                        'bs_story_label', 'bs_story_label_color', 'bs_tooltip_text']);
         if (!data) return;
         const c = {};
         data.forEach(r => { c[r.key] = r.value; });
@@ -206,6 +210,19 @@ async function loadDashContent() {
         if (c.avatar_url) {
             const bg = document.getElementById('dynBg');
             if (bg) bg.style.backgroundImage = `url('${c.avatar_url}')`;
+        }
+
+        // B.S. STORY настройки из БД
+        const labelEl = document.getElementById('bsStoryLabel');
+        if (labelEl && c.bs_story_label) {
+            labelEl.textContent = c.bs_story_label;
+        }
+        if (labelEl && c.bs_story_label_color) {
+            labelEl.style.color = c.bs_story_label_color;
+        }
+        const tooltipEl = document.getElementById('galleryTooltip');
+        if (tooltipEl && c.bs_tooltip_text) {
+            tooltipEl.textContent = c.bs_tooltip_text;
         }
     } catch(e) { console.warn('[DASHBOARD] loadDashContent:', e); }
 }

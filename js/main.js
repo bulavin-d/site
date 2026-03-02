@@ -1,5 +1,5 @@
 /* ================================================
-   BULAVIN SYSTEM — MAIN PAGE LOGIC v4
+   BULAVIN SYSTEM — MAIN PAGE LOGIC v5
    !! НЕ ТРОГАТЬ: auth, storage, SEO, анимации !!
    ================================================ */
 
@@ -25,28 +25,25 @@ const DEFAULTS = {
     afisha_tickets_url:    '',
     exclusive_blur_enabled:'true',
     ring_color:            '',
-    // Блок релиза
-    release_status:        'disabled', // 'disabled' | 'presave' | 'listen'
+    release_status:        'disabled',
     release_cover_url:     '',
     release_track_url:     '',
     release_title:         '',
+    release_btn_label:     'ПРЕСЕЙВ',
+    release_btn_color:     '',
+    active_story_url:      '',
+    active_story_type:     'video',
 };
-
-const FALLBACK_AVATAR = ''; // пусто = силуэт-заглушка
 
 let _content = { ...DEFAULTS };
 let _contentLoaded = false;
 
 async function loadContent() {
     try {
-        const { data, error } = await _supabase
-            .from('site_content')
-            .select('key, value');
+        const { data, error } = await _supabase.from('site_content').select('key, value');
         if (error) throw error;
         data.forEach(row => { if (row.value !== null) _content[row.key] = row.value; });
-    } catch(e) {
-        console.warn('[BULAVIN] site_content недоступен.', e.message);
-    }
+    } catch(e) { console.warn('[BULAVIN] site_content недоступен.', e.message); }
     _contentLoaded = true;
     applyContent();
     await loadCustomButtons();
@@ -56,18 +53,14 @@ function applyContent() {
     if (!_contentLoaded) return;
     const c = _content;
 
-    // BIO — убрать скелетон, показать текст
     const bioEl = document.getElementById('bioEl');
     if (bioEl) {
         bioEl.textContent = c.bio || 'Казахстанский исполнитель и музыкальный продюсер.';
         bioEl.classList.remove('skeleton-text');
     }
-
-    // Footer
     const footerEl = document.getElementById('footerEl');
     if (footerEl) footerEl.textContent = c.footer_text || '© 2026 BULAVIN';
 
-    // Links
     _setLink('link-telegram',  c.telegram_url);
     _setLink('link-instagram', c.instagram_url);
     _setLink('link-yandex',    c.yandex_music_url);
@@ -78,24 +71,17 @@ function applyContent() {
     _setLink('link-soundcloud',c.soundcloud_url);
     _setLink('link-fusion',    c.fusion_url);
 
-    // Afisha
     applyAfisha(c);
-
-    // Release block
     applyRelease(c);
 
-    // Avatar
-    const avatarImg      = document.getElementById('mainAvatarImage');
-    const avatarLink     = document.getElementById('avatarLink');
+    const avatarImg        = document.getElementById('mainAvatarImage');
+    const avatarLink       = document.getElementById('avatarLink');
     const avatarSilhouette = document.getElementById('avatarSilhouette');
-    const dynBg          = document.querySelector('.dynamic-bg');
+    const dynBg            = document.querySelector('.dynamic-bg');
+    const avatarUrl        = c.avatar_url && c.avatar_url.trim();
 
-    const avatarUrl = c.avatar_url && c.avatar_url.trim();
-
-    // Blur toggle — устанавливаем ДО img.onload, чтобы initAvatarAnimation его увидел
     window._blurEnabled = c.exclusive_blur_enabled !== 'false';
 
-    // Ring gradient color
     if (c.ring_color && c.ring_color.trim()) {
         const col = c.ring_color.trim();
         document.documentElement.style.setProperty(
@@ -107,38 +93,30 @@ function applyContent() {
     if (avatarUrl) {
         const img = new Image();
         img.onload = () => {
-            // 1. Ставим src и делаем фото видимым
             avatarImg.src = avatarUrl;
             avatarImg.style.opacity = '1';
-            // 2. Показываем градиентное кольцо
             if (avatarLink) {
                 avatarLink.classList.remove('avatar-loading');
                 avatarLink.classList.add('avatar-ready');
             }
-            // 3. Фон страницы
             if (dynBg) dynBg.style.backgroundImage = `url('${avatarUrl}')`;
-            // 4. Убираем силуэт полностью
             if (avatarSilhouette) {
                 avatarSilhouette.style.transition = 'opacity 0.4s ease';
                 avatarSilhouette.style.opacity = '0';
                 setTimeout(() => { avatarSilhouette.style.display = 'none'; }, 450);
             }
-            // 5. Теперь запускаем EXCLUSIVE-анимацию — фото точно загружено
             initAvatarAnimation();
         };
-        img.onerror = () => { /* силуэт остаётся, кольцо не показываем */ };
+        img.onerror = () => {};
         img.src = avatarUrl;
     }
-    // Если нет аватарки — силуэт остаётся, кольцо не появляется
 }
 
 function applyAfisha(c) {
     const afishaTextEl  = document.getElementById('afisha-text');
     const organizerWrap = document.getElementById('organizer-wrap');
     const posterWrap    = document.getElementById('afisha-poster-wrap');
-
     const hasPoster = c.afisha_poster_url && c.afisha_poster_url.trim();
-
     if (hasPoster) {
         if (afishaTextEl)  afishaTextEl.style.display = 'none';
         if (organizerWrap) organizerWrap.style.display = 'none';
@@ -154,10 +132,7 @@ function applyAfisha(c) {
             }
         }
     } else {
-        if (afishaTextEl) {
-            afishaTextEl.style.display = 'block';
-            afishaTextEl.textContent = c.afisha_text;
-        }
+        if (afishaTextEl) { afishaTextEl.style.display = 'block'; afishaTextEl.textContent = c.afisha_text; }
         if (organizerWrap) organizerWrap.style.display = 'block';
         const orgLink = document.getElementById('link-organizer');
         if (orgLink && c.organizer_url) orgLink.href = c.organizer_url;
@@ -165,43 +140,72 @@ function applyAfisha(c) {
     }
 }
 
-
-/* ────────────────────────────────────────────────
-   RELEASE BLOCK — Bandlink killer
-   ──────────────────────────────────────────────── */
+/* ── RELEASE BLOCK v2 ─────────────────────────── */
 let _releaseUrl = '';
-function applyRelease(c) {
-    const block  = document.getElementById('releaseBlock');
-    if (!block) return;
+let _releaseTapHintTimer = null;
 
+function applyRelease(c) {
+    const block = document.getElementById('releaseBlock');
+    if (!block) return;
     const status = c.release_status || 'disabled';
-    if (status === 'disabled' || !c.release_cover_url) {
-        block.style.display = 'none';
-        return;
-    }
+    if (status === 'disabled' || !c.release_cover_url) { block.style.display = 'none'; return; }
 
     _releaseUrl = c.release_track_url || '';
 
-    // Обложка
     const cover = document.getElementById('releaseCover');
     if (cover) cover.src = c.release_cover_url;
 
-    // Заголовок
     const titleEl = document.getElementById('releaseTitle');
-    if (titleEl) titleEl.textContent = c.release_title || 'НОВЫЙ РЕЛИЗ';
+    if (titleEl) {
+        if (c.release_title && c.release_title.trim()) {
+            titleEl.textContent = c.release_title;
+            titleEl.style.display = 'block';
+        } else {
+            titleEl.style.display = 'none';
+        }
+    }
 
-    // Бейдж статуса
-    const badge = document.getElementById('releaseBadge');
-    if (badge) {
-        badge.textContent = status === 'presave' ? 'ПРЕСЕЙВ' : 'СЛУШАТЬ';
-        badge.className   = 'release-badge release-badge-' + status;
+    const btn = document.getElementById('releaseCTA');
+    if (btn) {
+        const label = (c.release_btn_label && c.release_btn_label.trim())
+            ? c.release_btn_label
+            : (status === 'presave' ? 'ПРЕСЕЙВ' : 'СЛУШАТЬ');
+        btn.textContent = label;
+        const col = c.release_btn_color && c.release_btn_color.trim();
+        if (col) {
+            btn.style.background   = col + '30';
+            btn.style.borderColor  = col + '80';
+            btn.style.color        = col;
+        } else if (status === 'presave') {
+            btn.style.background   = 'rgba(0,149,246,0.22)';
+            btn.style.borderColor  = 'rgba(0,149,246,0.5)';
+            btn.style.color        = '#6ec6ff';
+        } else {
+            btn.style.background   = 'rgba(30,215,96,0.18)';
+            btn.style.borderColor  = 'rgba(30,215,96,0.45)';
+            btn.style.color        = '#1ed760';
+        }
     }
 
     block.style.display = 'block';
+
+    // Tap-hint 10 секунд
+    const hint = document.getElementById('releaseTapHint');
+    if (hint) {
+        hint.style.display = 'flex'; hint.style.opacity = '1';
+        if (_releaseTapHintTimer) clearTimeout(_releaseTapHintTimer);
+        _releaseTapHintTimer = setTimeout(() => {
+            hint.style.transition = 'opacity 0.8s ease';
+            hint.style.opacity = '0';
+            setTimeout(() => { hint.style.display = 'none'; }, 850);
+        }, 10000);
+    }
 }
 
 function openRelease() {
     if (_releaseUrl) window.open(_releaseUrl, '_blank', 'noopener');
+    const hint = document.getElementById('releaseTapHint');
+    if (hint) { if (_releaseTapHintTimer) clearTimeout(_releaseTapHintTimer); hint.style.display = 'none'; }
 }
 
 function _setLink(id, url) {
@@ -215,27 +219,22 @@ function _setLink(id, url) {
 async function loadCustomButtons() {
     try {
         const { data, error } = await _supabase
-            .from('custom_buttons')
-            .select('*')
-            .eq('visible', true)
-            .order('position', { ascending: true });
+            .from('custom_buttons').select('*')
+            .eq('visible', true).order('position', { ascending: true });
         if (error) throw error;
         renderCustomButtons(data || []);
-    } catch(e) {
-        console.warn('[BULAVIN] custom_buttons недоступен.', e.message);
-    }
+    } catch(e) { console.warn('[BULAVIN] custom_buttons недоступен.', e.message); }
 }
 
 function renderCustomButtons(buttons) {
     const container = document.getElementById('custom-buttons-container');
     if (!container) return;
     container.innerHTML = '';
+    if (!buttons.length) { container.style.display = 'none'; return; }
+    container.style.display = 'flex';
     buttons.forEach(btn => {
         const a = document.createElement('a');
-        a.href = btn.url;
-        a.target = '_blank';
-        a.rel = 'noopener';
-        a.className = 'btn';
+        a.href = btn.url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'btn';
         a.innerHTML = `<i class="${btn.icon || 'fa-solid fa-link'}"></i><span>${btn.label}</span>`;
         container.appendChild(a);
     });
@@ -275,6 +274,60 @@ function closeStory() {
 }
 
 /* ────────────────────────────────────────────────
+   4b. STORY v2 — Instagram Format (image + video)
+   Вызывается из HTML onclick вместо openStory()
+   ──────────────────────────────────────────────── */
+let _storyImageTimer = null;
+
+function handleStoryOpen() {
+    const storyType = (_content.active_story_type || 'video').toLowerCase();
+    const storyUrl  = _content.active_story_url && _content.active_story_url.trim();
+    const imgEl     = document.getElementById('storyImage');
+    const modal     = document.getElementById('storyModal');
+
+    if (storyType === 'image' && storyUrl) {
+        // ФОТО-ИСТОРИЯ
+        videoElement.style.display = 'none';
+        imgEl.src = storyUrl; imgEl.style.display = 'block';
+        modal.classList.add('show');
+
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                progressBar.style.transition = 'width 7s linear';
+                progressBar.style.width = '100%';
+            });
+        });
+
+        if (_storyImageTimer) clearTimeout(_storyImageTimer);
+        _storyImageTimer = setTimeout(() => handleStoryClose(), 7000);
+
+    } else {
+        // ВИДЕО-ИСТОРИЯ
+        if (imgEl) { imgEl.style.display = 'none'; }
+        videoElement.style.display = 'block';
+
+        const url = storyUrl || (STORY_URL_BASE + '?v=' + Date.now());
+        modal.classList.add('show');
+        videoElement.src = url;
+        progressBar.style.transition = 'none';
+        progressBar.style.width = '0%';
+        videoElement.currentTime = 0;
+        videoElement.play().catch(() => {});
+    }
+}
+
+function handleStoryClose() {
+    if (_storyImageTimer) { clearTimeout(_storyImageTimer); _storyImageTimer = null; }
+    const imgEl = document.getElementById('storyImage');
+    if (imgEl) { imgEl.style.display = 'none'; imgEl.src = ''; }
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+    closeStory();
+}
+
+/* ────────────────────────────────────────────────
    5. АВТОРИЗАЦИЯ — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 let isLoginMode = true;
@@ -301,22 +354,16 @@ document.getElementById('authUsername').addEventListener('input', function() {
 });
 
 async function executeAuth() {
-    const email    = document.getElementById('authEmail').value;
+    const email = document.getElementById('authEmail').value;
     const password = document.getElementById('authPassword').value;
     const username = document.getElementById('authUsername').value;
-    const btn      = document.getElementById('authBtn');
+    const btn = document.getElementById('authBtn');
     if (!email || !password) return alert('Заполни поля!');
-
     const rememberMeEl = document.getElementById('rememberMeCheck');
     const rememberMe = rememberMeEl ? rememberMeEl.checked : true;
-    if (!rememberMe) {
-        sessionStorage.setItem('bulavin_no_persist', '1');
-    } else {
-        sessionStorage.removeItem('bulavin_no_persist');
-    }
-
+    if (!rememberMe) sessionStorage.setItem('bulavin_no_persist', '1');
+    else sessionStorage.removeItem('bulavin_no_persist');
     btn.disabled = true; btn.innerText = 'СВЯЗЬ...';
-
     if (isLoginMode) {
         const { error } = await _supabase.auth.signInWithPassword({ email, password });
         if (error) { alert(error.message); btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ'; }
@@ -398,7 +445,6 @@ class FloatingEmoji {
         ctx.restore();
     }
 }
-
 function initEmojis() {
     if (Math.abs(lastW - window.innerWidth) > 50 || emojis.length === 0) {
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
@@ -422,9 +468,7 @@ async function fetchPrediction() {
         const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
         const d = await r.json();
         document.getElementById('prediction').innerText = JSON.parse(d.contents).text;
-    } catch {
-        document.getElementById('prediction').innerText = 'Продолжай делать своё дело.';
-    }
+    } catch { document.getElementById('prediction').innerText = 'Продолжай делать своё дело.'; }
 }
 fetchPrediction();
 
@@ -437,7 +481,6 @@ function initAvatarAnimation() {
     const textEl      = document.getElementById('avatarText');
     const iconEl      = document.getElementById('avatarIcon');
 
-    // Blur выключен в настройках — сразу убираем CSS-фильтр (fix вечного блюра)
     if (!window._blurEnabled) {
         avatarImg.style.transition = 'filter 0.35s ease';
         avatarImg.style.filter = 'blur(0px) brightness(1)';
@@ -445,26 +488,17 @@ function initAvatarAnimation() {
         return;
     }
 
-    // Накладываем блюр поверх уже загруженного фото
     avatarImg.style.transition = 'none';
     avatarImg.style.filter = 'blur(7px) brightness(0.28)';
 
-    // Показываем оверлей EXCLUSIVE
     placeholder.style.display = 'flex';
     placeholder.style.opacity = '1';
     placeholder.style.zIndex  = '3';
     textEl.style.display = 'block';
     iconEl.style.display = 'none';
 
-    setTimeout(() => {
-        textEl.style.display = 'none';
-        iconEl.style.display = 'block';
-    }, 3500);
-    setTimeout(() => {
-        iconEl.style.display = 'none';
-        textEl.style.display = 'block';
-    }, 7000);
-    // На 11 секунде — убираем всё
+    setTimeout(() => { textEl.style.display = 'none'; iconEl.style.display = 'block'; }, 3500);
+    setTimeout(() => { iconEl.style.display = 'none'; textEl.style.display = 'block'; }, 7000);
     setTimeout(() => {
         placeholder.style.transition = 'opacity 0.7s ease';
         placeholder.style.opacity = '0';
@@ -479,6 +513,5 @@ function initAvatarAnimation() {
    ──────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
     await loadContent();
-    // initAvatarAnimation() вызывается изнутри img.onload в applyContent()
-    // — только когда фото точно загружено
+    // initAvatarAnimation() вызывается из img.onload
 });

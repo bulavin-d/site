@@ -72,6 +72,37 @@ async function deleteVideo() {
     else        { setStatus('videoStatus', '✓ ВИДЕО УДАЛЕНО', 'ok'); }
 }
 
+/* ── STORY MEDIA UPLOAD (image + video) ──────── */
+document.getElementById('storyMediaInput')?.addEventListener('change', uploadStoryMedia);
+
+async function uploadStoryMedia() {
+    const file = document.getElementById('storyMediaInput').files[0];
+    if (!file) return;
+    setStatus('videoStatus', 'ЗАГРУЗКА STORY...', 'busy');
+
+    const isVideo = file.type.startsWith('video/');
+    const storyType = isVideo ? 'video' : 'image';
+    // Видео всегда сохраняем как story.mp4 (обратная совместимость)
+    const ext = isVideo ? 'mp4' : (file.name.split('.').pop() || 'jpg');
+    const fileName = isVideo ? 'story.mp4' : `story.${ext}`;
+
+    const { error: uploadErr } = await _supabase.storage
+        .from('stories')
+        .upload(fileName, file, { upsert: true, cacheControl: '0' });
+
+    if (uploadErr) { setStatus('videoStatus', 'ERROR: ' + uploadErr.message, 'err'); return; }
+
+    const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/stories/${fileName}`;
+
+    try {
+        await _saveMulti([
+            { key: 'active_story_url',  value: publicUrl + '?v=' + Date.now() },
+            { key: 'active_story_type', value: storyType },
+        ]);
+        setStatus('videoStatus', `✓ STORY ОБНОВЛЕНА (${storyType.toUpperCase()})`, 'ok');
+    } catch(e) { setStatus('videoStatus', 'ОШИБКА DB: ' + e.message, 'err'); }
+}
+
 /* ── АВАТАРКА С CROPPER.JS ───────────────────── */
 document.getElementById('avatarFileInput').addEventListener('change', function() {
     const file = this.files[0];
@@ -194,6 +225,22 @@ async function clearAfishaPoster() {
     } catch(e) { setStatus('posterStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
 
+/* ── B.S. STORY SETTINGS ─────────────────────── */
+async function saveBsStory() {
+    setStatus('bsStoryStatus', 'СОХРАНЯЮ...', 'busy');
+    try {
+        const label = document.getElementById('fieldBsLabel')?.value.trim() || 'B.S. STORY';
+        const color = document.getElementById('bsLabelColorInput')?.value || '';
+        const tooltip = document.getElementById('fieldBsTooltip')?.value.trim() || '';
+        await _saveMulti([
+            { key: 'bs_story_label',       value: label },
+            { key: 'bs_story_label_color',  value: color },
+            { key: 'bs_tooltip_text',       value: tooltip },
+        ]);
+        setStatus('bsStoryStatus', '✓ СОХРАНЕНО', 'ok');
+    } catch(e) { setStatus('bsStoryStatus', 'ОШИБКА: ' + e.message, 'err'); }
+}
+
 /* ── DASHBOARD ───────────────────────────────── */
 async function saveDashboard() {
     setStatus('dashStatus', 'СОХРАНЯЮ...', 'busy');
@@ -257,10 +304,28 @@ async function loadSettings() {
         _fill('fieldReleaseTitle', c.release_title);
         _fill('fieldReleaseCover', c.release_cover_url);
         _fill('fieldReleaseTrack', c.release_track_url);
+        _fill('fieldReleaseBtnLabel', c.release_btn_label);
+        if (c.release_btn_color) {
+            const rci = document.getElementById('releaseBtnColorInput');
+            if (rci) { rci.value = c.release_btn_color; }
+            const rcs = document.getElementById('releaseBtnColorSwatch');
+            if (rcs) rcs.style.background = c.release_btn_color;
+            const rcv = document.getElementById('releaseBtnColorValue');
+            if (rcv) rcv.textContent = c.release_btn_color;
+        }
         const rs = c.release_status || 'disabled';
         document.querySelectorAll('input[name="releaseStatus"]').forEach(r => {
             r.checked = r.value === rs;
         });
+        // B.S. Story
+        _fill('fieldBsLabel',   c.bs_story_label);
+        _fill('fieldBsTooltip', c.bs_tooltip_text);
+        if (c.bs_story_label_color) {
+            const bci = document.getElementById('bsLabelColorInput');
+            if (bci) { bci.value = c.bs_story_label_color; }
+            const bcs = document.getElementById('bsLabelColorSwatch');
+            if (bcs) bcs.style.background = c.bs_story_label_color;
+        }
     } catch(e) { console.warn('[ADMIN] loadSettings:', e); }
 }
 function _fill(id, val) {
@@ -511,6 +576,8 @@ async function saveRelease() {
             { key: 'release_title',     value: document.getElementById('fieldReleaseTitle').value.trim() },
             { key: 'release_cover_url', value: document.getElementById('fieldReleaseCover').value.trim() },
             { key: 'release_track_url', value: document.getElementById('fieldReleaseTrack').value.trim() },
+            { key: 'release_btn_label', value: (document.getElementById('fieldReleaseBtnLabel')?.value || '').trim() },
+            { key: 'release_btn_color', value: document.getElementById('releaseBtnColorInput')?.value || '' },
         ]);
         setStatus('releaseStatus', '✓ РЕЛИЗ СОХРАНЁН', 'ok');
     } catch(e) { setStatus('releaseStatus', 'ОШИБКА: ' + e.message, 'err'); }
