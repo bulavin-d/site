@@ -25,7 +25,10 @@ function showUserBadge(username) {
     const badge = document.getElementById('userBadge');
     if (!badge) return;
     badge.textContent = username.toUpperCase();
-    badge.style.display = 'block';
+    badge.style.display  = 'block';
+    badge.style.cursor   = 'pointer';
+    badge.title          = 'Нажми для выхода';
+    badge.onclick        = promptLogout;
 }
 
 function promptLogout() {
@@ -490,21 +493,35 @@ async function loadBSStory() {
             slide.innerHTML = `
                 <img src="${_escHtml(photo.image_url)}" alt="" loading="lazy"
                      onerror="this.closest('.reel-slide').style.display='none'">
+
+                <!-- просмотры: левый верхний угол -->
                 <div class="reel-views">
                     <i class="fa-solid fa-eye"></i>
                     <span class="view-count-num">${_fmtNum(viewCount)}</span>
                 </div>
-                ${commentHTML}
-                <div class="reel-bottom">
-                    <div class="reel-meta">
-                        <span class="reel-author">${_escHtml(name)}</span>
-                        <span class="reel-time">${ago}</span>
-                    </div>
+
+                <!-- лайк: правая сторона, середина экрана — TikTok style -->
+                <div class="reel-side-actions">
                     <button class="reel-like-btn${isLiked ? ' liked' : ''}"
                             onclick="toggleLike(this,'${photo.id}')"
                             aria-label="Лайк">
                         <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i>
                         <span class="like-count">${_fmtNum(likeCount)}</span>
+                    </button>
+                </div>
+
+                <!-- нижний градиент-оверлей -->
+                <div class="reel-overlay-bottom">
+                    <!-- автор + время -->
+                    <div class="reel-meta-row">
+                        <span class="reel-author">${_escHtml(name)}</span>
+                        <span class="reel-time">${ago}</span>
+                    </div>
+                    <!-- комментарий -->
+                    ${commentHTML}
+                    <!-- кнопка загрузки -->
+                    <button class="reel-add-btn" onclick="triggerBSPhotoUpload()">
+                        <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
                     </button>
                 </div>`;
 
