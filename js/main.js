@@ -32,8 +32,15 @@ function showUserBadge(username) {
 // если не залогинен — открыть AuthChoice
 function onAuthNavClick() {
     if (_currentUser) {
-        // Уже авторизован — предлагаем перейти к ленте
-        handleAvatarClick();
+        // Уже авторизован
+        const isGlobal = _content.bs_story_global_enabled === 'true';
+        if (isGlobal) {
+            // Если B.S. STORY включен - открываем ленту
+            handleAvatarClick();
+        } else {
+            // Если B.S. STORY выключен - перенаправляем в dashboard
+            window.location.href = '/dashboard/';
+        }
     } else {
         openAuthChoice();
     }
@@ -435,7 +442,10 @@ async function loadBSStory() {
                     <div class="reel-empty-icon"></div>
                     <p>ПОКА ПУСТО</p>
                     <span>Будь первым — загрузи фото</span>
-                </div>`;
+                </div>
+                <button class="reel-upload-btn" onclick="triggerBSPhotoUpload()">
+                    <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
+                </button>`;
             _bsLoaded = true;
             return;
         }
@@ -458,7 +468,10 @@ async function loadBSStory() {
                 <div class="reel-meta">
                     <span class="reel-author">${_escHtml(name)}</span>
                     <span class="reel-time">${ago}</span>
-                </div>`;
+                </div>
+                <button class="reel-upload-btn" onclick="triggerBSPhotoUpload()">
+                    <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
+                </button>`;
             reel.appendChild(slide);
         });
 
