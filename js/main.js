@@ -744,6 +744,9 @@ function _openBSCropper(file) {
     const modal = document.getElementById('bsCropperModal');
     const img   = document.getElementById('bsCropperImage');
     modal.classList.add('show');
+    // Сброс статуса при каждом открытии
+    document.getElementById('bsCropperStatus').textContent = '';
+    document.getElementById('bsCropperStatus').className = 'status-line';
     if (_bsCropper) { _bsCropper.destroy(); _bsCropper = null; }
     const reader = new FileReader();
     reader.onload = e => {
@@ -765,8 +768,13 @@ function closeBSCropper() {
     document.getElementById('bsCropperModal').classList.remove('show');
     if (_bsCropper) { _bsCropper.destroy(); _bsCropper = null; }
     document.getElementById('bsCropperStatus').textContent = '';
-    document.getElementById('bsPhotoComment').value = '';
+    // bsPhotoComment — id тот же, просто textarea переехала
+    const commentEl = document.getElementById('bsPhotoComment');
+    if (commentEl) { commentEl.value = ''; }
     updateBSCommentCounter();
+    // Сброс кнопки публикации
+    const pubBtn = document.querySelector('.bsc-publish-btn');
+    if (pubBtn) { pubBtn.classList.remove('busy'); pubBtn.innerHTML = 'ДАЛЕЕ <i class="fa-solid fa-arrow-right"></i>'; }
 }
 
 function updateBSCommentCounter() {
@@ -780,6 +788,9 @@ async function confirmBSCrop() {
     const statusEl = document.getElementById('bsCropperStatus');
     statusEl.textContent = 'ЗАГРУЗКА...';
     statusEl.className = 'status-line busy';
+    // Блокируем кнопку публикации на время загрузки
+    const pubBtn = document.querySelector('.bsc-publish-btn');
+    if (pubBtn) { pubBtn.classList.add('busy'); pubBtn.textContent = '...'; }
 
     _bsCropper.getCroppedCanvas({ maxWidth: 1080, maxHeight: 1440 }).toBlob(async blob => {
         if (!blob) { statusEl.textContent = 'ОШИБКА ОБРЕЗКИ'; statusEl.className = 'status-line err'; return; }
