@@ -283,7 +283,11 @@
         <!-- Заголовок -->
         <div class="bs-modal-header">
             <span class="bs-modal-label" id="bsModalLabel">B.S. STORY</span>
-            <div style="display:flex;align-items:center;gap:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <!-- Кнопка добавить фото — СИНХРОННАЯ, mobile-safe -->
+                <button class="bs-upload-btn" onclick="triggerBSPhotoUpload()" aria-label="Добавить фото">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
                 <!-- Tooltip "?" -->
                 <div class="bs-tooltip-wrap">
                     <button class="bs-tooltip-btn" id="bsTooltipBtn" onclick="toggleBSTooltip()">?</button>
