@@ -834,6 +834,11 @@ h1 {
    ══════════════════════════════════════════════════ */
 
 /* Оверлей — на весь экран, без скролла */
+/* ══════════════════════════════════════════════════════════════
+   CROPPER MODAL v8 — Premium Redesign
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Оверлей: полный экран, чёрный, без артефактов ─────────── */
 .bs-cropper-modal {
     display: none;
     position: fixed; inset: 0; z-index: 1100;
@@ -843,102 +848,212 @@ h1 {
 }
 .bs-cropper-modal.show {
     display: flex;
-    animation: cropperSlideUp 0.28s cubic-bezier(0.32,0.72,0,1) forwards;
+    animation: cropperSlideUp 0.3s cubic-bezier(0.32,0.72,0,1) forwards;
 }
 @keyframes cropperSlideUp {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; transform: translateY(22px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Топ-бар ─────────────────────────────────────── */
+/* ── УБИЙЦА ШАХМАТКИ: перекрываем дефолтный Cropper.js фон ─── */
+.cropper-bg {
+    background-image: none !important;
+    background-color: #0a0a0a !important;
+}
+/* Весь canvas и drag-box на чёрном */
+.bsc-crop-zone .cropper-canvas,
+.bsc-crop-zone .cropper-drag-box,
+.bsc-crop-zone .cropper-modal {
+    background: #0a0a0a !important;
+    opacity: 1 !important;
+}
+/* Тёмный overlay снаружи кроп-рамки */
+.bsc-crop-zone .cropper-modal {
+    background: rgba(0,0,0,0.72) !important;
+    opacity: 1 !important;
+}
+/* Рамка кадрирования — тонкая белая, без уродских точек */
+.bsc-crop-zone .cropper-view-box {
+    outline: 1px solid rgba(255,255,255,0.55);
+    outline-color: rgba(255,255,255,0.55);
+}
+.bsc-crop-zone .cropper-view-box img {
+    opacity: 1;
+}
+/* Кастомные точки-ручки */
+.bsc-crop-zone .cropper-point {
+    background: rgba(255,255,255,0.9);
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    opacity: 1 !important;
+}
+/* Линии сетки — едва заметные */
+.bsc-crop-zone .cropper-dashed {
+    border-color: rgba(255,255,255,0.12) !important;
+}
+/* Линия-центр */
+.bsc-crop-zone .cropper-center::before,
+.bsc-crop-zone .cropper-center::after {
+    background: rgba(255,255,255,0.3);
+}
+/* Убираем белую рамку вокруг всего */
+.bsc-crop-zone .cropper-face {
+    background: transparent !important;
+    opacity: 1 !important;
+}
+
+/* ── Топ-бар ─────────────────────────────────────────────────── */
 .bsc-topbar {
     display: flex; align-items: center;
     justify-content: space-between;
-    padding: 14px 16px 12px;
-    background: rgba(0,0,0,0.9);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 18px;
+    height: 54px;
+    background: rgba(0,0,0,0.95);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
-    /* safe area для iPhone с чёлкой */
-    padding-top: max(14px, env(safe-area-inset-top, 14px));
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-left: max(18px, env(safe-area-inset-left, 18px));
+    padding-right: max(18px, env(safe-area-inset-right, 18px));
 }
 .bsc-title {
-    font-size: 12px; font-weight: 900;
-    letter-spacing: 4px; color: #fff;
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 5px; color: rgba(255,255,255,0.88);
     text-transform: uppercase;
 }
+
+/* ОТМЕНА — тихая, но тапабельная */
 .bsc-cancel-btn {
-    font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.5); background: none; border: none;
-    cursor: pointer; padding: 6px 4px;
-    text-transform: uppercase; font-family: inherit;
-    transition: color 0.2s;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35);
+    background: none; border: none; cursor: pointer;
+    padding: 10px 4px; text-transform: uppercase;
+    font-family: inherit;
+    transition: color 0.22s;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-width: 64px;
 }
-.bsc-cancel-btn:hover { color: rgba(255,255,255,0.9); }
+.bsc-cancel-btn:hover  { color: rgba(255,255,255,0.75); }
+.bsc-cancel-btn:active { color: #fff; }
 
+/* ДАЛЕЕ — главная CTA кнопка */
 .bsc-publish-btn {
-    font-size: 11px; font-weight: 900; letter-spacing: 1.5px;
-    color: #fff;
-    background: rgba(255,75,43,0.2);
-    border: 1px solid rgba(255,75,43,0.45);
-    border-radius: 20px; padding: 8px 16px;
-    cursor: pointer; font-family: inherit;
+    font-size: 11px; font-weight: 900; letter-spacing: 2px;
+    color: #fff; text-transform: uppercase;
+    font-family: inherit;
+    /* Premium gradient */
+    background: linear-gradient(135deg, rgba(255,75,43,0.85) 0%, rgba(220,40,20,0.9) 100%);
+    border: 1px solid rgba(255,100,70,0.5);
+    border-radius: 22px;
+    padding: 9px 18px;
+    cursor: pointer;
     display: flex; align-items: center; gap: 7px;
-    text-transform: uppercase;
-    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    /* Glow */
+    box-shadow: 0 0 18px rgba(255,65,35,0.22), 0 2px 8px rgba(0,0,0,0.4);
+    transition:
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.15s ease,
+        opacity 0.2s;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    min-width: 80px; justify-content: center;
 }
-.bsc-publish-btn:hover  { background: rgba(255,75,43,0.38); border-color: rgba(255,75,43,0.7); }
-.bsc-publish-btn:active { transform: scale(0.93); }
-.bsc-publish-btn.busy   { opacity: 0.5; pointer-events: none; }
+.bsc-publish-btn:hover {
+    background: linear-gradient(135deg, rgba(255,90,55,0.95) 0%, rgba(230,50,28,1) 100%);
+    box-shadow: 0 0 28px rgba(255,65,35,0.4), 0 4px 16px rgba(0,0,0,0.45);
+    transform: translateY(-1px);
+}
+.bsc-publish-btn:active {
+    transform: scale(0.92) translateY(0);
+    box-shadow: 0 0 10px rgba(255,65,35,0.2);
+}
+.bsc-publish-btn.busy {
+    opacity: 0.45;
+    pointer-events: none;
+    box-shadow: none;
+}
+.bsc-publish-btn i { font-size: 12px; }
 
-/* ── Зона кадрирования — занимает весь оставшийся экран ── */
+/* ── Зона кадрирования — весь оставшийся экран ──────────────── */
 .bsc-crop-zone {
-    flex: 1;           /* растягивается между топбаром и bottom-панелью */
-    min-height: 0;     /* критично для flex: разрешает сжатие */
-    background: #000;
+    flex: 1;
+    min-height: 0;
+    background: #0a0a0a;
     position: relative;
     overflow: hidden;
 }
-/* Cropper.js сам управляет img — не задаём ему ничего */
 .bsc-crop-zone img { display: block; max-width: 100%; }
 
-/* ── Нижняя панель ───────────────────────────────── */
+/* ── Нижняя панель ───────────────────────────────────────────── */
 .bsc-bottom {
     flex-shrink: 0;
-    background: rgba(0,0,0,0.92);
-    border-top: 1px solid rgba(255,255,255,0.07);
-    padding: 14px 16px;
-    padding-bottom: max(14px, env(safe-area-inset-bottom, 14px));
-    display: flex; flex-direction: column; gap: 8px;
+    background: rgba(4,4,8,0.97);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    /* Тонкий световой блик сверху */
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    padding: 16px 18px;
+    padding-bottom: max(18px, env(safe-area-inset-bottom, 18px));
+    display: flex; flex-direction: column; gap: 10px;
 }
 
 /* Поле комментария */
-.bsc-comment-wrap { position: relative; }
+.bsc-comment-wrap {
+    position: relative;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: border-color 0.22s, background 0.22s;
+}
+.bsc-comment-wrap:focus-within {
+    border-color: rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.06);
+}
 .bsc-textarea {
     width: 100%; box-sizing: border-box;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 14px; padding: 12px 44px 12px 14px;
-    color: #fff; font-family: inherit;
-    font-size: 13px; line-height: 1.5;
-    resize: none; outline: none; height: 62px;
-    transition: border-color 0.2s, background 0.2s;
+    background: transparent;
+    border: none;
+    border-radius: 16px;
+    padding: 13px 48px 13px 15px;
+    color: rgba(255,255,255,0.88);
+    font-family: inherit;
+    font-size: 13px; line-height: 1.55;
+    resize: none; outline: none;
+    height: 62px;
     -webkit-appearance: none;
 }
-.bsc-textarea:focus {
-    border-color: rgba(255,255,255,0.22);
-    background: rgba(255,255,255,0.09);
+.bsc-textarea::placeholder {
+    color: rgba(255,255,255,0.18);
+    font-weight: 400;
 }
-.bsc-textarea::placeholder { color: rgba(255,255,255,0.2); }
 .bsc-counter {
-    position: absolute; bottom: 9px; right: 12px;
-    font-size: 9px; color: rgba(255,255,255,0.2);
-    letter-spacing: 0.5px; pointer-events: none;
+    position: absolute;
+    bottom: 10px; right: 13px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.18);
+    letter-spacing: 0.8px;
+    pointer-events: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+/* Счётчик краснеет когда почти полный */
+.bsc-comment-wrap:focus-within .bsc-counter {
+    color: rgba(255,255,255,0.3);
 }
 
-/* status-line уже есть глобально, просто переопределяем выравнивание */
-.bsc-bottom .status-line { text-align: center; min-height: 20px; }
+/* ── Статус загрузки ─────────────────────────────────────────── */
+.bsc-bottom .status-line {
+    text-align: center;
+    min-height: 18px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.28);
+    transition: color 0.25s, opacity 0.25s;
+}
+.bsc-bottom .status-line.busy { color: rgba(255,255,255,0.4); }
+.bsc-bottom .status-line.ok   { color: #4cd964; }
+.bsc-bottom .status-line.err  { color: #ff4b2b; }
 
 /* ── Старые cropper-стили оставляем для dashboard/admin ── */
 .cropper-card {
