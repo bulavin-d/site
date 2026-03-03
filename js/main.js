@@ -49,8 +49,7 @@ function onAuthNavClick() {
             // Если B.S. STORY включен - открываем ленту
             handleAvatarClick();
         } else {
-            // Если B.S. STORY выключен - перенаправляем в dashboard
-            window.location.href = '/dashboard/';
+            // bs_story=false — остаёмся на главной, бейдж уже показан
         }
     } else {
         openAuthChoice();
@@ -524,14 +523,37 @@ function toggleBSComment(e, el) {
 }
 
 /* ── ВОРОНКА АВТОРИЗАЦИИ: загрузка фото ─────── */
-function triggerBSPhotoUpload() {
+async function triggerBSPhotoUpload() {
     if (!_currentUser) {
-        // Гость → показываем форму входа с кастомным заголовком
         _openAuthForUpload();
         return;
     }
-    // Авторизован → открываем Cropper
-    document.getElementById('bsPhotoInput').click();
+
+    /* Anti-spam: max 2 photos per 24h */
+    try {
+        const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { count, error: cntErr } = await _supabase
+            .from("community_photos")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", _currentUser.id)
+            .gte("created_at", since24h);
+        if (!cntErr && count >= 2) {
+            const statusEl = document.getElementById("bsUploadStatus");
+            if (statusEl) {
+                statusEl.textContent = "Лимит: 2 фото в сутки исчерпан";
+                statusEl.className = "bs-upload-status err";
+                setTimeout(() => {
+                    statusEl.textContent = "";
+                    statusEl.className = "bs-upload-status";
+                }, 4000);
+            }
+            return;
+        }
+    } catch (spamErr) {
+        console.warn("[SPAM CHECK]", spamErr);
+    }
+
+    document.getElementById("bsPhotoInput").click();
 }
 
 function _openAuthForUpload() {
@@ -615,7 +637,7 @@ async function confirmBSCrop() {
         if (storErr) { statusEl.textContent = 'ОШИБКА: ' + storErr.message; statusEl.className = 'status-line err'; return; }
 
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
-        const commentVal = (document.getElementById('bsPhotoComment')?.value || '').trim();
+        const commentVal = (document.getElementById('bsPhotoComment')?.value || '').substring(0, 150).trim();
 
         const { error: dbErr } = await _supabase.from('community_photos').insert({
             user_id:      _currentUser.id,
@@ -701,7 +723,13 @@ async function executeAuth() {
                 // Открываем B.S. STORY сразу
                 openBSStory();
             } else {
-                window.location.href = '/dashboard/';
+                // bs_story=false — остаёмся на главной
+                _currentUser = data.user;
+                _currentUsername = data.user.user_metadata?.username
+                    || ('@' + data.user.email.split('@')[0]);
+                showUserBadge(_currentUsername);
+                document.getElementById('authNavBtn')?.classList.remove('has-dot');
+                closeAuth();
             }
         }
     } else {
@@ -850,8 +878,7 @@ function initAvatarAnimation() {
    ──────────────────────────────────────────────── */
 function _escHtml(str) {
     return String(str)
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 function _timeAgo(iso) {
     const diff = Date.now() - new Date(iso).getTime();
