@@ -322,27 +322,32 @@
 </div>
 
 <!-- ══ CROPPER MODAL для B.S. STORY ══ -->
-<div class="glass-modal" id="bsCropperModal">
-    <div class="cropper-card" onclick="event.stopPropagation()">
-        <div class="cropper-header">
-            <span class="modal-title" style="font-size:14px;">КАДРИРОВАТЬ ФОТО</span>
-            <button class="cropper-close-btn" onclick="closeBSCropper()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-        <div class="cropper-wrap">
-            <img id="bsCropperImage" src="" alt="">
-        </div>
-        <div class="comment-field-wrap">
-            <textarea class="comment-textarea" id="bsPhotoComment"
+<div class="bs-cropper-modal" id="bsCropperModal">
+    <!-- Топ-бар: отмена слева, заголовок по центру, публикация справа -->
+    <div class="bsc-topbar">
+        <button class="bsc-cancel-btn" onclick="closeBSCropper()">
+            ОТМЕНА
+        </button>
+        <span class="bsc-title">ФОТО</span>
+        <button class="bsc-publish-btn" onclick="confirmBSCrop()">
+            ДАЛЕЕ <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- Зона кадрирования — максимум пространства -->
+    <div class="bsc-crop-zone">
+        <img id="bsCropperImage" src="" alt="">
+    </div>
+
+    <!-- Нижняя панель: комментарий + статус -->
+    <div class="bsc-bottom">
+        <div class="bsc-comment-wrap">
+            <textarea class="bsc-textarea" id="bsPhotoComment"
                 maxlength="150"
                 oninput="updateBSCommentCounter()"
-                placeholder="Комментарий (необязательно)..."></textarea>
-            <span class="comment-counter" id="bsCommentCounter">0 / 150</span>
+                placeholder="Добавь подпись..."></textarea>
+            <span class="bsc-counter" id="bsCommentCounter">0 / 150</span>
         </div>
-        <button class="btn-action" onclick="confirmBSCrop()">
-            <i class="fa-solid fa-check" style="margin-right:8px;"></i>ОПУБЛИКОВАТЬ
-        </button>
         <div class="status-line" id="bsCropperStatus"></div>
     </div>
 </div>
