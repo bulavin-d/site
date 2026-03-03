@@ -827,3 +827,79 @@ h1 {
 /* ── user-badge — cursor pointer (logout) ─────────── */
 #userBadge { cursor: pointer; }
 #userBadge:hover { opacity: 0.75; }
+
+/* ══════════════════════════════════════════════════
+   CROPPER MODAL — стили для главной страницы
+   (dashboard.css не подключается на main page)
+   ══════════════════════════════════════════════════ */
+.cropper-card {
+    width: 92%; max-width: 420px;
+    background: rgba(8,8,16,0.96);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px; padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    backdrop-filter: blur(36px); -webkit-backdrop-filter: blur(36px);
+}
+.cropper-header {
+    display: flex; align-items: center; justify-content: space-between;
+}
+.cropper-close-btn {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: all 0.2s ease;
+}
+.cropper-close-btn:hover { background: rgba(255,75,43,0.15); color: #ff4b2b; }
+
+/* Контейнер изображения — ОБЯЗАТЕЛЬНО нужна высота для Cropper.js */
+.cropper-wrap {
+    width: 100%;
+    height: 56vw;        /* адаптивная высота */
+    max-height: 380px;   /* потолок на больших экранах */
+    min-height: 220px;   /* пол на маленьких */
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+}
+/* Cropper.js сам управляет img внутри — не задаём ему размеры */
+.cropper-wrap img { max-width: 100%; display: block; }
+
+/* Поле комментария */
+.comment-field-wrap { position: relative; width: 100%; }
+.comment-textarea {
+    width: 100%; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 12px 14px;
+    color: #fff; font-family: inherit;
+    font-size: 13px; line-height: 1.5;
+    resize: none; outline: none; height: 72px;
+    transition: border-color 0.2s; box-sizing: border-box;
+}
+.comment-textarea:focus { border-color: rgba(255,255,255,0.26); }
+.comment-textarea::placeholder { color: rgba(255,255,255,0.22); }
+.comment-counter {
+    position: absolute; bottom: 8px; right: 12px;
+    font-size: 9px; color: rgba(255,255,255,0.22);
+    letter-spacing: 0.5px; pointer-events: none;
+}
+
+/* Статус загрузки */
+.status-line {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.35); text-align: center;
+    min-height: 24px; transition: color 0.3s ease;
+}
+.status-line.ok   { color: #1ed760; }
+.status-line.err  { color: #ff4b2b; }
+.status-line.busy { color: #ffcc00; }
+
+/* Статус-бар загрузки фото (под кнопкой + в ленте) */
+.bs-upload-status {
+    font-size: 11px; letter-spacing: 1px; text-align: center;
+    min-height: 18px; padding: 4px 0; transition: color 0.3s;
+    color: rgba(255,255,255,0.35);
+}
+.bs-upload-status.err { color: #ff4b2b; }
