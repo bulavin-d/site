@@ -26,31 +26,14 @@ function showUserBadge(username) {
     if (!badge) return;
     badge.textContent = username.toUpperCase();
     badge.style.display = 'block';
-    badge.onclick = promptLogout;
-}
-
-// Выход из системы с главной страницы
-function promptLogout() {
-    if (confirm('Выйти из системы?')) {
-        _supabase.auth.signOut().then(() => {
-            sessionStorage.clear();
-            window.location.reload();
-        });
-    }
 }
 
 // Клик по кнопке профиля: если залогинен — ничего (или можно добавить выход),
 // если не залогинен — открыть AuthChoice
 function onAuthNavClick() {
     if (_currentUser) {
-        // Уже авторизован
-        const isGlobal = _content.bs_story_global_enabled === 'true';
-        if (isGlobal) {
-            // Если B.S. STORY включен - открываем ленту
-            handleAvatarClick();
-        } else {
-            // bs_story=false — остаёмся на главной, бейдж уже показан
-        }
+        // Уже авторизован — предлагаем перейти к ленте
+        handleAvatarClick();
     } else {
         openAuthChoice();
     }
@@ -452,10 +435,7 @@ async function loadBSStory() {
                     <div class="reel-empty-icon"></div>
                     <p>ПОКА ПУСТО</p>
                     <span>Будь первым — загрузи фото</span>
-                </div>
-                <button class="reel-upload-btn" onclick="triggerBSPhotoUpload()">
-                    <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
-                </button>`;
+                </div>`;
             _bsLoaded = true;
             return;
         }
@@ -478,10 +458,7 @@ async function loadBSStory() {
                 <div class="reel-meta">
                     <span class="reel-author">${_escHtml(name)}</span>
                     <span class="reel-time">${ago}</span>
-                </div>
-                <button class="reel-upload-btn" onclick="triggerBSPhotoUpload()">
-                    <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
-                </button>`;
+                </div>`;
             reel.appendChild(slide);
         });
 
@@ -523,37 +500,14 @@ function toggleBSComment(e, el) {
 }
 
 /* ── ВОРОНКА АВТОРИЗАЦИИ: загрузка фото ─────── */
-async function triggerBSPhotoUpload() {
+function triggerBSPhotoUpload() {
     if (!_currentUser) {
+        // Гость → показываем форму входа с кастомным заголовком
         _openAuthForUpload();
         return;
     }
-
-    /* Anti-spam: max 2 photos per 24h */
-    try {
-        const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-        const { count, error: cntErr } = await _supabase
-            .from("community_photos")
-            .select("id", { count: "exact", head: true })
-            .eq("user_id", _currentUser.id)
-            .gte("created_at", since24h);
-        if (!cntErr && count >= 2) {
-            const statusEl = document.getElementById("bsUploadStatus");
-            if (statusEl) {
-                statusEl.textContent = "Лимит: 2 фото в сутки исчерпан";
-                statusEl.className = "bs-upload-status err";
-                setTimeout(() => {
-                    statusEl.textContent = "";
-                    statusEl.className = "bs-upload-status";
-                }, 4000);
-            }
-            return;
-        }
-    } catch (spamErr) {
-        console.warn("[SPAM CHECK]", spamErr);
-    }
-
-    document.getElementById("bsPhotoInput").click();
+    // Авторизован → открываем Cropper
+    document.getElementById('bsPhotoInput').click();
 }
 
 function _openAuthForUpload() {
@@ -573,9 +527,41 @@ function _openAuthForUpload() {
     modal.addEventListener('click', reset);
 }
 
-document.getElementById('bsPhotoInput').addEventListener('change', function() {
+document.getElementById('bsPhotoInput').addEventListener('change', async function() {
     const file = this.files[0];
     if (!file) return;
+
+    /* ── Anti-spam: max 2 photos per 24h ─────────────────────
+       NOTE: async здесь безопасен — .click() уже случился
+       синхронно. Мобильный браузер не блокирует этот await.
+    ──────────────────────────────────────────────────────── */
+    const statusEl = document.getElementById('bsUploadStatus');
+    try {
+        const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const { count, error: cntErr } = await _supabase
+            .from('community_photos')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', _currentUser.id)
+            .gte('created_at', since24h);
+
+        if (!cntErr && count >= 2) {
+            this.value = ''; // сбрасываем выбор файла
+            if (statusEl) {
+                statusEl.textContent = '⚠️ Лимит: 2 фото в сутки — приходи завтра!';
+                statusEl.className = 'bs-upload-status err';
+                setTimeout(() => {
+                    statusEl.textContent = '';
+                    statusEl.className = 'bs-upload-status';
+                }, 4000);
+            }
+            return; // Cropper НЕ открывается
+        }
+    } catch (spamErr) {
+        // При ошибке проверки — пропускаем (fail open, не блокируем честных)
+        console.warn('[SPAM CHECK]', spamErr);
+    }
+
+    // Лимит не исчерпан — открываем Cropper
     _openBSCropper(file);
     this.value = '';
 });
@@ -637,7 +623,7 @@ async function confirmBSCrop() {
         if (storErr) { statusEl.textContent = 'ОШИБКА: ' + storErr.message; statusEl.className = 'status-line err'; return; }
 
         const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
-        const commentVal = (document.getElementById('bsPhotoComment')?.value || '').substring(0, 150).trim();
+        const commentVal = (document.getElementById('bsPhotoComment')?.value || '').trim();
 
         const { error: dbErr } = await _supabase.from('community_photos').insert({
             user_id:      _currentUser.id,
@@ -723,13 +709,7 @@ async function executeAuth() {
                 // Открываем B.S. STORY сразу
                 openBSStory();
             } else {
-                // bs_story=false — остаёмся на главной
-                _currentUser = data.user;
-                _currentUsername = data.user.user_metadata?.username
-                    || ('@' + data.user.email.split('@')[0]);
-                showUserBadge(_currentUsername);
-                document.getElementById('authNavBtn')?.classList.remove('has-dot');
-                closeAuth();
+                window.location.href = '/dashboard/';
             }
         }
     } else {
@@ -878,7 +858,8 @@ function initAvatarAnimation() {
    ──────────────────────────────────────────────── */
 function _escHtml(str) {
     return String(str)
-        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function _timeAgo(iso) {
     const diff = Date.now() - new Date(iso).getTime();
