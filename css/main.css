@@ -74,18 +74,22 @@ body { display: flex; justify-content: center; }
 
 /* ── USER BADGE (над аватаркой, если залогинен) ──── */
 .user-badge {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
     font-size: 9px; font-weight: 800; letter-spacing: 2px;
     text-transform: uppercase; color: rgba(255,255,255,0.45);
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 20px; padding: 4px 12px;
-    display: inline-block; margin-bottom: 10px;
     backdrop-filter: blur(8px);
+    z-index: 10;
     animation: fadeInUp 0.4s ease;
 }
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translate(-50%, 6px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
 }
 
 /* ── AVATAR ──────────────────────────────────────── */
@@ -488,6 +492,13 @@ h1 {
     align-items: center !important;
     padding: 0 !important;
 }
+
+/* Модалки авторизации должны быть ПОВЕРХ всех остальных */
+#authChoiceModal,
+#authModal {
+    z-index: 2000 !important;
+}
+
 .bs-modal-inner {
     width: 100%;
     max-width: 400px;
@@ -599,8 +610,8 @@ h1 {
     pointer-events: none;
 }
 .reel-meta {
-    position: absolute; bottom: 14px; left: 14px; right: 14px;
-    z-index: 2; display: flex; align-items: center; justify-content: space-between;
+    position: absolute; bottom: 72px; left: 14px; right: 14px;
+    z-index: 3; display: flex; align-items: center; justify-content: space-between;
 }
 .reel-author { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); letter-spacing: 0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
 .reel-time   { font-size: 9px; color: rgba(255,255,255,0.5); letter-spacing: 0.5px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
@@ -661,7 +672,7 @@ h1 {
 
 /* Комментарий поверх слайда */
 .reel-comment {
-    position: absolute; bottom: 52px; left: 12px; right: 12px;
+    position: absolute; bottom: 100px; left: 12px; right: 12px;
     background: rgba(8,8,14,0.72); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
     border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
     padding: 8px 12px; z-index: 4; cursor: pointer;
@@ -673,6 +684,36 @@ h1 {
     font-size: 12px; color: rgba(255,255,255,0.82); line-height: 1.45;
     display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     transition: white-space 0.1s;
+}
+.reel-comment.expanded .reel-comment-text { white-space: normal; }
+
+/* Кнопка загрузки фото внизу слайда */
+.reel-upload-btn {
+    position: absolute; bottom: 12px; left: 12px; right: 12px;
+    z-index: 5;
+    background: rgba(255, 75, 43, 0.18);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 75, 43, 0.4);
+    border-radius: 16px;
+    padding: 14px 20px;
+    color: rgba(255, 130, 100, 0.95);
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.reel-upload-btn:hover {
+    background: rgba(255, 75, 43, 0.28);
+    border-color: rgba(255, 75, 43, 0.6);
+    color: #fff;
+    transform: translateY(-1px);
+}
+.reel-upload-btn:active {
+    transform: scale(0.98);
 }
 .reel-comment.expanded .reel-comment-text { white-space: normal; text-overflow: unset; }
 
