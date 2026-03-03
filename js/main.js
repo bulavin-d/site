@@ -26,6 +26,17 @@ function showUserBadge(username) {
     if (!badge) return;
     badge.textContent = username.toUpperCase();
     badge.style.display = 'block';
+    badge.onclick = promptLogout;
+}
+
+// Выход из системы с главной страницы
+function promptLogout() {
+    if (confirm('Выйти из системы?')) {
+        _supabase.auth.signOut().then(() => {
+            sessionStorage.clear();
+            window.location.reload();
+        });
+    }
 }
 
 // Клик по кнопке профиля: если залогинен — ничего (или можно добавить выход),
