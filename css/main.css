@@ -494,9 +494,10 @@ h1 {
    B.S. STORY MODAL — TikTok-лента на Главной
    ══════════════════════════════════════════════════ */
 .bs-modal {
-    background: rgba(0,0,0,0.65) !important;
-    backdrop-filter: blur(30px) !important;
-    -webkit-backdrop-filter: blur(30px) !important;
+    /* Glassmorphism: сайт просвечивает сзади */
+    background: rgba(0,0,0,0.55) !important;
+    backdrop-filter: blur(28px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
     align-items: center !important;
     padding: 0 !important;
 }
@@ -513,7 +514,10 @@ h1 {
     height: 100dvh;
     max-height: 100dvh;
     display: flex; flex-direction: column;
-    background: rgba(8,8,16,0.82);
+    /* Тёмное стекло — немного прозрачнее, пропускает blur оверлея */
+    background: rgba(6,6,14,0.88);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
     position: relative;
     overflow: hidden;
 }
@@ -521,24 +525,36 @@ h1 {
     .bs-modal-inner {
         height: 92dvh;
         max-height: 800px;
-        border-radius: 24px;
-        border: 1px solid rgba(255,255,255,0.08);
-        box-shadow: 0 40px 80px -20px rgba(0,0,0,0.95);
+        border-radius: 26px;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow:
+            0 40px 80px -20px rgba(0,0,0,0.95),
+            inset 0 1px 0 rgba(255,255,255,0.06);
     }
 }
 
-/* Заголовок */
+/* Заголовок — строго одна линия, стекло */
 .bs-modal-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 16px 12px;
-    background: rgba(255,255,255,0.02);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 52px;           /* фиксированная высота = ничего не прыгает */
+    min-height: 52px;
+    background: rgba(255,255,255,0.025);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
     flex-shrink: 0;
     z-index: 10;
+    /* Тонкий световой блик сверху */
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
 }
 .bs-modal-label {
     font-size: 9px; font-weight: 900; letter-spacing: 4px;
     color: var(--blue); text-transform: uppercase;
+    /* Выравниваем по baseline с кнопками */
+    line-height: 1;
 }
 
 /* Тултип "?" */
@@ -1106,3 +1122,27 @@ h1 {
     color: rgba(255,255,255,0.35);
 }
 .bs-upload-status.err { color: #ff4b2b; }
+
+/* ══════════════════════════════════════════════════
+   v8.1 — Auth Success Message (регистрация)
+   ══════════════════════════════════════════════════ */
+#authSuccess {
+    text-align: center;
+    width: 100%;
+    padding: 8px 0;
+}
+#authSuccessText {
+    font-size: 12px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    padding: 0 8px;
+    word-break: break-word;
+}
+#authIcon {
+    font-size: 36px;
+    color: var(--blue);
+    margin-bottom: 16px;
+    display: block;
+    text-align: center;
+}
