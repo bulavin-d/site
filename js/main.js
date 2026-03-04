@@ -288,7 +288,7 @@ function renderCustomButtons(buttons) {
     buttons.forEach(btn => {
         const a = document.createElement('a');
         a.href = btn.url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'btn';
-        a.innerHTML = `<i class="${btn.icon || 'fa-solid fa-link'}"></i><span>${btn.label}</span>`;
+        a.innerHTML = `<i class="${_escHtml(btn.icon || 'fa-solid fa-link')}"></i><span>${_escHtml(btn.label)}</span>`;
         container.appendChild(a);
     });
 }
@@ -551,8 +551,13 @@ async function loadBSStory() {
 
 /* ── ЛАЙКИ ─────────────────────────────────────── */
 async function toggleLike(btn, photoId) {
+    // Защита от двойного клика / race condition
+    if (btn.disabled) return;
+    btn.disabled = true;
+
     // Гость → авторизация
     if (!_currentUser) {
+        btn.disabled = false;
         _openAuthForUpload('ВОЙДИ', 'Чтобы ставить лайки');
         return;
     }
@@ -599,6 +604,9 @@ async function toggleLike(btn, photoId) {
             iconEl.className = 'fa-regular fa-heart';
             countEl.textContent = _fmtNum(curCount);
         }
+    } finally {
+        // Разблокируем в любом случае
+        btn.disabled = false;
     }
 }
 
@@ -684,20 +692,26 @@ function triggerBSPhotoUpload() {
     document.getElementById('bsPhotoInput').click();
 }
 
+let _authResetListener = null;
+
 function _openAuthForUpload(badge, sub) {
     const badgeEl = document.getElementById('authChoiceBadge');
     const subEl   = document.getElementById('authChoiceSub');
     if (badgeEl) badgeEl.textContent = badge || 'INNER CIRCLE';
     if (subEl)   subEl.textContent   = sub   || 'Для публикации требуется авторизация';
     openAuthChoice();
-    // Сброс при закрытии
+    // Сброс при закрытии — убираем старый listener перед добавлением нового
     const modal = document.getElementById('authChoiceModal');
-    const reset = () => {
+    if (_authResetListener) {
+        modal.removeEventListener('click', _authResetListener);
+    }
+    _authResetListener = () => {
         if (badgeEl) badgeEl.textContent = 'SYSTEM ACCESS';
         if (subEl)   subEl.textContent   = 'BULAVIN INNER CIRCLE';
-        modal.removeEventListener('click', reset);
+        modal.removeEventListener('click', _authResetListener);
+        _authResetListener = null;
     };
-    modal.addEventListener('click', reset);
+    modal.addEventListener('click', _authResetListener);
 }
 
 /* change-handler — async здесь безопасен:
@@ -785,25 +799,31 @@ function updateBSCommentCounter() {
 
 async function confirmBSCrop() {
     if (!_bsCropper) return;
-    const statusEl = document.getElementById('bsCropperStatus');
-    statusEl.textContent = 'ЗАГРУЗКА...';
-    statusEl.className = 'status-line busy';
-    // Блокируем кнопку публикации на время загрузки
-    const pubBtn = document.querySelector('.bsc-publish-btn');
-    if (pubBtn) { pubBtn.classList.add('busy'); pubBtn.textContent = '...'; }
 
-    _bsCropper.getCroppedCanvas({ maxWidth: 1080, maxHeight: 1440 }).toBlob(async blob => {
-        if (!blob) { statusEl.textContent = 'ОШИБКА ОБРЕЗКИ'; statusEl.className = 'status-line err'; return; }
+    const statusEl = document.getElementById('bsCropperStatus');
+    const pubBtn   = document.querySelector('.bsc-publish-btn');
+
+    // Блокируем кнопку
+    statusEl.textContent = 'ЗАГРУЗКА...';
+    statusEl.className   = 'status-line busy';
+    if (pubBtn) { pubBtn.disabled = true; pubBtn.classList.add('busy'); pubBtn.textContent = '...'; }
+
+    try {
+        // Оборачиваем toBlob в Promise чтобы использовать try-finally
+        const blob = await new Promise((resolve, reject) => {
+            _bsCropper.getCroppedCanvas({ maxWidth: 1080, maxHeight: 1440 })
+                .toBlob(b => b ? resolve(b) : reject(new Error('ОШИБКА ОБРЕЗКИ')), 'image/jpeg', 0.88);
+        });
 
         const path = `${_currentUser.id}/${Date.now()}.jpg`;
         const { error: storErr } = await _supabase.storage
             .from('community_photos')
             .upload(path, blob, { contentType: 'image/jpeg', upsert: false });
 
-        if (storErr) { statusEl.textContent = 'ОШИБКА: ' + storErr.message; statusEl.className = 'status-line err'; return; }
+        if (storErr) throw new Error(storErr.message);
 
-        const publicUrl   = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
-        const commentVal  = (document.getElementById('bsPhotoComment')?.value || '').substring(0, 150).trim();
+        const publicUrl  = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
+        const commentVal = (document.getElementById('bsPhotoComment')?.value || '').substring(0, 150).trim();
 
         const { error: dbErr } = await _supabase.from('community_photos').insert({
             user_id:      _currentUser.id,
@@ -814,10 +834,11 @@ async function confirmBSCrop() {
             comment:      commentVal || null,
         });
 
-        if (dbErr) { statusEl.textContent = 'ОШИБКА БД: ' + dbErr.message; statusEl.className = 'status-line err'; return; }
+        if (dbErr) throw new Error(dbErr.message);
 
+        // Успех
         statusEl.textContent = '✓ ФОТО ОПУБЛИКОВАНО!';
-        statusEl.className = 'status-line ok';
+        statusEl.className   = 'status-line ok';
         setTimeout(() => {
             closeBSCropper();
             _bsLoaded = false;
@@ -827,7 +848,18 @@ async function confirmBSCrop() {
             if (sk) { sk.style.display = 'flex'; sk.style.opacity = '1'; }
             loadBSStory();
         }, 1200);
-    }, 'image/jpeg', 0.88);
+
+    } catch(err) {
+        statusEl.textContent = 'ОШИБКА: ' + err.message;
+        statusEl.className   = 'status-line err';
+    } finally {
+        // Разблокируем кнопку В ЛЮБОМ СЛУЧАЕ
+        if (pubBtn) {
+            pubBtn.disabled = false;
+            pubBtn.classList.remove('busy');
+            pubBtn.innerHTML = 'ДАЛЕЕ <i class="fa-solid fa-arrow-right"></i>';
+        }
+    }
 }
 
 /* ────────────────────────────────────────────────
