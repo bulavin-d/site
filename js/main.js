@@ -385,7 +385,13 @@ function handleStoryClose() {
    ──────────────────────────────────────────────── */
 let _bsSwipeHintDismissed = false;
 let _bsLoaded             = false;
-let _viewedPhotoIds       = new Set(); // не сбрасывается между перезагрузками ленты
+// Загружаем просмотренные фото из localStorage — сохраняются между перезагрузками
+let _viewedPhotoIds = (() => {
+    try {
+        const stored = localStorage.getItem('bs_viewed_photos');
+        return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch(e) { return new Set(); }
+})();
 let _viewObserver         = null;
 
 function openBSStory() {
@@ -623,6 +629,11 @@ function _setupViewObserver() {
                     slide._viewTimer = setTimeout(() => {
                         if (!_viewedPhotoIds.has(photoId)) {
                             _viewedPhotoIds.add(photoId);
+                            // Персистим в localStorage чтобы не накручивать при перезагрузке
+                            try {
+                                localStorage.setItem('bs_viewed_photos',
+                                    JSON.stringify([..._viewedPhotoIds]));
+                            } catch(e) {}
                             _incrementView(photoId, slide);
                         }
                         slide._viewTimer = null;
@@ -924,10 +935,21 @@ async function executeAuth() {
             alert(error.message);
             btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ';
         } else {
-            document.getElementById('authSuccessText').innerHTML = 'Проверьте почту для подтверждения.';
+            document.getElementById('authSuccessText').innerHTML =
+                'Ссылка для подтверждения отправлена на ваш email.' +
+                '<br><span style="opacity:0.55;font-size:10px;">Если письма нет — проверьте папку Спам.</span>';
             document.getElementById('authIcon').className = 'fa-regular fa-envelope';
             document.getElementById('authInputs').style.display = 'none';
-            document.getElementById('authSuccess').style.display = 'block';
+            const successEl = document.getElementById('authSuccess');
+            successEl.style.opacity = '0';
+            successEl.style.display = 'block';
+            // Плавное появление
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    successEl.style.transition = 'opacity 0.4s ease';
+                    successEl.style.opacity = '1';
+                });
+            });
         }
     }
 }
