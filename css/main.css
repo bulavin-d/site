@@ -656,13 +656,17 @@ h1 {
 .release-shine {
     position: absolute;
     inset: 0;
+    width: 100%;
+    /* явно, перебиваем любой stale override */
+    height: 100%;
+    /* явно, чтобы блик шёл по всей обложке */
     /* Статичный верхний блик */
     background: linear-gradient(160deg,
             rgba(255, 255, 255, 0.055) 0%,
             rgba(255, 255, 255, 0.00) 40%);
     pointer-events: none;
     z-index: 2;
-    /* overflow: hidden НЕТ — родитель .release-cover-wrap уже клипает */
+    /* overflow:hidden НЕТ — .release-cover-wrap уже клипает */
 }
 
 /* Диагональный свет — пролетает по фото каждые 5с */
@@ -670,9 +674,10 @@ h1 {
     content: '';
     position: absolute;
     top: 0;
-    bottom: 0;
+    height: 100%;
+    /* явно 100%, не полагаемся на bottom:0 */
     left: -80%;
-    /* стартует за левым краем обложки */
+    /* стартует за левым краем */
     width: 80%;
     background: linear-gradient(105deg,
             transparent 25%,
