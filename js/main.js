@@ -7,13 +7,13 @@
 /* ────────────────────────────────────────────────
    0. СОСТОЯНИЕ ПОЛЬЗОВАТЕЛЯ
    ──────────────────────────────────────────────── */
-let _currentUser     = null;
+let _currentUser = null;
 let _currentUsername = '';
 
 async function initUserState() {
     const { data: { session } } = await _supabase.auth.getSession();
     if (session && session.user) {
-        _currentUser     = session.user;
+        _currentUser = session.user;
         _currentUsername = session.user.user_metadata?.username
             || ('@' + session.user.email.split('@')[0]);
         showUserBadge(_currentUsername);
@@ -25,10 +25,10 @@ function showUserBadge(username) {
     const badge = document.getElementById('userBadge');
     if (!badge) return;
     badge.textContent = username.toUpperCase();
-    badge.style.display  = 'block';
-    badge.style.cursor   = 'pointer';
-    badge.title          = 'Нажми для выхода';
-    badge.onclick        = promptLogout;
+    badge.style.display = 'block';
+    badge.style.cursor = 'pointer';
+    badge.title = 'Нажми для выхода';
+    badge.onclick = promptLogout;
 }
 
 function promptLogout() {
@@ -52,39 +52,39 @@ function onAuthNavClick() {
    1. КОНТЕНТ + FOUC-FREE LOADING
    ──────────────────────────────────────────────── */
 const DEFAULTS = {
-    avatar_url:              '',
-    bio:                     '',
-    footer_text:             '© 2026 BULAVIN',
-    telegram_url:            'https://t.me/imbulavin',
-    instagram_url:           'https://www.instagram.com/lu4danya',
-    yandex_music_url:        'https://music.yandex.kz/artist/24009925',
-    vk_music_url:            'https://vk.com/artist/bulavin',
-    spotify_url:             'https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq',
-    apple_music_url:         'https://music.apple.com/ru/artist/bulavin/1805904899',
-    yt_music_url:            'https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA',
-    soundcloud_url:          'https://soundcloud.com/bulavin',
-    fusion_url:              'https://t.me/imbulavin_bot',
-    afisha_text:             'На данный момент выступлений не запланировано.',
-    organizer_url:           'https://t.me/imbulavin',
-    afisha_poster_url:       '',
-    afisha_tickets_url:      '',
-    exclusive_blur_enabled:  'true',
-    ring_color:              '',
-    release_status:          'disabled',
-    release_cover_url:       '',
-    release_track_url:       '',
-    release_title:           '',
-    release_btn_label:       'ПРЕСЕЙВ',
-    release_btn_color:       '',
-    active_story_url:        '',
-    active_story_type:       'video',
+    avatar_url: '',
+    bio: '',
+    footer_text: '© 2026 BULAVIN',
+    telegram_url: 'https://t.me/imbulavin',
+    instagram_url: 'https://www.instagram.com/lu4danya',
+    yandex_music_url: 'https://music.yandex.kz/artist/24009925',
+    vk_music_url: 'https://vk.com/artist/bulavin',
+    spotify_url: 'https://open.spotify.com/artist/7Efya7yCpL4M7BPdcm6qUq',
+    apple_music_url: 'https://music.apple.com/ru/artist/bulavin/1805904899',
+    yt_music_url: 'https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA',
+    soundcloud_url: 'https://soundcloud.com/bulavin',
+    fusion_url: 'https://t.me/imbulavin_bot',
+    afisha_text: 'На данный момент выступлений не запланировано.',
+    organizer_url: 'https://t.me/imbulavin',
+    afisha_poster_url: '',
+    afisha_tickets_url: '',
+    exclusive_blur_enabled: 'true',
+    ring_color: '',
+    release_status: 'disabled',
+    release_cover_url: '',
+    release_track_url: '',
+    release_title: '',
+    release_btn_label: 'ПРЕСЕЙВ',
+    release_btn_color: '',
+    active_story_url: '',
+    active_story_type: 'video',
     bs_story_global_enabled: 'false',
-    bs_story_label:          'B.S. STORY',
-    bs_story_label_color:    '',
-    bs_tooltip_text:         'Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.',
+    bs_story_label: 'B.S. STORY',
+    bs_story_label_color: '',
+    bs_tooltip_text: 'Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.',
 };
 
-let _content       = { ...DEFAULTS };
+let _content = { ...DEFAULTS };
 let _contentLoaded = false;
 
 async function loadContent() {
@@ -92,7 +92,7 @@ async function loadContent() {
         const { data, error } = await _supabase.from('site_content').select('key, value');
         if (error) throw error;
         data.forEach(row => { if (row.value !== null) _content[row.key] = row.value; });
-    } catch(e) { console.warn('[BULAVIN] site_content недоступен.', e.message); }
+    } catch (e) { console.warn('[BULAVIN] site_content недоступен.', e.message); }
     _contentLoaded = true;
     applyContent();
     await loadCustomButtons();
@@ -110,15 +110,15 @@ function applyContent() {
     const footerEl = document.getElementById('footerEl');
     if (footerEl) footerEl.textContent = c.footer_text || '© 2026 BULAVIN';
 
-    _setLink('link-telegram',  c.telegram_url);
+    _setLink('link-telegram', c.telegram_url);
     _setLink('link-instagram', c.instagram_url);
-    _setLink('link-yandex',    c.yandex_music_url);
-    _setLink('link-vk',        c.vk_music_url);
-    _setLink('link-spotify',   c.spotify_url);
-    _setLink('link-apple',     c.apple_music_url);
-    _setLink('link-yt',        c.yt_music_url);
-    _setLink('link-soundcloud',c.soundcloud_url);
-    _setLink('link-fusion',    c.fusion_url);
+    _setLink('link-yandex', c.yandex_music_url);
+    _setLink('link-vk', c.vk_music_url);
+    _setLink('link-spotify', c.spotify_url);
+    _setLink('link-apple', c.apple_music_url);
+    _setLink('link-yt', c.yt_music_url);
+    _setLink('link-soundcloud', c.soundcloud_url);
+    _setLink('link-fusion', c.fusion_url);
 
     applyAfisha(c);
     applyRelease(c);
@@ -131,11 +131,11 @@ function applyContent() {
     const tooltipEl = document.getElementById('bsTooltipBox');
     if (tooltipEl && c.bs_tooltip_text) tooltipEl.textContent = c.bs_tooltip_text;
 
-    const avatarImg        = document.getElementById('mainAvatarImage');
-    const avatarLink       = document.getElementById('avatarLink');
+    const avatarImg = document.getElementById('mainAvatarImage');
+    const avatarLink = document.getElementById('avatarLink');
     const avatarSilhouette = document.getElementById('avatarSilhouette');
-    const dynBg            = document.querySelector('.dynamic-bg');
-    const avatarUrl        = c.avatar_url && c.avatar_url.trim();
+    const dynBg = document.querySelector('.dynamic-bg');
+    const avatarUrl = c.avatar_url && c.avatar_url.trim();
 
     window._blurEnabled = c.exclusive_blur_enabled !== 'false';
 
@@ -164,18 +164,18 @@ function applyContent() {
             }
             initAvatarAnimation();
         };
-        img.onerror = () => {};
+        img.onerror = () => { };
         img.src = avatarUrl;
     }
 }
 
 function applyAfisha(c) {
-    const afishaTextEl  = document.getElementById('afisha-text');
+    const afishaTextEl = document.getElementById('afisha-text');
     const organizerWrap = document.getElementById('organizer-wrap');
-    const posterWrap    = document.getElementById('afisha-poster-wrap');
-    const hasPoster     = c.afisha_poster_url && c.afisha_poster_url.trim();
+    const posterWrap = document.getElementById('afisha-poster-wrap');
+    const hasPoster = c.afisha_poster_url && c.afisha_poster_url.trim();
     if (hasPoster) {
-        if (afishaTextEl)  afishaTextEl.style.display = 'none';
+        if (afishaTextEl) afishaTextEl.style.display = 'none';
         if (organizerWrap) organizerWrap.style.display = 'none';
         if (posterWrap) {
             posterWrap.style.display = 'block';
@@ -228,17 +228,17 @@ function applyRelease(c) {
             : (status === 'presave' ? 'ПРЕСЕЙВ' : 'СЛУШАТЬ');
         const col = c.release_btn_color && c.release_btn_color.trim();
         if (col) {
-            btn.style.background  = col + '30';
+            btn.style.background = col + '30';
             btn.style.borderColor = col + '80';
-            btn.style.color       = col;
+            btn.style.color = col;
         } else if (status === 'presave') {
-            btn.style.background  = 'rgba(0,149,246,0.22)';
+            btn.style.background = 'rgba(0,149,246,0.22)';
             btn.style.borderColor = 'rgba(0,149,246,0.5)';
-            btn.style.color       = '#6ec6ff';
+            btn.style.color = '#6ec6ff';
         } else {
-            btn.style.background  = 'rgba(30,215,96,0.18)';
+            btn.style.background = 'rgba(30,215,96,0.18)';
             btn.style.borderColor = 'rgba(30,215,96,0.45)';
-            btn.style.color       = '#1ed760';
+            btn.style.color = '#1ed760';
         }
     }
 
@@ -276,7 +276,7 @@ async function loadCustomButtons() {
             .eq('visible', true).order('position', { ascending: true });
         if (error) throw error;
         renderCustomButtons(data || []);
-    } catch(e) { console.warn('[BULAVIN] custom_buttons недоступен.', e.message); }
+    } catch (e) { console.warn('[BULAVIN] custom_buttons недоступен.', e.message); }
 }
 
 function renderCustomButtons(buttons) {
@@ -296,9 +296,9 @@ function renderCustomButtons(buttons) {
 /* ────────────────────────────────────────────────
    3. QR / МОДАЛЬНЫЕ ОКНА
    ──────────────────────────────────────────────── */
-function openQR()          { document.getElementById('qrModal').classList.add('show'); }
-function closeQR()         { document.getElementById('qrModal').classList.remove('show'); }
-function openAuthChoice()  { document.getElementById('authChoiceModal').classList.add('show'); }
+function openQR() { document.getElementById('qrModal').classList.add('show'); }
+function closeQR() { document.getElementById('qrModal').classList.remove('show'); }
+function openAuthChoice() { document.getElementById('authChoiceModal').classList.add('show'); }
 function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
 
 /* ────────────────────────────────────────────────
@@ -319,7 +319,7 @@ function handleAvatarClick() {
    4a. ЛИЧНАЯ СТОРИС — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 const videoElement = document.getElementById('storyVideo');
-const progressBar  = document.getElementById('progress-bar');
+const progressBar = document.getElementById('progress-bar');
 
 videoElement.addEventListener('timeupdate', () => {
     const pct = (videoElement.currentTime / videoElement.duration) * 100;
@@ -343,9 +343,9 @@ let _storyImageTimer = null;
 
 function handleStoryOpen() {
     const storyType = (_content.active_story_type || 'video').toLowerCase();
-    const storyUrl  = _content.active_story_url && _content.active_story_url.trim();
-    const imgEl     = document.getElementById('storyImage');
-    const modal     = document.getElementById('storyModal');
+    const storyUrl = _content.active_story_url && _content.active_story_url.trim();
+    const imgEl = document.getElementById('storyImage');
+    const modal = document.getElementById('storyModal');
 
     if (storyType === 'image' && storyUrl) {
         videoElement.style.display = 'none';
@@ -368,7 +368,7 @@ function handleStoryOpen() {
         videoElement.src = url;
         progressBar.style.transition = 'none'; progressBar.style.width = '0%';
         videoElement.currentTime = 0;
-        videoElement.play().catch(() => {});
+        videoElement.play().catch(() => { });
     }
 }
 
@@ -384,15 +384,15 @@ function handleStoryClose() {
    4b. B.S. STORY MODAL — ЛАЙКИ + ПРОСМОТРЫ v8
    ──────────────────────────────────────────────── */
 let _bsSwipeHintDismissed = false;
-let _bsLoaded             = false;
+let _bsLoaded = false;
 // Загружаем просмотренные фото из localStorage — сохраняются между перезагрузками
 let _viewedPhotoIds = (() => {
     try {
         const stored = localStorage.getItem('bs_viewed_photos');
         return stored ? new Set(JSON.parse(stored)) : new Set();
-    } catch(e) { return new Set(); }
+    } catch (e) { return new Set(); }
 })();
-let _viewObserver         = null;
+let _viewObserver = null;
 
 function openBSStory() {
     document.getElementById('bsStoryModal').classList.add('show');
@@ -421,7 +421,7 @@ document.addEventListener('click', e => {
 
 async function loadBSStory() {
     const skeleton = document.getElementById('bsSkeleton');
-    const reel     = document.getElementById('bsReel');
+    const reel = document.getElementById('bsReel');
 
     // Отключаем старый observer
     if (_viewObserver) { _viewObserver.disconnect(); _viewObserver = null; }
@@ -449,6 +449,9 @@ async function loadBSStory() {
                     <div class="reel-empty-icon"></div>
                     <p>ПОКА ПУСТО</p>
                     <span>Будь первым — загрузи фото</span>
+                    <button class="reel-add-btn" onclick="triggerBSPhotoUpload()" style="margin-top:12px;max-width:260px;">
+                        <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
+                    </button>
                 </div>`;
             _bsLoaded = true;
             return;
@@ -481,14 +484,14 @@ async function loadBSStory() {
         // Рендерим слайды
         reel.innerHTML = '';
         photos.forEach(photo => {
-            const slide    = document.createElement('div');
+            const slide = document.createElement('div');
             slide.className = 'reel-slide';
             slide.dataset.id = photo.id;
 
-            const name      = photo.username || ('@' + (photo.email || 'anon').split('@')[0]);
-            const ago       = _timeAgo(photo.created_at);
+            const name = photo.username || ('@' + (photo.email || 'anon').split('@')[0]);
+            const ago = _timeAgo(photo.created_at);
             const likeCount = likeCounts[photo.id] || 0;
-            const isLiked   = userLikedSet.has(photo.id);
+            const isLiked = userLikedSet.has(photo.id);
             const viewCount = photo.view_count || 0;
 
             const commentHTML = photo.comment ? `
@@ -548,7 +551,7 @@ async function loadBSStory() {
 
         _bsLoaded = true;
 
-    } catch(e) {
+    } catch (e) {
         console.warn('[BS STORY]', e);
         if (skeleton) skeleton.innerHTML =
             '<p style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:1px;">ОШИБКА ЗАГРУЗКИ</p>';
@@ -568,10 +571,10 @@ async function toggleLike(btn, photoId) {
         return;
     }
 
-    const isLiked   = btn.classList.contains('liked');
-    const countEl   = btn.querySelector('.like-count');
-    const iconEl    = btn.querySelector('i');
-    const curCount  = parseInt(countEl.textContent.replace(/[^0-9]/g, '')) || 0;
+    const isLiked = btn.classList.contains('liked');
+    const countEl = btn.querySelector('.like-count');
+    const iconEl = btn.querySelector('i');
+    const curCount = parseInt(countEl.textContent.replace(/[^0-9]/g, '')) || 0;
 
     // Оптимистичное обновление
     if (isLiked) {
@@ -598,7 +601,7 @@ async function toggleLike(btn, photoId) {
             await _supabase.from('photo_likes')
                 .insert({ photo_id: photoId, user_id: _currentUser.id });
         }
-    } catch(e) {
+    } catch (e) {
         console.warn('[LIKE]', e);
         // Откатываем при ошибке
         if (isLiked) {
@@ -620,7 +623,7 @@ async function toggleLike(btn, photoId) {
 function _setupViewObserver() {
     _viewObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            const slide   = entry.target;
+            const slide = entry.target;
             const photoId = slide.dataset.id;
 
             if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
@@ -633,7 +636,7 @@ function _setupViewObserver() {
                             try {
                                 localStorage.setItem('bs_viewed_photos',
                                     JSON.stringify([..._viewedPhotoIds]));
-                            } catch(e) {}
+                            } catch (e) { }
                             _incrementView(photoId, slide);
                         }
                         slide._viewTimer = null;
@@ -663,7 +666,7 @@ async function _incrementView(photoId, slide) {
             const cur = parseInt(numEl.textContent.replace(/[^0-9]/g, '')) || 0;
             numEl.textContent = _fmtNum(cur + 1);
         }
-    } catch(e) { console.warn('[VIEW INC]', e); }
+    } catch (e) { console.warn('[VIEW INC]', e); }
 }
 
 /* ── УТИЛИТЫ ЛЕНТЫ ──────────────────────────────── */
@@ -707,9 +710,9 @@ let _authResetListener = null;
 
 function _openAuthForUpload(badge, sub) {
     const badgeEl = document.getElementById('authChoiceBadge');
-    const subEl   = document.getElementById('authChoiceSub');
+    const subEl = document.getElementById('authChoiceSub');
     if (badgeEl) badgeEl.textContent = badge || 'INNER CIRCLE';
-    if (subEl)   subEl.textContent   = sub   || 'Для публикации требуется авторизация';
+    if (subEl) subEl.textContent = sub || 'Для публикации требуется авторизация';
     openAuthChoice();
     // Сброс при закрытии — убираем старый listener перед добавлением нового
     const modal = document.getElementById('authChoiceModal');
@@ -718,7 +721,7 @@ function _openAuthForUpload(badge, sub) {
     }
     _authResetListener = () => {
         if (badgeEl) badgeEl.textContent = 'SYSTEM ACCESS';
-        if (subEl)   subEl.textContent   = 'BULAVIN INNER CIRCLE';
+        if (subEl) subEl.textContent = 'BULAVIN INNER CIRCLE';
         modal.removeEventListener('click', _authResetListener);
         _authResetListener = null;
     };
@@ -727,7 +730,7 @@ function _openAuthForUpload(badge, sub) {
 
 /* change-handler — async здесь безопасен:
    .click() уже произошёл синхронно выше */
-document.getElementById('bsPhotoInput').addEventListener('change', async function() {
+document.getElementById('bsPhotoInput').addEventListener('change', async function () {
     const file = this.files[0];
     if (!file) return;
 
@@ -754,7 +757,7 @@ document.getElementById('bsPhotoInput').addEventListener('change', async functio
             }
             return;
         }
-    } catch(spamErr) {
+    } catch (spamErr) {
         console.warn('[SPAM CHECK]', spamErr);
     }
 
@@ -767,7 +770,7 @@ let _bsCropper = null;
 
 function _openBSCropper(file) {
     const modal = document.getElementById('bsCropperModal');
-    const img   = document.getElementById('bsCropperImage');
+    const img = document.getElementById('bsCropperImage');
     modal.classList.add('show');
     // Сброс статуса при каждом открытии
     document.getElementById('bsCropperStatus').textContent = '';
@@ -778,7 +781,7 @@ function _openBSCropper(file) {
         img.src = e.target.result;
         img.onload = () => {
             _bsCropper = new Cropper(img, {
-                aspectRatio: 3/4, viewMode: 1, dragMode: 'move',
+                aspectRatio: 3 / 4, viewMode: 1, dragMode: 'move',
                 autoCropArea: 0.85, restore: false, guides: false,
                 center: true, highlight: false,
                 cropBoxMovable: true, cropBoxResizable: true,
@@ -804,7 +807,7 @@ function closeBSCropper() {
 
 function updateBSCommentCounter() {
     const el = document.getElementById('bsPhotoComment');
-    const c  = document.getElementById('bsCommentCounter');
+    const c = document.getElementById('bsCommentCounter');
     if (el && c) c.textContent = el.value.length + ' / 150';
 }
 
@@ -812,11 +815,11 @@ async function confirmBSCrop() {
     if (!_bsCropper) return;
 
     const statusEl = document.getElementById('bsCropperStatus');
-    const pubBtn   = document.querySelector('.bsc-publish-btn');
+    const pubBtn = document.querySelector('.bsc-publish-btn');
 
     // Блокируем кнопку
     statusEl.textContent = 'ЗАГРУЗКА...';
-    statusEl.className   = 'status-line busy';
+    statusEl.className = 'status-line busy';
     if (pubBtn) { pubBtn.disabled = true; pubBtn.classList.add('busy'); pubBtn.textContent = '...'; }
 
     try {
@@ -833,23 +836,23 @@ async function confirmBSCrop() {
 
         if (storErr) throw new Error(storErr.message);
 
-        const publicUrl  = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
         const commentVal = (document.getElementById('bsPhotoComment')?.value || '').substring(0, 150).trim();
 
         const { error: dbErr } = await _supabase.from('community_photos').insert({
-            user_id:      _currentUser.id,
-            email:        _currentUser.email,
-            username:     _currentUsername,
-            image_url:    publicUrl,
+            user_id: _currentUser.id,
+            email: _currentUser.email,
+            username: _currentUsername,
+            image_url: publicUrl,
             storage_path: path,
-            comment:      commentVal || null,
+            comment: commentVal || null,
         });
 
         if (dbErr) throw new Error(dbErr.message);
 
         // Успех
         statusEl.textContent = '✓ ФОТО ОПУБЛИКОВАНО!';
-        statusEl.className   = 'status-line ok';
+        statusEl.className = 'status-line ok';
         setTimeout(() => {
             closeBSCropper();
             _bsLoaded = false;
@@ -860,9 +863,9 @@ async function confirmBSCrop() {
             loadBSStory();
         }, 1200);
 
-    } catch(err) {
+    } catch (err) {
         statusEl.textContent = 'ОШИБКА: ' + err.message;
-        statusEl.className   = 'status-line err';
+        statusEl.className = 'status-line err';
     } finally {
         // Разблокируем кнопку В ЛЮБОМ СЛУЧАЕ
         if (pubBtn) {
@@ -893,21 +896,21 @@ function openAuth(loginMode) {
 }
 function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
 
-document.getElementById('authUsername').addEventListener('input', function() {
+document.getElementById('authUsername').addEventListener('input', function () {
     let val = this.value.replace(/\s/g, '');
     if (val.length > 0 && !val.startsWith('@')) val = '@' + val;
     this.value = val;
 });
 
 async function executeAuth() {
-    const email    = document.getElementById('authEmail').value;
+    const email = document.getElementById('authEmail').value;
     const password = document.getElementById('authPassword').value;
     const username = document.getElementById('authUsername').value;
-    const btn      = document.getElementById('authBtn');
+    const btn = document.getElementById('authBtn');
     if (!email || !password) return alert('Заполни поля!');
 
     const rememberMeEl = document.getElementById('rememberMeCheck');
-    const rememberMe   = rememberMeEl ? rememberMeEl.checked : true;
+    const rememberMe = rememberMeEl ? rememberMeEl.checked : true;
     if (!rememberMe) sessionStorage.setItem('bulavin_no_persist', '1');
     else sessionStorage.removeItem('bulavin_no_persist');
 
@@ -919,7 +922,7 @@ async function executeAuth() {
             alert(error.message);
             btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ';
         } else {
-            _currentUser     = data.user;
+            _currentUser = data.user;
             _currentUsername = data.user.user_metadata?.username
                 || ('@' + data.user.email.split('@')[0]);
             showUserBadge(_currentUsername);
@@ -983,28 +986,28 @@ function setupCollapse(btnId, wrapperId) {
         el.classList.toggle('show');
     };
 }
-setupCollapse('music-btn',  'music-wrapper');
+setupCollapse('music-btn', 'music-wrapper');
 setupCollapse('afisha-btn', 'afisha-wrapper');
 
 /* ────────────────────────────────────────────────
    7. ПЛАВАЮЩИЕ ЭМОДЗИ — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 const canvas = document.getElementById('global-canvas');
-const ctx    = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');
 let emojis = [], lastW = window.innerWidth;
 
 class FloatingEmoji {
     constructor() { this.init(true); }
     init(first) {
-        this.x    = Math.random() * window.innerWidth;
-        this.y    = first ? Math.random() * window.innerHeight : -50;
-        this.emoji= ['🖤','💼','🎧'][Math.floor(Math.random() * 3)];
+        this.x = Math.random() * window.innerWidth;
+        this.y = first ? Math.random() * window.innerHeight : -50;
+        this.emoji = ['🖤', '💼', '🎧'][Math.floor(Math.random() * 3)];
         this.size = Math.random() * 20 + 20;
-        this.vx   = (Math.random() - 0.5) * 0.4;
-        this.vy   = (Math.random() - 0.5) * 0.4;
-        this.rot  = Math.random() * Math.PI * 2;
-        this.rs   = (Math.random() - 0.5) * 0.01;
-        this.op   = Math.random() * 0.18 + 0.08;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.rot = Math.random() * Math.PI * 2;
+        this.rs = (Math.random() - 0.5) * 0.01;
+        this.op = Math.random() * 0.18 + 0.08;
     }
     update() {
         this.x += this.vx; this.y += this.vy; this.rot += this.rs;
@@ -1050,10 +1053,10 @@ fetchPrediction();
    9. АНИМАЦИЯ АВАТАРКИ — НЕ ТРОГАТЬ
    ──────────────────────────────────────────────── */
 function initAvatarAnimation() {
-    const avatarImg   = document.getElementById('mainAvatarImage');
+    const avatarImg = document.getElementById('mainAvatarImage');
     const placeholder = document.getElementById('avatarPlaceholder');
-    const textEl      = document.getElementById('avatarText');
-    const iconEl      = document.getElementById('avatarIcon');
+    const textEl = document.getElementById('avatarText');
+    const iconEl = document.getElementById('avatarIcon');
 
     if (!window._blurEnabled) {
         avatarImg.style.transition = 'filter 0.35s ease';
@@ -1066,7 +1069,7 @@ function initAvatarAnimation() {
     avatarImg.style.filter = 'blur(7px) brightness(0.28)';
     placeholder.style.display = 'flex';
     placeholder.style.opacity = '1';
-    placeholder.style.zIndex  = '3';
+    placeholder.style.zIndex = '3';
     textEl.style.display = 'block';
     iconEl.style.display = 'none';
 
@@ -1096,17 +1099,17 @@ function _escHtml(str) {
 function _timeAgo(iso) {
     const diff = Date.now() - new Date(iso).getTime();
     const m = Math.floor(diff / 60000);
-    if (m < 1)  return 'только что';
+    if (m < 1) return 'только что';
     if (m < 60) return `${m} мин назад`;
     const h = Math.floor(m / 60);
     if (h < 24) return `${h} ч назад`;
-    return `${Math.floor(h/24)} дн назад`;
+    return `${Math.floor(h / 24)} дн назад`;
 }
 
 function _fmtNum(n) {
     n = parseInt(n) || 0;
     if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-    if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
     return String(n);
 }
 
