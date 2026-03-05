@@ -786,47 +786,7 @@ h1 {
     }
 }
 
-/* ── Diagonal shimmer sweep (раз в 5с) ── */
-.release-tap-hint::after {
-    content: '';
-    position: absolute;
-    top: -150%;
-    left: -60%;
-    width: 40%;
-    height: 400%;
-    background: linear-gradient(105deg,
-            transparent 20%,
-            rgba(255, 255, 255, 0.09) 50%,
-            transparent 80%);
-    transform: skewX(-15deg);
-    animation: tap-shimmer 5s ease-in-out 2s infinite;
-}
-
-@keyframes tap-shimmer {
-    0% {
-        left: -60%;
-        opacity: 0;
-    }
-
-    6% {
-        opacity: 1;
-    }
-
-    40% {
-        left: 130%;
-        opacity: 1;
-    }
-
-    48% {
-        left: 130%;
-        opacity: 0;
-    }
-
-    100% {
-        left: 130%;
-        opacity: 0;
-    }
-}
+/* ::after не нужен — только луч */
 
 /* ── Pulse ring hidden ── */
 .release-pulse-ring {
