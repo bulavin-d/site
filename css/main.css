@@ -775,16 +775,7 @@ h1 {
     text-align: center;
 }
 
-/* ══ TAP HINT — Rotating chromatic border beam ══
-   Technique: @property + conic-gradient rotation
-   No text. Pure visual language. Premium AF.      */
-
-/* CSS custom property for smooth conic rotation */
-@property --tap-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-}
+/* ══ TAP HINT — Pulse glow (надёжный, кроссбраузерный) ══ */
 
 .release-tap-hint {
     position: absolute;
@@ -792,45 +783,23 @@ h1 {
     z-index: 5;
     pointer-events: none;
     border-radius: 24px;
-    overflow: hidden;
+    /* Пульсирующая рамка-свечение вокруг карточки */
+    animation: tap-glow-pulse 2s ease-in-out infinite;
 }
 
-/* ── Rotating chromatic border beam ── */
-.release-tap-hint::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    /* conic-gradient вращается через @property */
-    background: conic-gradient(from var(--tap-angle),
-            transparent 0%,
-            transparent 55%,
-            rgba(255, 255, 255, 0.04) 65%,
-            rgba(255, 220, 120, 0.5) 72%,
-            rgba(255, 255, 255, 0.95) 76%,
-            rgba(200, 180, 255, 0.55) 80%,
-            rgba(255, 255, 255, 0.04) 88%,
-            transparent 100%);
-    /* Маска: показываем только 2px-рамку, не заполняем внутренность */
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    padding: 2px;
-    animation: tap-border-spin 3s linear infinite;
-}
+@keyframes tap-glow-pulse {
 
-@keyframes tap-border-spin {
-    to {
-        --tap-angle: 360deg;
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+
+    50% {
+        box-shadow:
+            0 0 0 3px rgba(255, 255, 255, 0.18),
+            0 0 24px 4px rgba(255, 220, 120, 0.12);
     }
 }
-
-/* ::after не нужен — только луч */
 
 /* ── Pulse ring hidden ── */
 .release-pulse-ring {
@@ -838,6 +807,7 @@ h1 {
 }
 
 /* ─────────────────────────────────────────────────── */
+
 
 .prediction-label {
     font-size: 9px;
