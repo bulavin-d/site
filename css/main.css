@@ -401,6 +401,7 @@ h1 {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+/* Мышь (десктоп) — drop-shadow через filter */
 @media (hover: hover) {
     .btn-yandex:hover {
         color: var(--yandex) !important;
@@ -426,6 +427,47 @@ h1 {
         color: var(--sc) !important;
         filter: drop-shadow(0 0 8px rgba(255, 85, 0, .45));
     }
+}
+
+/* Тачскрин (телефон) — text-shadow на иконке, не обрезается overflow:hidden */
+.btn-yandex:active {
+    color: var(--yandex) !important;
+}
+
+.btn-yandex:active i {
+    text-shadow: 0 0 14px rgba(255, 204, 0, .7);
+}
+
+.btn-vk:active {
+    color: var(--vk) !important;
+}
+
+.btn-vk:active i {
+    text-shadow: 0 0 14px rgba(0, 119, 255, .7);
+}
+
+.btn-spotify:active {
+    color: var(--spotify) !important;
+}
+
+.btn-spotify:active i {
+    text-shadow: 0 0 14px rgba(30, 215, 96, .7);
+}
+
+.btn-yt:active {
+    color: var(--yt) !important;
+}
+
+.btn-yt:active i {
+    text-shadow: 0 0 14px rgba(255, 0, 0, .7);
+}
+
+.btn-soundcloud:active {
+    color: var(--sc) !important;
+}
+
+.btn-soundcloud:active i {
+    text-shadow: 0 0 14px rgba(255, 85, 0, .7);
 }
 
 .btn-fusion i {
