@@ -652,15 +652,59 @@ h1 {
     }
 }
 
-/* ── Shine overlay (top glare) ── */
+/* ── Shine overlay + periodic shimmer sweep ── */
 .release-shine {
     position: absolute;
     inset: 0;
+    /* Статичный верхний блик */
     background: linear-gradient(160deg,
-            rgba(255, 255, 255, 0.06) 0%,
+            rgba(255, 255, 255, 0.055) 0%,
             rgba(255, 255, 255, 0.00) 40%);
     pointer-events: none;
     z-index: 2;
+    overflow: hidden;
+}
+
+/* Диагональный свет — пролетает по фото каждые 5с */
+.release-shine::before {
+    content: '';
+    position: absolute;
+    top: -150%;
+    left: -60%;
+    width: 35%;
+    height: 400%;
+    background: linear-gradient(105deg,
+            transparent 15%,
+            rgba(255, 255, 255, 0.11) 50%,
+            transparent 85%);
+    transform: skewX(-12deg);
+    animation: shine-sweep 5s ease-in-out 1s infinite;
+}
+
+@keyframes shine-sweep {
+    0% {
+        left: -60%;
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    38% {
+        left: 130%;
+        opacity: 1;
+    }
+
+    45% {
+        left: 130%;
+        opacity: 0;
+    }
+
+    100% {
+        left: 130%;
+        opacity: 0;
+    }
 }
 
 /* ── Bottom gradient — for text legibility ── */
