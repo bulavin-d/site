@@ -731,55 +731,104 @@ h1 {
     text-align: center;
 }
 
-/* ── Tap hint — beacon animation ── */
+/* ── Tap hint — Apple Card shimmer + pill ── */
 .release-tap-hint {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    /* покрываем всю карточку — ничего не уходит за край */
     z-index: 5;
     pointer-events: none;
-    /* Two concentric rings */
-    width: 80px;
-    height: 80px;
+    overflow: hidden;
+    /* shimmer не выходит за пределы */
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.release-tap-hint::before,
-.release-tap-hint::after {
+/* Диагональный shimmer (проходит раз в 3.5с) */
+.release-tap-hint::before {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.55);
-    animation: release-beacon 2.4s var(--ease-out) infinite;
+    top: -100%;
+    left: -75%;
+    width: 50%;
+    height: 300%;
+    background: linear-gradient(105deg,
+            transparent 20%,
+            rgba(255, 255, 255, 0.13) 50%,
+            transparent 80%);
+    transform: skewX(-15deg);
+    animation: shimmer-sweep 3.5s ease-in-out infinite;
 }
 
-.release-tap-hint::after {
-    animation-delay: 1.2s;
-    border-color: rgba(255, 255, 255, 0.3);
-}
-
-@keyframes release-beacon {
+@keyframes shimmer-sweep {
     0% {
-        transform: scale(0.6);
-        opacity: 0.9;
+        left: -75%;
+        opacity: 0;
     }
 
-    80% {
-        transform: scale(2.2);
+    8% {
+        opacity: 1;
+    }
+
+    42% {
+        left: 125%;
+        opacity: 1;
+    }
+
+    50% {
+        left: 125%;
         opacity: 0;
     }
 
     100% {
-        transform: scale(2.2);
+        left: 125%;
         opacity: 0;
     }
 }
 
-/* ── Pulse ring (decorative corner glow) ── */
+/* Pill-подсказка по центру карточки */
+.release-tap-hint::after {
+    content: '☝  НАЖМИ';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 100px;
+    padding: 10px 22px;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.9);
+    white-space: nowrap;
+    box-shadow:
+        0 8px 24px -4px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    animation: pill-float 2.2s ease-in-out infinite;
+}
+
+@keyframes pill-float {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.92;
+    }
+
+    50% {
+        transform: translate(-50%, -54%) scale(1.03);
+        opacity: 1;
+    }
+}
+
+/* ── Pulse ring (не нужен, скрыт) ── */
 .release-pulse-ring {
     display: none;
-    /* скрыт — beacon-hint заменяет его */
 }
 
 /* ─────────────────────────────────────────────────── */
