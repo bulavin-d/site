@@ -669,21 +669,20 @@ h1 {
 .release-shine::before {
     content: '';
     position: absolute;
-    top: -150%;
-    left: -60%;
-    width: 35%;
-    height: 400%;
+    top: 0;
+    bottom: 0;
+    width: 60%;
     background: linear-gradient(105deg,
-            transparent 15%,
-            rgba(255, 255, 255, 0.11) 50%,
-            transparent 85%);
-    transform: skewX(-12deg);
+            transparent 20%,
+            rgba(255, 255, 255, 0.12) 50%,
+            transparent 80%);
+    transform: translateX(-100%);
     animation: shine-sweep 5s ease-in-out 1s infinite;
 }
 
 @keyframes shine-sweep {
     0% {
-        left: -60%;
+        transform: translateX(-100%);
         opacity: 0;
     }
 
@@ -692,17 +691,17 @@ h1 {
     }
 
     38% {
-        left: 130%;
+        transform: translateX(200%);
         opacity: 1;
     }
 
     45% {
-        left: 130%;
+        transform: translateX(200%);
         opacity: 0;
     }
 
     100% {
-        left: 130%;
+        transform: translateX(200%);
         opacity: 0;
     }
 }
@@ -747,7 +746,7 @@ h1 {
     justify-content: center;
 }
 
-/* ── CTA Button (ПРЕСЕЙВ / СЛУШАТЬ) ── 
+/* ── CTA Button (ПРЕСЕЙВ / СЛУШАТЬ) ──
    JS sets inline color via: btn.style.color/background/borderColor */
 .release-cta-btn {
     display: inline-flex;
@@ -775,39 +774,7 @@ h1 {
     text-align: center;
 }
 
-/* ══ TAP HINT — Pulse glow (надёжный, кроссбраузерный) ══ */
-
-.release-tap-hint {
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    pointer-events: none;
-    border-radius: 24px;
-    /* Пульсирующая рамка-свечение вокруг карточки */
-    animation: tap-glow-pulse 2s ease-in-out infinite;
-}
-
-@keyframes tap-glow-pulse {
-
-    0%,
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-    }
-
-    50% {
-        box-shadow:
-            0 0 0 3px rgba(255, 255, 255, 0.18),
-            0 0 24px 4px rgba(255, 220, 120, 0.12);
-    }
-}
-
-/* ── Pulse ring hidden ── */
-.release-pulse-ring {
-    display: none;
-}
-
 /* ─────────────────────────────────────────────────── */
-
 
 .prediction-label {
     font-size: 9px;
