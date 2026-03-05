@@ -669,40 +669,46 @@ h1 {
 .release-shine::before {
     content: '';
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 150%;
-    background: linear-gradient(to right,
+    inset: 0;
+    /* Огромный градиент (200% ширины), чтобы было куда двигать фон */
+    background: linear-gradient(105deg,
             transparent 0%,
-            rgba(255, 255, 255, 0.15) 50%,
+            transparent 40%,
+            rgba(255, 255, 255, 0.16) 50%,
+            transparent 60%,
             transparent 100%);
-    transform: skewX(-25deg) translateX(-150%);
+    background-size: 300% 100%;
+    background-position: 100% 0;
+    /* Начало (за правым краем) */
     animation: shine-sweep 5s ease-in-out 1s infinite;
 }
 
 @keyframes shine-sweep {
     0% {
-        transform: skewX(-25deg) translateX(-150%);
+        background-position: 100% 0;
+        /* Пролёт начинается */
         opacity: 0;
     }
 
-    5% {
+    10% {
+        opacity: 1;
+        /* Плавно разгорается */
+    }
+
+    40% {
+        background-position: 0% 0;
+        /* Долетел до левого края */
         opacity: 1;
     }
 
-    38% {
-        transform: skewX(-25deg) translateX(100%);
-        opacity: 1;
-    }
-
-    45% {
-        transform: skewX(-25deg) translateX(100%);
+    50% {
+        background-position: 0% 0;
         opacity: 0;
+        /* Плавно потухает в конце */
     }
 
     100% {
-        transform: skewX(-25deg) translateX(100%);
+        background-position: 0% 0;
         opacity: 0;
     }
 }
