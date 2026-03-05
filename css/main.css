@@ -670,48 +670,7 @@ h1 {
     /* overflow:hidden НЕТ — .release-cover-wrap уже клипает */
 }
 
-/* Диагональный свет — пролетает по фото каждые 5с */
-.release-shine::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    height: 100%;
-    /* явно 100%, не полагаемся на bottom:0 */
-    left: -80%;
-    /* стартует за левым краем */
-    width: 80%;
-    background: linear-gradient(105deg,
-            transparent 25%,
-            rgba(255, 255, 255, 0.17) 50%,
-            transparent 75%);
-    animation: shine-sweep 5s ease-in-out 1s infinite;
-}
-
-@keyframes shine-sweep {
-    0% {
-        left: -80%;
-        opacity: 0;
-    }
-
-    8% {
-        opacity: 1;
-    }
-
-    42% {
-        left: 100%;
-        opacity: 1;
-    }
-
-    50% {
-        left: 100%;
-        opacity: 0;
-    }
-
-    100% {
-        left: 100%;
-        opacity: 0;
-    }
-}
+/* shimmer удалён по запросу */
 
 /* ── Bottom gradient — for text legibility ── */
 .release-meta {
