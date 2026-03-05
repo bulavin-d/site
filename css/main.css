@@ -401,29 +401,31 @@ h1 {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.btn-yandex:hover {
-    color: var(--yandex) !important;
-    filter: drop-shadow(0 0 8px rgba(255, 204, 0, .5));
-}
+@media (hover: hover) {
+    .btn-yandex:hover {
+        color: var(--yandex) !important;
+        filter: drop-shadow(0 0 8px rgba(255, 204, 0, .45));
+    }
 
-.btn-vk:hover {
-    color: var(--vk) !important;
-    filter: drop-shadow(0 0 8px rgba(0, 119, 255, .5));
-}
+    .btn-vk:hover {
+        color: var(--vk) !important;
+        filter: drop-shadow(0 0 8px rgba(0, 119, 255, .45));
+    }
 
-.btn-spotify:hover {
-    color: var(--spotify) !important;
-    filter: drop-shadow(0 0 8px rgba(30, 215, 96, .5));
-}
+    .btn-spotify:hover {
+        color: var(--spotify) !important;
+        filter: drop-shadow(0 0 8px rgba(30, 215, 96, .45));
+    }
 
-.btn-yt:hover {
-    color: var(--yt) !important;
-    filter: drop-shadow(0 0 8px rgba(255, 0, 0, .5));
-}
+    .btn-yt:hover {
+        color: var(--yt) !important;
+        filter: drop-shadow(0 0 8px rgba(255, 0, 0, .45));
+    }
 
-.btn-soundcloud:hover {
-    color: var(--sc) !important;
-    filter: drop-shadow(0 0 8px rgba(255, 85, 0, .5));
+    .btn-soundcloud:hover {
+        color: var(--sc) !important;
+        filter: drop-shadow(0 0 8px rgba(255, 85, 0, .45));
+    }
 }
 
 .btn-fusion i {
