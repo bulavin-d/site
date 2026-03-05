@@ -662,53 +662,47 @@ h1 {
             rgba(255, 255, 255, 0.00) 40%);
     pointer-events: none;
     z-index: 2;
-    overflow: hidden;
+    /* overflow: hidden НЕТ — родитель .release-cover-wrap уже клипает */
 }
 
 /* Диагональный свет — пролетает по фото каждые 5с */
 .release-shine::before {
     content: '';
     position: absolute;
-    inset: 0;
-    /* Огромный градиент (200% ширины), чтобы было куда двигать фон */
+    top: 0;
+    bottom: 0;
+    left: -80%;
+    /* стартует за левым краем обложки */
+    width: 80%;
     background: linear-gradient(105deg,
-            transparent 0%,
-            transparent 40%,
-            rgba(255, 255, 255, 0.16) 50%,
-            transparent 60%,
-            transparent 100%);
-    background-size: 300% 100%;
-    background-position: 100% 0;
-    /* Начало (за правым краем) */
+            transparent 25%,
+            rgba(255, 255, 255, 0.17) 50%,
+            transparent 75%);
     animation: shine-sweep 5s ease-in-out 1s infinite;
 }
 
 @keyframes shine-sweep {
     0% {
-        background-position: 100% 0;
-        /* Пролёт начинается */
+        left: -80%;
         opacity: 0;
     }
 
-    10% {
+    8% {
         opacity: 1;
-        /* Плавно разгорается */
     }
 
-    40% {
-        background-position: 0% 0;
-        /* Долетел до левого края */
+    42% {
+        left: 100%;
         opacity: 1;
     }
 
     50% {
-        background-position: 0% 0;
+        left: 100%;
         opacity: 0;
-        /* Плавно потухает в конце */
     }
 
     100% {
-        background-position: 0% 0;
+        left: 100%;
         opacity: 0;
     }
 }
