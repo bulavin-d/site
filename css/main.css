@@ -61,17 +61,23 @@ body {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.13);
     color: var(--text);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: background 0.3s ease, transform 0.2s ease;
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    transition:
+        background 0.3s ease,
+        transform 0.25s var(--ease-spring),
+        box-shadow 0.3s ease;
     position: relative;
+    box-shadow:
+        0 4px 12px -4px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .nav-btn i {
@@ -79,8 +85,11 @@ body {
 }
 
 .nav-btn:hover {
-    background: rgba(255, 255, 255, 0.13);
-    transform: scale(1.06);
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.1);
+    box-shadow:
+        0 8px 20px -4px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .nav-btn:active {
@@ -117,13 +126,19 @@ body {
 /* ── PROFILE CARD ────────────────────────────────── */
 .profile-card {
     position: relative;
-    background: var(--glass);
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 36px;
     padding: 52px 20px 32px;
     text-align: center;
+    /* Deep shadow + inner top glare = Apple Liquid Glass */
+    box-shadow:
+        0 40px 80px -20px rgba(0, 0, 0, 0.85),
+        0 8px 32px -8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
 
 /* ── USER BADGE (над аватаркой, если залогинен) ──── */
@@ -336,10 +351,10 @@ h1 {
 /* ── BTN ─────────────────────────────────────────── */
 .btn {
     position: relative;
-    background: var(--glass);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.055);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.11);
     padding: 17px 20px;
     border-radius: 20px;
     text-decoration: none;
@@ -348,10 +363,20 @@ h1 {
     font-weight: 600;
     display: flex;
     align-items: center;
-    transition: all 0.28s var(--ease-out);
+    /* Spring cubic-bezier для тактильного отклика */
+    transition:
+        transform 0.3s var(--ease-spring),
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.3s ease;
     cursor: pointer;
     z-index: 10;
     width: 100%;
+    /* Световой блик сверху — физический объём */
+    box-shadow:
+        0 4px 16px -4px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .btn i {
@@ -370,13 +395,20 @@ h1 {
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    border-color: var(--glass-border-h);
-    background: var(--glass-hover);
+    transform: translateY(-3px) scale(1.01);
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.085);
+    box-shadow:
+        0 12px 32px -8px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .btn:active {
     transform: scale(0.96);
+    box-shadow:
+        0 2px 8px -2px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .btn-yandex:hover {
@@ -453,11 +485,16 @@ h1 {
 
 /* ── AFISHA CARD ─────────────────────────────────── */
 .afisha-card {
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.038);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 22px;
     padding: 20px;
     text-align: center;
+    box-shadow:
+        0 8px 32px -8px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .organizer-link {
@@ -514,12 +551,17 @@ h1 {
 
 /* ── PREDICTION ──────────────────────────────────── */
 .prediction-card {
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.042);
+    backdrop-filter: blur(28px) saturate(150%);
+    -webkit-backdrop-filter: blur(28px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 28px;
     padding: 28px 22px;
     text-align: center;
     margin-top: 4px;
+    box-shadow:
+        0 8px 32px -8px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .prediction-label {
@@ -588,16 +630,20 @@ h1 {
 .auth-form-card {
     width: 90%;
     max-width: 340px;
-    background: rgba(255, 255, 255, 0.038);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.052);
+    border: 1px solid rgba(255, 255, 255, 0.13);
     padding: 42px 28px;
     border-radius: 36px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    backdrop-filter: blur(32px);
-    -webkit-backdrop-filter: blur(32px);
-    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    box-shadow:
+        0 40px 80px -16px rgba(0, 0, 0, 0.9),
+        0 8px 24px -8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .auth-form-card .input {
@@ -607,8 +653,8 @@ h1 {
 .choice-btn {
     position: relative;
     width: 100%;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 17px;
     border-radius: 18px;
     color: var(--text);
@@ -616,12 +662,19 @@ h1 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition:
+        background 0.25s ease,
+        transform 0.25s var(--ease-spring),
+        box-shadow 0.3s ease,
+        border-color 0.25s ease;
     font-size: 12px;
     font-weight: 800;
     letter-spacing: 2px;
     text-transform: uppercase;
     font-family: inherit;
+    box-shadow:
+        0 4px 12px -4px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .choice-btn i {
@@ -631,9 +684,12 @@ h1 {
 }
 
 .choice-btn:hover {
-    background: var(--glass-hover);
-    border-color: var(--glass-border-h);
+    background: rgba(255, 255, 255, 0.095);
+    border-color: rgba(255, 255, 255, 0.24);
     transform: translateY(-2px);
+    box-shadow:
+        0 10px 24px -6px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
 .forgot-link {
