@@ -665,7 +665,8 @@ h1 {
             rgba(255, 255, 255, 0.055) 0%,
             rgba(255, 255, 255, 0.00) 40%);
     pointer-events: none;
-    z-index: 2;
+    z-index: 6;
+    /* выше .release-meta(3) и .release-cta-wrap(4), pointer-events:none пропускает клики */
     /* overflow:hidden НЕТ — .release-cover-wrap уже клипает */
 }
 
