@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <!-- ══════════════════════════════════════════
          YANDEX METRIKA — НЕ ТРОГАТЬ
     ══════════════════════════════════════════ -->
     <script type="text/javascript">
-        (function(m,e,t,r,i,k,a){
-            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-        })(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=106955637','ym');
-        ym(106955637,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:true,ecommerce:"dataLayer"});
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=106955637', 'ym');
+        ym(106955637, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true, webvisor: true, ecommerce: "dataLayer" });
     </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute;left:-9999px;" alt=""></div></noscript>
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/106955637" style="position:absolute;left:-9999px;" alt=""></div>
+    </noscript>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
     <!-- ══════════════════════════════════════════
          SEO — НЕ ТРОГАТЬ
     ══════════════════════════════════════════ -->
     <title>BULAVIN — Официальный сайт | Музыкант, Исполнитель, Продюсер, БУЛАВИН</title>
     <meta name="google-site-verification" content="3Puxn3Z_8SABoUfhTI3cmc1WmrJgWKGJGPiXgXA0tgs">
-    <meta name="description"  content="БУЛАВИН (BULAVIN) — официальный сайт казахстанского исполнителя и музыкального продюсера. Слушать музыку BULAVIN онлайн, афиша выступлений, новости.">
-    <meta name="keywords"     content="BULAVIN, БУЛАВИН, Булавин исполнитель, Булавин музыка, BULAVIN музыкант, BULAVIN исполнитель, казахстанский исполнитель, Касьяненко Даниил Юрьевич, Булавин треки, BULAVIN официальный сайт, слушать BULAVIN">
-    <meta property="og:title"       content="BULAVIN — Официальный сайт">
+    <meta name="description"
+        content="БУЛАВИН (BULAVIN) — официальный сайт казахстанского исполнителя и музыкального продюсера. Слушать музыку BULAVIN онлайн, афиша выступлений, новости.">
+    <meta name="keywords"
+        content="BULAVIN, БУЛАВИН, Булавин исполнитель, Булавин музыка, BULAVIN музыкант, BULAVIN исполнитель, казахстанский исполнитель, Касьяненко Даниил Юрьевич, Булавин треки, BULAVIN официальный сайт, слушать BULAVIN">
+    <meta property="og:title" content="BULAVIN — Официальный сайт">
     <meta property="og:description" content="Музыка, актуальная афиша выступлений и свежие новости.">
-    <meta property="og:image"       content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
-    <meta property="og:url"         content="https://bulavin.space">
-    <meta property="og:type"        content="website">
+    <meta property="og:image"
+        content="https://avatars.yandex.net/get-music-content/16464214/8bceb93a.p.24009925/m1000x1000">
+    <meta property="og:url" content="https://bulavin.space">
+    <meta property="og:type" content="website">
 
     <script type="application/ld+json">
     {
@@ -73,297 +80,314 @@
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/main.css">
 </head>
+
 <body>
 
-<canvas id="global-canvas"></canvas>
-<div class="dynamic-bg"></div>
+    <canvas id="global-canvas"></canvas>
+    <div class="dynamic-bg"></div>
 
-<div class="container">
+    <div class="container">
 
-    <!-- PROFILE CARD -->
-    <div class="profile-card">
+        <!-- PROFILE CARD -->
+        <div class="profile-card">
 
-        <div class="qr-nav">
-            <button class="nav-btn" onclick="openQR()" aria-label="QR-код">
-                <i class="fa-solid fa-qrcode"></i>
-            </button>
-        </div>
-        <div class="auth-nav">
-            <!-- Кнопка меняется после авторизации -->
-            <button class="nav-btn has-dot" id="authNavBtn" onclick="onAuthNavClick()" aria-label="Профиль">
-                <i class="fa-regular fa-user" id="authNavIcon"></i>
-            </button>
-        </div>
+            <div class="qr-nav">
+                <button class="nav-btn" onclick="openQR()" aria-label="QR-код">
+                    <i class="fa-solid fa-qrcode"></i>
+                </button>
+            </div>
+            <div class="auth-nav">
+                <!-- Кнопка меняется после авторизации -->
+                <button class="nav-btn has-dot" id="authNavBtn" onclick="onAuthNavClick()" aria-label="Профиль">
+                    <i class="fa-regular fa-user" id="authNavIcon"></i>
+                </button>
+            </div>
 
-        <!-- Бейдж юзера над аватаркой (показывается только если залогинен) -->
-        <div class="user-badge" id="userBadge" style="display:none;"></div>
+            <!-- Бейдж юзера над аватаркой (показывается только если залогинен) -->
+            <div class="user-badge" id="userBadge" style="display:none;"></div>
 
-        <!-- Avatar: кольцо скрыто (класс avatar-loading), силуэт-заглушка -->
-        <div class="avatar-link avatar-loading" onclick="handleAvatarClick()" id="avatarLink">
-            <div class="avatar-inner-border">
-                <!-- Силуэт-заглушка — показывается пока нет аватарки -->
-                <div class="avatar-silhouette" id="avatarSilhouette">
-                    <div class="silhouette-head"></div>
-                    <div class="silhouette-body"></div>
+            <!-- Avatar: кольцо скрыто (класс avatar-loading), силуэт-заглушка -->
+            <div class="avatar-link avatar-loading" onclick="handleAvatarClick()" id="avatarLink">
+                <div class="avatar-inner-border">
+                    <!-- Силуэт-заглушка — показывается пока нет аватарки -->
+                    <div class="avatar-silhouette" id="avatarSilhouette">
+                        <div class="silhouette-head"></div>
+                        <div class="silhouette-body"></div>
+                    </div>
+                    <!-- EXCLUSIVE overlay -->
+                    <div id="avatarPlaceholder" class="avatar-placeholder" style="display:none;">
+                        <span id="avatarText">EXCLUSIVE</span>
+                        <i id="avatarIcon" class="fa-solid fa-play" style="display:none;"></i>
+                    </div>
+                    <!-- Реальное фото (скрыто до загрузки) -->
+                    <img class="avatar" id="mainAvatarImage" alt="BULAVIN" style="opacity:0;">
                 </div>
-                <!-- EXCLUSIVE overlay -->
-                <div id="avatarPlaceholder" class="avatar-placeholder" style="display:none;">
-                    <span id="avatarText">EXCLUSIVE</span>
-                    <i id="avatarIcon" class="fa-solid fa-play" style="display:none;"></i>
+            </div>
+
+            <div class="name-wrapper">
+                <div class="name-inner">
+                    <h1>BULAVIN</h1>
+                    <svg class="verify-icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path
+                            d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z" />
+                    </svg>
                 </div>
-                <!-- Реальное фото (скрыто до загрузки) -->
-                <img class="avatar" id="mainAvatarImage" alt="BULAVIN" style="opacity:0;">
             </div>
+
+            <!-- Bio: скелетон до загрузки -->
+            <p class="bio skeleton-text" id="bioEl">&nbsp;</p>
         </div>
 
-        <div class="name-wrapper">
-            <div class="name-inner">
-                <h1>BULAVIN</h1>
-                <svg class="verify-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6c.154-.435.238-.905.238-1.4c0-2.21-1.71-3.998-3.818-3.998c-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25c-2.11 0-3.818 1.79-3.818 4c0 .494.083.964.237 1.4c-1.272.65-2.147 2.02-2.147 3.6c0 1.58.875 2.95 2.147 3.6c-.154.435-.237.905-.237 1.4c0 2.21 1.71 4 3.818 4c.47 0 .92-.084 1.335-.25c.62 1.334 1.926 2.25 3.437 2.25s2.817-.916 3.437-2.25c.415.165.865.25 1.336.25c2.11 0 3.818-1.79 3.818-4c0-.495-.084-.965-.238-1.4c1.273-.65 2.148-2.02 2.148-3.6zm-12.42 5.393l-4.104-4.103l1.591-1.592l2.513 2.513l6.45-6.45l1.59 1.592l-8.04 8.04z"/>
-                </svg>
-            </div>
+        <!-- SOCIAL GRID -->
+        <div class="grid">
+            <a id="link-telegram" href="https://t.me/imbulavin" target="_blank" rel="noopener" class="btn">
+                <i class="fa-brands fa-telegram"></i><span>Telegram</span>
+            </a>
+            <a id="link-instagram" href="https://www.instagram.com/lu4danya" target="_blank" rel="noopener" class="btn">
+                <i class="fa-brands fa-instagram"></i><span>Instagram</span>
+            </a>
         </div>
 
-        <!-- Bio: скелетон до загрузки -->
-        <p class="bio skeleton-text" id="bioEl">&nbsp;</p>
-    </div>
-
-    <!-- SOCIAL GRID -->
-    <div class="grid">
-        <a id="link-telegram" href="https://t.me/imbulavin" target="_blank" rel="noopener" class="btn">
-            <i class="fa-brands fa-telegram"></i><span>Telegram</span>
-        </a>
-        <a id="link-instagram" href="https://www.instagram.com/lu4danya" target="_blank" rel="noopener" class="btn">
-            <i class="fa-brands fa-instagram"></i><span>Instagram</span>
-        </a>
-    </div>
-
-    <!-- RELEASE BLOCK (управляется из admin → Релизы) -->
-    <div class="release-block" id="releaseBlock" style="display:none;" onclick="openRelease()">
-        <div class="release-cover-wrap">
-            <img class="release-cover" id="releaseCover" src="" alt="Release">
-            <div class="release-shine"></div>
-            <div class="release-meta">
-                <span class="release-title-text" id="releaseTitle"></span>
-            </div>
-            <div class="release-cta-wrap">
-                <span class="release-cta-btn" id="releaseCTA">ПРЕСЕЙВ</span>
-            </div>
-            <div class="release-tap-hint" id="releaseTapHint" style="display:none;"></div>
-            <div class="release-pulse-ring"></div>
-        </div>
-    </div>
-
-    <!-- MUSIC ACCORDION -->
-    <button class="btn" id="music-btn">
-        <i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span>
-    </button>
-    <div class="collapse-wrapper" id="music-wrapper">
-        <div class="collapse-content">
-            <a id="link-yandex"     href="#" target="_blank" rel="noopener" class="btn btn-yandex"><i class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
-            <a id="link-vk"         href="#" target="_blank" rel="noopener" class="btn btn-vk"><i class="fa-brands fa-vk"></i><span>VK Music</span></a>
-            <a id="link-spotify"    href="#" target="_blank" rel="noopener" class="btn btn-spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
-            <a id="link-apple"      href="#" target="_blank" rel="noopener" class="btn"><i class="fa-brands fa-apple"></i><span>Apple Music</span></a>
-            <a id="link-yt"         href="#" target="_blank" rel="noopener" class="btn btn-yt"><i class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
-            <a id="link-soundcloud" href="#" target="_blank" rel="noopener" class="btn btn-soundcloud"><i class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
-        </div>
-    </div>
-
-    <!-- AFISHA ACCORDION -->
-    <button class="btn" id="afisha-btn">
-        <i class="fa-solid fa-calendar-check"></i><span>АФИША</span>
-    </button>
-    <div class="collapse-wrapper" id="afisha-wrapper">
-        <div class="collapse-content">
-            <div class="afisha-card">
-                <p id="afisha-text" style="font-size:12px;color:var(--text-dim);text-align:center;">
-                    На данный момент выступлений не запланировано.
-                </p>
-                <div id="organizer-wrap" style="text-align:center;">
-                    <a id="link-organizer" href="#" target="_blank" rel="noopener" class="organizer-link">
-                        <i class="fa-solid fa-briefcase"></i> Я организатор
-                    </a>
+        <!-- RELEASE BLOCK (управляется из admin → Релизы) -->
+        <div class="release-block" id="releaseBlock" style="display:none;" onclick="openRelease()">
+            <div class="release-cover-wrap">
+                <img class="release-cover" id="releaseCover" src="" alt="Release">
+                <div class="release-shine"></div>
+                <div class="release-meta">
+                    <span class="release-title-text" id="releaseTitle"></span>
                 </div>
-                <div id="afisha-poster-wrap" style="display:none;position:relative;">
-                    <img class="afisha-poster-img" src="" alt="Афиша" style="width:100%;border-radius:16px;display:block;">
-                    <div class="poster-badge" style="display:none;">
-                        <i class="fa-solid fa-ticket"></i> КУПИТЬ БИЛЕТЫ
+                <div class="release-cta-wrap">
+                    <span class="release-cta-btn" id="releaseCTA">ПРЕСЕЙВ</span>
+                </div>
+                <div class="release-tap-hint" id="releaseTapHint" style="display:none;"></div>
+                <div class="release-pulse-ring"></div>
+            </div>
+        </div>
+
+        <!-- MUSIC ACCORDION -->
+        <button class="btn" id="music-btn">
+            <i class="fa-solid fa-headphones"></i><span>СЛУШАТЬ МУЗЫКУ</span>
+        </button>
+        <div class="collapse-wrapper" id="music-wrapper">
+            <div class="collapse-content">
+                <a id="link-yandex" href="#" target="_blank" rel="noopener" class="btn btn-yandex"><i
+                        class="fa-solid fa-compact-disc"></i><span>Yandex Music</span></a>
+                <a id="link-vk" href="#" target="_blank" rel="noopener" class="btn btn-vk"><i
+                        class="fa-brands fa-vk"></i><span>VK Music</span></a>
+                <a id="link-spotify" href="#" target="_blank" rel="noopener" class="btn btn-spotify"><i
+                        class="fa-brands fa-spotify"></i><span>Spotify</span></a>
+                <a id="link-apple" href="#" target="_blank" rel="noopener" class="btn"><i
+                        class="fa-brands fa-apple"></i><span>Apple Music</span></a>
+                <a id="link-yt" href="#" target="_blank" rel="noopener" class="btn btn-yt"><i
+                        class="fa-brands fa-youtube"></i><span>YouTube Music</span></a>
+                <a id="link-soundcloud" href="#" target="_blank" rel="noopener" class="btn btn-soundcloud"><i
+                        class="fa-brands fa-soundcloud"></i><span>SoundCloud</span></a>
+            </div>
+        </div>
+
+        <!-- AFISHA ACCORDION -->
+        <button class="btn" id="afisha-btn">
+            <i class="fa-solid fa-calendar-check"></i><span>АФИША</span>
+        </button>
+        <div class="collapse-wrapper" id="afisha-wrapper">
+            <div class="collapse-content">
+                <div class="afisha-card">
+                    <p id="afisha-text" style="font-size:12px;color:var(--text-dim);text-align:center;">
+                        На данный момент выступлений не запланировано.
+                    </p>
+                    <div id="organizer-wrap" style="text-align:center;">
+                        <a id="link-organizer" href="#" target="_blank" rel="noopener" class="organizer-link">
+                            <i class="fa-solid fa-briefcase"></i> Я организатор
+                        </a>
+                    </div>
+                    <div id="afisha-poster-wrap" style="display:none;position:relative;">
+                        <img class="afisha-poster-img" src="" alt="Афиша"
+                            style="width:100%;border-radius:16px;display:block;">
+                        <div class="poster-badge" style="display:none;">
+                            <i class="fa-solid fa-ticket"></i> КУПИТЬ БИЛЕТЫ
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- FUSION -->
+        <a id="link-fusion" href="#" target="_blank" rel="noopener" class="btn btn-fusion"
+            style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
+            <i class="fa-solid fa-fingerprint"></i><span>СЛИЯНИЕ</span>
+        </a>
+
+        <!-- ДИНАМИЧЕСКИЕ КНОПКИ ИЗ АДМИНКИ -->
+        <div id="custom-buttons-container"></div>
+
+        <!-- BULAVIN SYSTEM — API БАЗА ДНЯ -->
+        <div class="prediction-card">
+            <div class="prediction-label">BULAVIN SYSTEM • БАЗА ДНЯ</div>
+            <div id="prediction">Подключаюсь...</div>
+        </div>
+
+        <p class="footer" id="footerEl">© 2026 BULAVIN</p>
     </div>
 
-    <!-- FUSION -->
-    <a id="link-fusion" href="#" target="_blank" rel="noopener"
-       class="btn btn-fusion" style="border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.07);">
-        <i class="fa-solid fa-fingerprint"></i><span>СЛИЯНИЕ</span>
-    </a>
-
-    <!-- ДИНАМИЧЕСКИЕ КНОПКИ ИЗ АДМИНКИ -->
-    <div id="custom-buttons-container"></div>
-
-    <!-- BULAVIN SYSTEM — API БАЗА ДНЯ -->
-    <div class="prediction-card">
-        <div class="prediction-label">BULAVIN SYSTEM • БАЗА ДНЯ</div>
-        <div id="prediction">Подключаюсь...</div>
-    </div>
-
-    <p class="footer" id="footerEl">© 2026 BULAVIN</p>
-</div>
-
-<!-- ══════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════
      МОДАЛЬНЫЕ ОКНА
 ══════════════════════════════════════════════ -->
 
-<!-- QR -->
-<div class="glass-modal" id="qrModal" onclick="closeQR()">
-    <div class="glass-card" style="padding:35px 28px;display:flex;flex-direction:column;align-items:center;" onclick="event.stopPropagation()">
-        <div class="qr-image-wrapper">
-            <img src="/qr-code.png" alt="QR Bulavin Space">
-        </div>
-        <div class="modal-title">BULAVIN.SPACE</div>
-        <div class="modal-subtitle">ОТСКАНИРУЙ, ЧТОБЫ ПОДЕЛИТЬСЯ</div>
-    </div>
-</div>
-
-<!-- AUTH CHOICE -->
-<div class="glass-modal" id="authChoiceModal" onclick="closeAuthChoice()">
-    <div class="glass-card" style="padding:32px 26px;display:flex;flex-direction:column;gap:12px;width:90%;max-width:330px;" onclick="event.stopPropagation()">
-        <div class="auth-choice-header">
-            <div class="auth-choice-badge" id="authChoiceBadge">SYSTEM ACCESS</div>
-            <p class="auth-choice-sub" id="authChoiceSub">BULAVIN INNER CIRCLE</p>
-        </div>
-        <button class="choice-btn" onclick="openAuth(true)">
-            <i class="fa-solid fa-right-to-bracket"></i> ВХОД
-        </button>
-        <button class="choice-btn" onclick="openAuth(false)">
-            <i class="fa-solid fa-user-plus"></i> РЕГИСТРАЦИЯ
-        </button>
-    </div>
-</div>
-
-<!-- AUTH FORM -->
-<div class="glass-modal" id="authModal" onclick="closeAuth()">
-    <div class="auth-form-card" onclick="event.stopPropagation()">
-        <h2 id="authTitle" class="modal-title" style="margin-bottom:36px;">ВХОД</h2>
-        <div id="authInputs" style="width:100%;display:flex;flex-direction:column;gap:0;">
-            <input class="input" type="text"     id="authUsername" placeholder="USERNAME" style="display:none;margin-bottom:12px;">
-            <input class="input" type="email"    id="authEmail"    placeholder="EMAIL"    style="margin-bottom:12px;">
-            <input class="input" type="password" id="authPassword" placeholder="ПАРОЛЬ"  style="margin-bottom:12px;">
-            <p id="forgotPasswordLink" class="forgot-link" onclick="resetPasswordTrigger()">Забыли пароль?</p>
-            <div id="rememberMeRow" class="remember-row">
-                <label class="remember-label">
-                    <input type="checkbox" id="rememberMeCheck" checked>
-                    <span class="remember-checkbox"></span>
-                    <span class="remember-text">Запомнить меня</span>
-                </label>
+    <!-- QR -->
+    <div class="glass-modal" id="qrModal" onclick="closeQR()">
+        <div class="glass-card" style="padding:35px 28px;display:flex;flex-direction:column;align-items:center;"
+            onclick="event.stopPropagation()">
+            <div class="qr-image-wrapper">
+                <img src="/qr-code.png" alt="QR Bulavin Space">
             </div>
-            <button class="btn-action" id="authBtn" onclick="executeAuth()">ПРОДОЛЖИТЬ</button>
-        </div>
-        <div id="authSuccess" style="display:none;text-align:center;width:100%;">
-            <i id="authIcon" class="fa-regular fa-envelope" style="font-size:38px;color:var(--blue);margin-bottom:18px;display:block;"></i>
-            <p id="authSuccessText" style="font-size:11px;opacity:.9;line-height:1.55;">Проверьте почту.</p>
-            <button class="btn-action" style="margin-top:20px;" onclick="closeAuth()">ПОНЯТНО</button>
+            <div class="modal-title">BULAVIN.SPACE</div>
+            <div class="modal-subtitle">ОТСКАНИРУЙ, ЧТОБЫ ПОДЕЛИТЬСЯ</div>
         </div>
     </div>
-</div>
 
-<!-- STORY MODAL — Instagram 9:16 Format (личная сторис) -->
-<div class="glass-modal story-modal-v2" id="storyModal" onclick="handleStoryClose()">
-    <div class="story-v2-container" onclick="event.stopPropagation()">
-        <div class="story-v2-topbar">
-            <div class="story-v2-timebar-track">
-                <div class="story-v2-timebar-fill" id="progress-bar"></div>
+    <!-- AUTH CHOICE -->
+    <div class="glass-modal" id="authChoiceModal" onclick="closeAuthChoice()">
+        <div class="glass-card"
+            style="padding:32px 26px;display:flex;flex-direction:column;gap:12px;width:90%;max-width:330px;"
+            onclick="event.stopPropagation()">
+            <div class="auth-choice-header">
+                <div class="auth-choice-badge" id="authChoiceBadge">SYSTEM ACCESS</div>
+                <p class="auth-choice-sub" id="authChoiceSub">BULAVIN INNER CIRCLE</p>
             </div>
-            <button class="story-v2-close" onclick="handleStoryClose()" aria-label="Закрыть">
-                <i class="fa-solid fa-xmark"></i>
+            <button class="choice-btn" onclick="openAuth(true)">
+                <i class="fa-solid fa-right-to-bracket"></i> ВХОД
+            </button>
+            <button class="choice-btn" onclick="openAuth(false)">
+                <i class="fa-solid fa-user-plus"></i> РЕГИСТРАЦИЯ
             </button>
         </div>
-        <video id="storyVideo" playsinline style="display:block;"></video>
-        <img id="storyImage" src="" alt="" style="display:none;">
-        <div class="story-v2-gradient"></div>
     </div>
-</div>
 
-<!-- ══ B.S. STORY MODAL (TikTok-лента на главной) ══ -->
-<div class="glass-modal bs-modal" id="bsStoryModal" onclick="closeBSStory()">
-    <div class="bs-modal-inner" onclick="event.stopPropagation()">
-
-        <!-- Заголовок -->
-        <div class="bs-modal-header">
-            <span class="bs-modal-label" id="bsModalLabel">B.S. STORY</span>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <!-- Tooltip "?" -->
-                <div class="bs-tooltip-wrap">
-                    <button class="bs-tooltip-btn" id="bsTooltipBtn" onclick="toggleBSTooltip()">?</button>
-                    <div class="bs-tooltip-box" id="bsTooltipBox">
-                        Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.
-                    </div>
+    <!-- AUTH FORM -->
+    <div class="glass-modal" id="authModal" onclick="closeAuth()">
+        <div class="auth-form-card" onclick="event.stopPropagation()">
+            <h2 id="authTitle" class="modal-title" style="margin-bottom:36px;">ВХОД</h2>
+            <div id="authInputs" style="width:100%;display:flex;flex-direction:column;gap:0;">
+                <input class="input" type="text" id="authUsername" placeholder="USERNAME"
+                    style="display:none;margin-bottom:12px;">
+                <input class="input" type="email" id="authEmail" placeholder="EMAIL" style="margin-bottom:12px;">
+                <input class="input" type="password" id="authPassword" placeholder="ПАРОЛЬ" style="margin-bottom:12px;">
+                <p id="forgotPasswordLink" class="forgot-link" onclick="resetPasswordTrigger()">Забыли пароль?</p>
+                <div id="rememberMeRow" class="remember-row">
+                    <label class="remember-label">
+                        <input type="checkbox" id="rememberMeCheck" checked>
+                        <span class="remember-checkbox"></span>
+                        <span class="remember-text">Запомнить меня</span>
+                    </label>
                 </div>
-                <!-- Закрыть -->
-                <button class="bs-close-btn" onclick="closeBSStory()">
+                <button class="btn-action" id="authBtn" onclick="executeAuth()">ПРОДОЛЖИТЬ</button>
+            </div>
+            <div id="authSuccess" style="display:none;text-align:center;width:100%;">
+                <i id="authIcon" class="fa-regular fa-envelope"
+                    style="font-size:38px;color:var(--blue);margin-bottom:18px;display:block;"></i>
+                <p id="authSuccessText" style="font-size:11px;opacity:.9;line-height:1.55;">Проверьте почту.</p>
+                <button class="btn-action" style="margin-top:20px;" onclick="closeAuth()">ПОНЯТНО</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STORY MODAL — Instagram 9:16 Format (личная сторис) -->
+    <div class="glass-modal story-modal-v2" id="storyModal" onclick="handleStoryClose()">
+        <div class="story-v2-container" onclick="event.stopPropagation()">
+            <div class="story-v2-topbar">
+                <div class="story-v2-timebar-track">
+                    <div class="story-v2-timebar-fill" id="progress-bar"></div>
+                </div>
+                <button class="story-v2-close" onclick="handleStoryClose()" aria-label="Закрыть">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
+            <video id="storyVideo" playsinline style="display:block;"></video>
+            <img id="storyImage" src="" alt="" style="display:none;">
+            <div class="story-v2-gradient"></div>
         </div>
+    </div>
 
-        <!-- TikTok-рамка -->
-        <div class="bs-frame" id="bsFrame">
-            <!-- Скелетон -->
-            <div class="gallery-skeleton" id="bsSkeleton">
-                <div class="skeleton-pulse-icon"></div>
+    <!-- ══ B.S. STORY MODAL (TikTok-лента на главной) ══ -->
+    <div class="glass-modal bs-modal" id="bsStoryModal" onclick="closeBSStory()">
+        <div class="bs-modal-inner" onclick="event.stopPropagation()">
+
+            <!-- Заголовок -->
+            <div class="bs-modal-header">
+                <span class="bs-modal-label" id="bsModalLabel">B.S. STORY</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <!-- Tooltip "?" -->
+                    <div class="bs-tooltip-wrap">
+                        <button class="bs-tooltip-btn" id="bsTooltipBtn" onclick="toggleBSTooltip()">?</button>
+                        <div class="bs-tooltip-box" id="bsTooltipBox">
+                            Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.
+                        </div>
+                    </div>
+                    <!-- Загрузить фото -->
+                    <button class="bs-upload-btn" onclick="triggerBSPhotoUpload()" aria-label="Добавить фото">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <!-- Закрыть -->
+                    <button class="bs-close-btn" onclick="closeBSStory()">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
             </div>
-            <!-- Лента scroll-snap -->
-            <div class="story-reel" id="bsReel"></div>
-            <!-- CSS свайп-подсказка -->
-            <div class="swipe-hint" id="bsSwipeHint">
-                <div class="swipe-finger"></div>
+
+            <!-- TikTok-рамка -->
+            <div class="bs-frame" id="bsFrame">
+                <!-- Скелетон -->
+                <div class="gallery-skeleton" id="bsSkeleton">
+                    <div class="skeleton-pulse-icon"></div>
+                </div>
+                <!-- Лента scroll-snap -->
+                <div class="story-reel" id="bsReel"></div>
+                <!-- CSS свайп-подсказка -->
+                <div class="swipe-hint" id="bsSwipeHint">
+                    <div class="swipe-finger"></div>
+                </div>
+                <!-- Световой блик -->
+                <div class="gallery-flare"></div>
             </div>
-            <!-- Световой блик -->
-            <div class="gallery-flare"></div>
+
+            <!-- Инпут загрузки фото (скрыт) -->
+            <input type="file" id="bsPhotoInput" accept="image/*" style="display:none;">
+            <div class="bs-upload-status" id="bsUploadStatus"></div>
+
+        </div>
+    </div>
+
+    <!-- ══ CROPPER MODAL для B.S. STORY ══ -->
+    <div class="bs-cropper-modal" id="bsCropperModal">
+        <!-- Топ-бар: отмена слева, заголовок по центру, публикация справа -->
+        <div class="bsc-topbar">
+            <button class="bsc-cancel-btn" onclick="closeBSCropper()">
+                ОТМЕНА
+            </button>
+            <span class="bsc-title">ФОТО</span>
+            <button class="bsc-publish-btn" onclick="confirmBSCrop()">
+                ДАЛЕЕ <i class="fa-solid fa-arrow-right"></i>
+            </button>
         </div>
 
-        <!-- Инпут загрузки фото (скрыт) -->
-        <input type="file" id="bsPhotoInput" accept="image/*" style="display:none;">
-        <div class="bs-upload-status" id="bsUploadStatus"></div>
-
-    </div>
-</div>
-
-<!-- ══ CROPPER MODAL для B.S. STORY ══ -->
-<div class="bs-cropper-modal" id="bsCropperModal">
-    <!-- Топ-бар: отмена слева, заголовок по центру, публикация справа -->
-    <div class="bsc-topbar">
-        <button class="bsc-cancel-btn" onclick="closeBSCropper()">
-            ОТМЕНА
-        </button>
-        <span class="bsc-title">ФОТО</span>
-        <button class="bsc-publish-btn" onclick="confirmBSCrop()">
-            ДАЛЕЕ <i class="fa-solid fa-arrow-right"></i>
-        </button>
-    </div>
-
-    <!-- Зона кадрирования — максимум пространства -->
-    <div class="bsc-crop-zone">
-        <img id="bsCropperImage" src="" alt="">
-    </div>
-
-    <!-- Нижняя панель: комментарий + статус -->
-    <div class="bsc-bottom">
-        <div class="bsc-comment-wrap">
-            <textarea class="bsc-textarea" id="bsPhotoComment"
-                maxlength="150"
-                oninput="updateBSCommentCounter()"
-                placeholder="Добавь подпись..."></textarea>
-            <span class="bsc-counter" id="bsCommentCounter">0 / 150</span>
+        <!-- Зона кадрирования — максимум пространства -->
+        <div class="bsc-crop-zone">
+            <img id="bsCropperImage" src="" alt="">
         </div>
-        <div class="status-line" id="bsCropperStatus"></div>
-    </div>
-</div>
 
-<script src="/js/config.js"></script>
-<script src="/js/main.js"></script>
+        <!-- Нижняя панель: комментарий + статус -->
+        <div class="bsc-bottom">
+            <div class="bsc-comment-wrap">
+                <textarea class="bsc-textarea" id="bsPhotoComment" maxlength="150" oninput="updateBSCommentCounter()"
+                    placeholder="Добавь подпись..."></textarea>
+                <span class="bsc-counter" id="bsCommentCounter">0 / 150</span>
+            </div>
+            <div class="status-line" id="bsCropperStatus"></div>
+        </div>
+    </div>
+
+    <script src="/js/config.js"></script>
+    <script src="/js/main.js"></script>
 </body>
+
 </html>
