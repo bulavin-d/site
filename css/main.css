@@ -598,6 +598,192 @@ h1 {
         inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
+/* ══════════════════════════════════════════════════
+   RELEASE / PRESAVE BLOCK — Premium Liquid Glass
+   ══════════════════════════════════════════════════ */
+.release-block {
+    cursor: pointer;
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s var(--ease-spring);
+    /* Cinematic depth shadow */
+    box-shadow:
+        0 24px 56px -12px rgba(0, 0, 0, 0.85),
+        0 8px 24px -8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.release-block:active {
+    transform: scale(0.97);
+}
+
+@media (hover: hover) {
+    .release-block:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            0 32px 64px -16px rgba(0, 0, 0, 0.9),
+            0 12px 32px -8px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    }
+}
+
+/* ── Cover wrap ── */
+.release-cover-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+/* ── Cover image ── */
+.release-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s var(--ease-out);
+}
+
+@media (hover: hover) {
+    .release-block:hover .release-cover {
+        transform: scale(1.025);
+    }
+}
+
+/* ── Shine overlay (top glare) ── */
+.release-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg,
+            rgba(255, 255, 255, 0.06) 0%,
+            rgba(255, 255, 255, 0.00) 40%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* ── Bottom gradient — for text legibility ── */
+.release-meta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 60px 20px 20px;
+    background: linear-gradient(to top,
+            rgba(0, 0, 0, 0.72) 0%,
+            rgba(0, 0, 0, 0.0) 100%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ── Track title ── */
+.release-title-text {
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+/* ── CTA wrap (holds the button) ── */
+.release-cta-wrap {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+    width: calc(100% - 32px);
+    display: flex;
+    justify-content: center;
+}
+
+/* ── CTA Button (ПРЕСЕЙВ / СЛУШАТЬ) ── 
+   JS sets inline color via: btn.style.color/background/borderColor */
+.release-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px 24px;
+    border-radius: 16px;
+    /* Base glass — overridden per-status by JS inline styles */
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #fff;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow:
+        0 4px 20px -4px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    transition:
+        opacity 0.25s ease,
+        transform 0.2s var(--ease-spring);
+    text-align: center;
+}
+
+/* ── Tap hint — beacon animation ── */
+.release-tap-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    pointer-events: none;
+    /* Two concentric rings */
+    width: 80px;
+    height: 80px;
+}
+
+.release-tap-hint::before,
+.release-tap-hint::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.55);
+    animation: release-beacon 2.4s var(--ease-out) infinite;
+}
+
+.release-tap-hint::after {
+    animation-delay: 1.2s;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes release-beacon {
+    0% {
+        transform: scale(0.6);
+        opacity: 0.9;
+    }
+
+    80% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+/* ── Pulse ring (decorative corner glow) ── */
+.release-pulse-ring {
+    display: none;
+    /* скрыт — beacon-hint заменяет его */
+}
+
+/* ─────────────────────────────────────────────────── */
+
 .prediction-label {
     font-size: 9px;
     letter-spacing: 2px;
