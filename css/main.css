@@ -731,102 +731,104 @@ h1 {
     text-align: center;
 }
 
-/* ── Tap hint — Apple Card shimmer + pill ── */
+/* ══ TAP HINT — Rotating chromatic border beam ══
+   Technique: @property + conic-gradient rotation
+   No text. Pure visual language. Premium AF.      */
+
+/* CSS custom property for smooth conic rotation */
+@property --tap-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
 .release-tap-hint {
     position: absolute;
     inset: 0;
-    /* покрываем всю карточку — ничего не уходит за край */
     z-index: 5;
     pointer-events: none;
-    overflow: hidden;
-    /* shimmer не выходит за пределы */
     border-radius: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
 }
 
-/* Диагональный shimmer (проходит раз в 3.5с) */
+/* ── Rotating chromatic border beam ── */
 .release-tap-hint::before {
     content: '';
     position: absolute;
-    top: -100%;
-    left: -75%;
-    width: 50%;
-    height: 300%;
+    inset: 0;
+    border-radius: 24px;
+    /* conic-gradient вращается через @property */
+    background: conic-gradient(from var(--tap-angle),
+            transparent 0%,
+            transparent 55%,
+            rgba(255, 255, 255, 0.04) 65%,
+            rgba(255, 220, 120, 0.5) 72%,
+            rgba(255, 255, 255, 0.95) 76%,
+            rgba(200, 180, 255, 0.55) 80%,
+            rgba(255, 255, 255, 0.04) 88%,
+            transparent 100%);
+    /* Маска: показываем только 2px-рамку, не заполняем внутренность */
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    padding: 2px;
+    animation: tap-border-spin 3s linear infinite;
+}
+
+@keyframes tap-border-spin {
+    to {
+        --tap-angle: 360deg;
+    }
+}
+
+/* ── Diagonal shimmer sweep (раз в 5с) ── */
+.release-tap-hint::after {
+    content: '';
+    position: absolute;
+    top: -150%;
+    left: -60%;
+    width: 40%;
+    height: 400%;
     background: linear-gradient(105deg,
             transparent 20%,
-            rgba(255, 255, 255, 0.13) 50%,
+            rgba(255, 255, 255, 0.09) 50%,
             transparent 80%);
     transform: skewX(-15deg);
-    animation: shimmer-sweep 3.5s ease-in-out infinite;
+    animation: tap-shimmer 5s ease-in-out 2s infinite;
 }
 
-@keyframes shimmer-sweep {
+@keyframes tap-shimmer {
     0% {
-        left: -75%;
+        left: -60%;
         opacity: 0;
     }
 
-    8% {
+    6% {
         opacity: 1;
     }
 
-    42% {
-        left: 125%;
+    40% {
+        left: 130%;
         opacity: 1;
     }
 
-    50% {
-        left: 125%;
+    48% {
+        left: 130%;
         opacity: 0;
     }
 
     100% {
-        left: 125%;
+        left: 130%;
         opacity: 0;
     }
 }
 
-/* Pill-подсказка по центру карточки */
-.release-tap-hint::after {
-    content: '☝  НАЖМИ';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 100px;
-    padding: 10px 22px;
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: 3px;
-    color: rgba(255, 255, 255, 0.9);
-    white-space: nowrap;
-    box-shadow:
-        0 8px 24px -4px rgba(0, 0, 0, 0.7),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    animation: pill-float 2.2s ease-in-out infinite;
-}
-
-@keyframes pill-float {
-
-    0%,
-    100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.92;
-    }
-
-    50% {
-        transform: translate(-50%, -54%) scale(1.03);
-        opacity: 1;
-    }
-}
-
-/* ── Pulse ring (не нужен, скрыт) ── */
+/* ── Pulse ring hidden ── */
 .release-pulse-ring {
     display: none;
 }
