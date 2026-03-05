@@ -671,18 +671,19 @@ h1 {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 60%;
-    background: linear-gradient(105deg,
-            transparent 20%,
-            rgba(255, 255, 255, 0.12) 50%,
-            transparent 80%);
-    transform: translateX(-100%);
+    left: 0;
+    width: 150%;
+    background: linear-gradient(to right,
+            transparent 0%,
+            rgba(255, 255, 255, 0.15) 50%,
+            transparent 100%);
+    transform: skewX(-25deg) translateX(-150%);
     animation: shine-sweep 5s ease-in-out 1s infinite;
 }
 
 @keyframes shine-sweep {
     0% {
-        transform: translateX(-100%);
+        transform: skewX(-25deg) translateX(-150%);
         opacity: 0;
     }
 
@@ -691,17 +692,17 @@ h1 {
     }
 
     38% {
-        transform: translateX(200%);
+        transform: skewX(-25deg) translateX(100%);
         opacity: 1;
     }
 
     45% {
-        transform: translateX(200%);
+        transform: skewX(-25deg) translateX(100%);
         opacity: 0;
     }
 
     100% {
-        transform: translateX(200%);
+        transform: skewX(-25deg) translateX(100%);
         opacity: 0;
     }
 }
