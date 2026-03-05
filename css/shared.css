@@ -7,38 +7,44 @@
 
 :root {
     /* Palette — deeper, premium dark */
-    --bg:            #030305;
-    --bg-card:       rgba(255, 255, 255, 0.032);
-    --glass:         rgba(255, 255, 255, 0.042);
-    --glass-hover:   rgba(255, 255, 255, 0.072);
-    --glass-border:  rgba(255, 255, 255, 0.09);
-    --glass-border-h:rgba(255, 255, 255, 0.22);
-    --glass-blur:    blur(28px);
+    --bg: #030305;
+    --bg-card: rgba(255, 255, 255, 0.032);
+    --glass: rgba(255, 255, 255, 0.042);
+    --glass-hover: rgba(255, 255, 255, 0.072);
+    --glass-border: rgba(255, 255, 255, 0.09);
+    --glass-border-h: rgba(255, 255, 255, 0.22);
+    --glass-blur: blur(28px);
 
     /* Text */
-    --text:          #f0f0f0;
-    --text-dim:      rgba(255, 255, 255, 0.45);
-    --text-dimmer:   rgba(255, 255, 255, 0.22);
+    --text: #f0f0f0;
+    --text-dim: rgba(255, 255, 255, 0.45);
+    --text-dimmer: rgba(255, 255, 255, 0.22);
 
     /* Accents */
-    --blue:          #0095f6;
-    --red:           #ff4b2b;
-    --yandex:        #ffcc00;
-    --vk:            #0077ff;
-    --spotify:       #1ed760;
-    --yt:            #ff0000;
-    --sc:            #ff5500;
+    --blue: #0095f6;
+    --red: #ff4b2b;
+    --yandex: #ffcc00;
+    --vk: #0077ff;
+    --spotify: #1ed760;
+    --yt: #ff0000;
+    --sc: #ff5500;
 
     /* Ring gradient (overridable from admin) */
     --ring-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 
     /* Motion */
-    --ease-out:       cubic-bezier(0.23, 1, 0.32, 1);
-    --ease-spring:    cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Reset */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     background: var(--bg);
@@ -52,37 +58,52 @@ body {
 
 /* ── GLASS CARD BASE ───────────────────────────── */
 .glass-card {
-    background:    var(--bg-card);
-    border:        1px solid var(--glass-border);
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    backdrop-filter: blur(36px) saturate(180%);
+    -webkit-backdrop-filter: blur(36px) saturate(180%);
     border-radius: 28px;
+    box-shadow:
+        0 32px 64px -16px rgba(0, 0, 0, 0.9),
+        0 8px 24px -8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
 
 /* ── MODALS ─────────────────────────────────────── */
 .glass-modal {
     display: none;
-    position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.82);
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
     z-index: 1000;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(28px) saturate(140%);
+    -webkit-backdrop-filter: blur(28px) saturate(140%);
 }
+
 .glass-modal.show {
     display: flex;
-    animation: modalIn 0.32s var(--ease-spring) forwards;
+    animation: modalIn 0.35s var(--ease-spring) forwards;
 }
+
 @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.92); }
-    to   { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 /* ── INPUT ──────────────────────────────────────── */
 .input {
     width: 100%;
-    background: rgba(255,255,255,0.055);
+    background: rgba(255, 255, 255, 0.055);
     border: 1px solid var(--glass-border);
     padding: 16px 18px;
     border-radius: 16px;
@@ -92,32 +113,65 @@ body {
     font-family: inherit;
     transition: border-color 0.25s ease, background 0.25s ease;
 }
+
 .input:focus {
-    border-color: rgba(255,255,255,0.28);
-    background: rgba(255,255,255,0.075);
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.075);
 }
-.input::placeholder { color: rgba(255,255,255,0.3); }
+
+.input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
 
 /* ── BTN-ACTION ─────────────────────────────────── */
 .btn-action {
     width: 100%;
     padding: 17px;
     border-radius: 16px;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text);
     font-weight: 800;
     font-size: 12px;
     letter-spacing: 2px;
     cursor: pointer;
-    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+    transition:
+        background 0.25s ease,
+        color 0.3s ease,
+        transform 0.25s var(--ease-spring),
+        border-color 0.25s ease,
+        box-shadow 0.3s ease;
     text-transform: uppercase;
     font-family: inherit;
+    box-shadow:
+        0 4px 12px -4px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
-.btn-action:hover { background: #fff; color: #000; border-color: #fff; transform: translateY(-1px); }
-.btn-action:active { transform: scale(0.97); }
+
+.btn-action:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    border-color: #fff;
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 28px -6px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-action:active {
+    transform: scale(0.97);
+}
 
 /* ── SCROLLBAR ──────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+}
