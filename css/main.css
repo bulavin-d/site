@@ -1125,9 +1125,7 @@ h1 {
     display: flex;
     flex-direction: column;
     /* Liquid Glass: Глубокое полупрозрачное стекло с градиентом */
-    background: linear-gradient(145deg, rgba(30, 30, 35, 0.45), rgba(10, 10, 15, 0.65));
-    backdrop-filter: blur(60px) saturate(200%);
-    -webkit-backdrop-filter: blur(60px) saturate(200%);
+    background: linear-gradient(145deg, rgba(30, 30, 35, 0.85), rgba(10, 10, 15, 0.95));
     position: relative;
     overflow: hidden;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08),
@@ -1159,9 +1157,7 @@ h1 {
     height: 56px;
     /* Чуть больше воздуха для шапки */
     min-height: 56px;
-    background: rgba(255, 255, 255, 0.035);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    background: rgba(40, 40, 45, 0.9);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     /* Чуть ярче разделитель */
     flex-shrink: 0;
@@ -1188,9 +1184,9 @@ h1 {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.65);
     font-size: 11px;
     font-weight: 800;
     cursor: pointer;
@@ -1200,13 +1196,11 @@ h1 {
     justify-content: center;
     transition: all 0.25s ease;
     font-family: inherit;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
 .bs-tooltip-btn:hover {
     color: #fff;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
     transform: scale(1.05);
 }
 
@@ -1214,7 +1208,7 @@ h1 {
     position: absolute;
     right: 0;
     top: 34px;
-    background: linear-gradient(135deg, rgba(30, 30, 35, 0.6), rgba(10, 10, 15, 0.8));
+    background: rgba(30, 30, 35, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     padding: 14px 16px;
@@ -1227,8 +1221,6 @@ h1 {
     opacity: 0;
     transform: translateY(-8px) scale(0.95);
     transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    backdrop-filter: blur(25px) saturate(180%);
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     white-space: pre-wrap;
     word-break: break-word;
@@ -1272,21 +1264,19 @@ h1 {
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.65);
     font-size: 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.25s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
 }
 
 .bs-close-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
     color: #fff;
     transform: scale(1.05);
 }
@@ -1535,15 +1525,14 @@ h1 {
 /* ── + ЗАГРУЗИТЬ ФОТО — кнопка внизу слайда ──────── */
 .reel-add-btn {
     width: 100%;
-    /* Premium iOS Glass Button */
-    background: rgba(255, 75, 43, 0.15);
-    border: 1px solid rgba(255, 75, 43, 0.25);
-    border-radius: 18px;
-    padding: 14px 20px;
-    color: rgba(255, 255, 255, 0.95);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 2px;
+    background: rgba(200, 50, 30, 0.18);
+    border: 1px solid rgba(255, 80, 50, 0.32);
+    border-radius: 14px;
+    padding: 12px 18px;
+    color: rgba(255, 130, 110, 0.92);
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     font-family: inherit;
     cursor: pointer;
@@ -1551,24 +1540,20 @@ h1 {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background 0.22s, border-color 0.22s, transform 0.15s;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
 }
 
 .reel-add-btn i {
-    font-size: 14px;
-    color: rgba(255, 75, 43, 0.9);
+    font-size: 13px;
 }
 
 .reel-add-btn:hover {
-    background: rgba(255, 75, 43, 0.25);
-    border-color: rgba(255, 75, 43, 0.4);
+    background: rgba(200, 50, 30, 0.30);
+    border-color: rgba(255, 80, 50, 0.55);
+    color: #fff;
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .reel-add-btn:active {
