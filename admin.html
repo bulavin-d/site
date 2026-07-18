@@ -7,13 +7,53 @@
     <meta name="robots" content="noindex, nofollow">
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 
-    <link rel="icon" href="https://raw.githubusercontent.com/bulavin-d/site/refs/heads/main/logo.bulavin.space.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="/bulavinnewflav.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/admin.css">
+
+    <!-- дополнительные стили под новые списки (концерты / кнопки / цвета) -->
+    <style>
+        .list-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; margin-bottom: 8px;
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 12px;
+        }
+        .list-item .li-ic {
+            width: 34px; height: 34px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 9px; background: rgba(165, 13, 29, .16);
+            color: #ff5a6a; font-size: 14px;
+        }
+        .list-item .li-info { flex: 1; min-width: 0; }
+        .list-item .li-title { font-size: 13px; font-weight: 700; color: #fff; }
+        .list-item .li-sub {
+            font-size: 11px; color: rgba(255, 255, 255, .4);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .list-item .li-acts { display: flex; gap: 6px; flex-shrink: 0; }
+        .li-act {
+            width: 32px; height: 32px; border: none; cursor: pointer;
+            border-radius: 8px; color: #fff;
+            background: rgba(255, 255, 255, .07);
+            transition: background .2s, opacity .2s;
+        }
+        .li-act:hover { background: rgba(255, 255, 255, .14); }
+        .li-act.hidden { opacity: .4; }
+        .li-act.del:hover { background: #a50d1d; }
+        .scene-colors { display: flex; flex-direction: column; gap: 10px; margin: 10px 0 4px; }
+        .scene-swatch {
+            width: 46px; height: 40px; border-radius: 10px; flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,.15); position: relative; overflow: hidden;
+        }
+        .scene-swatch input[type=color] {
+            position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px);
+            border: none; padding: 0; background: none; cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
@@ -41,85 +81,24 @@
     </div>
 
     <div class="admin-tabs" role="tablist">
-        <button class="tab-btn active" onclick="switchTab('tab-main', this)">
-            <i class="fa-solid fa-house"></i>Главная
-        </button>
-        <button class="tab-btn" onclick="switchTab('tab-dash', this)">
-            <i class="fa-solid fa-id-badge"></i>Dashboard
-        </button>
-        <button class="tab-btn" onclick="switchTab('tab-media', this)">
-            <i class="fa-solid fa-photo-film"></i>Медиа
-        </button>
-        <button class="tab-btn" onclick="switchTab('tab-links', this)">
-            <i class="fa-solid fa-link"></i>Ссылки
-        </button>
-        <button class="tab-btn" onclick="switchTab('tab-community', this)">
-            <i class="fa-solid fa-users"></i>Комьюнити
-        </button>
-        <button class="tab-btn" onclick="switchTab('tab-release', this)">
-            <i class="fa-solid fa-record-vinyl"></i>Релизы
-        </button>
+        <button class="tab-btn active" onclick="switchTab('tab-main', this)"><i class="fa-solid fa-house"></i>Главная</button>
+        <button class="tab-btn" onclick="switchTab('tab-links', this)"><i class="fa-solid fa-link"></i>Ссылки</button>
+        <button class="tab-btn" onclick="switchTab('tab-release', this)"><i class="fa-solid fa-record-vinyl"></i>Релиз</button>
+        <button class="tab-btn" onclick="switchTab('tab-afisha', this)"><i class="fa-solid fa-ticket"></i>Афиша</button>
     </div>
 
-    <!-- ════ ГЛАВНАЯ ════ -->
+    <!-- ════ ГЛАВНАЯ: тексты + цвета сцены ════ -->
     <div class="tab-content active" id="tab-main">
-
-        <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-sliders"></i>Визуальные настройки</div>
-
-            <!-- B.S. STORY режим — главный тумблер -->
-            <div class="toggle-row">
-                <div>
-                    <div class="toggle-label-text">Режим аватарки</div>
-                    <div class="toggle-sub" id="storyModeHint">Личная сторис (видео/фото)</div>
-                </div>
-                <label class="toggle">
-                    <input type="checkbox" id="bsGlobalToggle" onchange="saveBsGlobal()">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <p class="help-text" id="storyModeDesc">
-                OFF — при клике на аватарку открывается личная сторис.<br>
-                ON — открывается B.S. STORY (TikTok-лента сообщества).
-            </p>
-            <div class="status-line" id="bsGlobalStatus"></div>
-            <div class="admin-divider"></div>
-
-            <div class="toggle-row">
-                <div>
-                    <div class="toggle-label-text">Эффект EXCLUSIVE</div>
-                    <div class="toggle-sub">15-секундное размытие аватарки</div>
-                </div>
-                <label class="toggle">
-                    <input type="checkbox" id="blurToggle" onchange="saveBlurSetting()">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="status-line" id="blurStatus"></div>
-
-            <div class="field-label">ЦВЕТ КОЛЬЦА АВАТАРКИ</div>
-            <div class="color-row">
-                <div class="color-preview" id="ringColorSwatch" style="background:linear-gradient(45deg,#f09433,#bc1888);">
-                    <input type="color" id="ringColorInput" value="#f09433" oninput="onColorChange(this)">
-                </div>
-                <div class="color-info">
-                    <div class="toggle-label-text">Акцентный цвет</div>
-                    <div class="color-value" id="ringColorValue">#f09433</div>
-                </div>
-                <button class="btn-action" style="width:auto;padding:12px 16px;" onclick="saveRingColor()">OK</button>
-            </div>
-            <div class="status-line" id="colorStatus"></div>
-        </div>
 
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-pen"></i>Тексты страницы</div>
             <div class="field-row">
-                <div class="field-label">BIO (подпись)</div>
-                <input class="input" type="text" id="fieldBio" placeholder="Казахстанский исполнитель...">
+                <div class="field-label">BIO (внизу сайта)</div>
+                <textarea class="admin-textarea" id="fieldBio" rows="3" placeholder="Дополнительный текст о себе..."></textarea>
             </div>
             <button class="btn-action" onclick="saveField('fieldBio','bio','textStatus')">СОХРАНИТЬ BIO</button>
-            <div class="field-row">
-                <div class="field-label">FOOTER</div>
+            <div class="field-row" style="margin-top:14px;">
+                <div class="field-label">FOOTER (подвал)</div>
                 <input class="input" type="text" id="fieldFooter" placeholder="© 2026 BULAVIN">
             </div>
             <button class="btn-action" onclick="saveField('fieldFooter','footer_text','textStatus')">СОХРАНИТЬ FOOTER</button>
@@ -127,236 +106,103 @@
         </div>
 
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-calendar-check"></i>Афиша</div>
+            <div class="section-title"><i class="fa-solid fa-droplet"></i>Цвет 3D-сцены (череп и сердце)</div>
+            <p class="help-text">Палитра жидкого градиента. Оставь дефолт (кровь) или задай свой вайб — например синий под новый релиз.</p>
 
-            <!-- ═══ КОНЦЕРТЫ (новый сайт) ═══ -->
-            <div class="field-label">КОНЦЕРТЫ</div>
-            <p class="help-text">Список городов на главной. Нет концертов — на сайте «пока — тишина» + «Я организатор».</p>
-            <div class="custom-btn-list" id="concertAdminList">
-                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:12px 0;">Загрузка...</div>
-            </div>
-            <div class="add-btn-form">
-                <div class="field-label" style="margin-bottom:2px;">Добавить концерт</div>
-                <input class="input" type="text" id="newConcCity"   placeholder="Город (АЛМАТЫ)" style="margin-bottom:8px;">
-                <input class="input" type="text" id="newConcDate"   placeholder="Дата (21.12.2026)" style="margin-bottom:8px;">
-                <input class="input" type="text" id="newConcVenue"  placeholder="Площадка" style="margin-bottom:8px;">
-                <input class="input" type="text" id="newConcPrice"  placeholder="Цена (от 5 000 ₸)" style="margin-bottom:8px;">
-                <input class="input" type="url"  id="newConcUrl"    placeholder="Ссылка на билеты https://..." style="margin-bottom:8px;">
-                <button class="btn-action" onclick="addConcert()">ДОБАВИТЬ КОНЦЕРТ</button>
-            </div>
-            <div class="status-line" id="concertStatus"></div>
-            <div class="admin-divider"></div>
-
-            <div class="field-row">
-                <div class="field-label">Текст когда нет выступлений</div>
-                <input class="input" type="text" id="fieldAfisha" placeholder="На данный момент...">
-            </div>
-            <div class="field-row">
-                <div class="field-label">Ссылка «Я организатор»</div>
-                <input class="input" type="url" id="fieldOrgUrl" placeholder="https://t.me/...">
-            </div>
-            <button class="btn-action" onclick="saveAfishaTexts()">СОХРАНИТЬ</button>
-            <div class="status-line" id="afishaTextStatus"></div>
-            <div class="admin-divider"></div>
-            <div class="field-label">ПОСТЕР АФИШИ</div>
-            <label class="upload-label" for="posterFileInput">
-                <i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ПОСТЕР
-            </label>
-            <input type="file" id="posterFileInput" accept="image/*">
-            <div class="field-row">
-                <div class="field-label">или URL постера</div>
-                <input class="input" type="url" id="fieldPosterUrl" placeholder="https://...">
-            </div>
-            <div class="field-row">
-                <div class="field-label">URL билетов</div>
-                <input class="input" type="url" id="fieldTicketsUrl" placeholder="https://...">
-            </div>
-            <div class="btn-row">
-                <button class="btn-action" onclick="saveAfishaPoster()">СОХРАНИТЬ</button>
-                <button class="btn-action btn-danger" onclick="clearAfishaPoster()">УБРАТЬ</button>
-            </div>
-            <div class="status-line" id="posterStatus"></div>
-        </div>
-
-    </div>
-
-    <!-- ════ DASHBOARD ════ -->
-    <div class="tab-content" id="tab-dash">
-        <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-film"></i>B.S. STORY — настройки</div>
-            <div class="field-row">
-                <div class="field-label">ЗАГОЛОВОК ЛЕНТЫ</div>
-                <div style="display:flex;gap:8px;">
-                    <input class="input" type="text" id="fieldBsLabel" placeholder="B.S. STORY" style="flex:1;">
-                    <div id="bsLabelColorSwatch" style="background:#0095f6;">
-                        <input type="color" id="bsLabelColorInput" value="#0095f6"
-                            oninput="document.getElementById('bsLabelColorSwatch').style.background=this.value;">
-                    </div>
+            <div class="scene-colors">
+                <div class="color-row" style="margin:0;">
+                    <div class="scene-swatch" id="sceneSwatch1"><input type="color" id="sceneColor1" value="#ff0033"></div>
+                    <div class="color-info"><div class="toggle-label-text">Яркий акцент (неон)</div><div class="color-value" id="sceneVal1">#ff0033</div></div>
+                </div>
+                <div class="color-row" style="margin:0;">
+                    <div class="scene-swatch" id="sceneSwatch2"><input type="color" id="sceneColor2" value="#4a000f"></div>
+                    <div class="color-info"><div class="toggle-label-text">Средний тон (кровь)</div><div class="color-value" id="sceneVal2">#4a000f</div></div>
+                </div>
+                <div class="color-row" style="margin:0;">
+                    <div class="scene-swatch" id="sceneSwatch3"><input type="color" id="sceneColor3" value="#080002"></div>
+                    <div class="color-info"><div class="toggle-label-text">Тень (глубина)</div><div class="color-value" id="sceneVal3">#080002</div></div>
                 </div>
             </div>
-            <div class="field-row">
-                <div class="field-label">ТЕКСТ ТУЛТИПА (?)</div>
-                <textarea class="admin-textarea" id="fieldBsTooltip" rows="3"
-                    placeholder="Здесь публикуются ваши фото..."></textarea>
+            <div class="btn-row">
+                <button class="btn-action" onclick="saveScene()">СОХРАНИТЬ ЦВЕТА</button>
+                <button class="btn-action btn-danger" onclick="resetScene()">СБРОС (КРОВЬ)</button>
             </div>
-            <button class="btn-action" onclick="saveBsStory()">СОХРАНИТЬ B.S. STORY</button>
-            <div class="status-line" id="bsStoryStatus"></div>
-        </div>
-
-        <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-id-badge"></i>Контент /dashboard/</div>
-            <div class="field-row">
-                <div class="field-label">Soul Text (каждая строка = абзац)</div>
-                <textarea class="admin-textarea" id="fieldSoulText" rows="5"
-                    placeholder="Здесь нет лишних глаз.&#10;Только ты и твои мысли."></textarea>
-            </div>
-            <div class="field-row">
-                <div class="field-label">Ссылка кнопки СЛИЯНИЕ</div>
-                <input class="input" type="url" id="fieldMergeUrl" placeholder="https://t.me/...">
-            </div>
-            <button class="btn-action" onclick="saveDashboard()">СОХРАНИТЬ DASHBOARD</button>
-            <div class="status-line" id="dashStatus"></div>
-        </div>
-    </div>
-
-    <!-- ════ МЕДИА ════ -->
-    <div class="tab-content" id="tab-media">
-
-        <!-- STORY (Instagram Format) -->
-        <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-circle-play"></i>STORY (INSTAGRAM FORMAT)</div>
-            <p class="help-text">Загрузи видео (MP4) или фото. Отобразится в вертикальном 9:16 формате.</p>
-            <label class="upload-label" for="storyMediaInput">
-                <i class="fa-solid fa-photo-film"></i> ВЫБРАТЬ ВИДЕО ИЛИ ФОТО
-            </label>
-            <input type="file" id="storyMediaInput" accept="video/mp4,video/quicktime,image/jpeg,image/png,image/webp">
-            <!-- Скрытый old input — НЕ УДАЛЯТЬ -->
-            <input type="file" id="videoFileInput" accept="video/mp4" style="display:none;">
-            <button class="btn-action btn-danger" onclick="deleteVideo()">
-                <i class="fa-solid fa-trash" style="margin-right:8px;"></i>УДАЛИТЬ СТОРИС
-            </button>
-            <div class="status-line" id="videoStatus"></div>
-        </div>
-
-        <!-- АВАТАРКА С CROPPER -->
-        <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-image"></i>Аватарка</div>
-            <p class="help-text">При выборе файла откроется окно кадрирования (1:1). Файл сохраняется в бакет <code>avatars</code>.</p>
-            <label class="upload-label" for="avatarFileInput">
-                <i class="fa-solid fa-upload"></i> ВЫБРАТЬ ФОТО
-            </label>
-            <input type="file" id="avatarFileInput" accept="image/*">
-            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
-                ИЛИ ССЫЛКА
-                <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
-            </div>
-            <div style="display:flex;gap:8px;">
-                <input class="input" type="url" id="avatarUrlInput" placeholder="https://..." style="flex:1;">
-                <button class="btn-action" style="width:auto;padding:16px 14px;" onclick="saveAvatarUrl()">OK</button>
-            </div>
-            <button class="btn-action btn-danger" onclick="deleteAvatar()">
-                <i class="fa-solid fa-user-slash" style="margin-right:8px;"></i>УДАЛИТЬ АВАТАРКУ
-            </button>
-            <div class="status-line" id="avatarStatus"></div>
+            <div class="status-line" id="sceneStatus"></div>
         </div>
 
     </div>
 
-    <!-- ════ ССЫЛКИ ════ -->
+    <!-- ════ ССЫЛКИ: площадки + соцсети + доп.кнопки ════ -->
     <div class="tab-content" id="tab-links">
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-link"></i>Стандартные ссылки</div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-telegram" style="margin-right:5px;"></i>Telegram</div><input class="input" type="url" id="fieldTelegram" placeholder="https://t.me/..."></div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-instagram" style="margin-right:5px;"></i>Instagram</div><input class="input" type="url" id="fieldInstagram" placeholder="https://instagram.com/..."></div>
-            <div class="field-row"><div class="field-label"><i class="fa-solid fa-compact-disc" style="margin-right:5px;"></i>Yandex Music</div><input class="input" type="url" id="fieldYandex"></div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-vk" style="margin-right:5px;"></i>VK Music</div><input class="input" type="url" id="fieldVk"></div>
+            <div class="section-title"><i class="fa-solid fa-compact-disc"></i>Музыкальные площадки</div>
+            <div class="field-row"><div class="field-label"><i class="fa-solid fa-compact-disc" style="margin-right:5px;"></i>Яндекс Музыка</div><input class="input" type="url" id="fieldYandex"></div>
             <div class="field-row"><div class="field-label"><i class="fa-brands fa-spotify" style="margin-right:5px;"></i>Spotify</div><input class="input" type="url" id="fieldSpotify"></div>
             <div class="field-row"><div class="field-label"><i class="fa-brands fa-apple" style="margin-right:5px;"></i>Apple Music</div><input class="input" type="url" id="fieldApple"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-vk" style="margin-right:5px;"></i>VK Music</div><input class="input" type="url" id="fieldVk"></div>
             <div class="field-row"><div class="field-label"><i class="fa-brands fa-youtube" style="margin-right:5px;"></i>YouTube Music</div><input class="input" type="url" id="fieldYt"></div>
             <div class="field-row"><div class="field-label"><i class="fa-brands fa-soundcloud" style="margin-right:5px;"></i>SoundCloud</div><input class="input" type="url" id="fieldSoundcloud"></div>
-            <div class="field-row"><div class="field-label"><i class="fa-solid fa-fingerprint" style="margin-right:5px;"></i>Слияние</div><input class="input" type="url" id="fieldFusion"></div>
+            <div class="admin-divider"></div>
+            <div class="section-title" style="margin-top:0;"><i class="fa-solid fa-at"></i>Соцсети (блок SOCIAL)</div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-telegram" style="margin-right:5px;"></i>Telegram</div><input class="input" type="url" id="fieldTelegram"></div>
+            <div class="field-row"><div class="field-label"><i class="fa-brands fa-instagram" style="margin-right:5px;"></i>Instagram</div><input class="input" type="url" id="fieldInstagram"></div>
             <button class="btn-action" onclick="saveAllLinks()">СОХРАНИТЬ ВСЕ ССЫЛКИ</button>
             <div class="status-line" id="linksStatus"></div>
         </div>
 
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-plus"></i>Дополнительные кнопки</div>
-            <p class="help-text">Появятся на главной под «СЛИЯНИЕ». Иконки: классы Font Awesome 6, напр. <code>fa-solid fa-star</code></p>
+            <div class="section-title"><i class="fa-solid fa-plus"></i>Доп. кнопки / соцсети</div>
+            <p class="help-text">Добавятся в блок SOCIAL на сайте. Иконка — класс Font Awesome 6 (напр. <code>fa-brands fa-tiktok</code>, <code>fa-solid fa-globe</code>). Найти: fontawesome.com/icons</p>
             <div class="custom-btn-list" id="customBtnList">
-                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:12px 0;">Загрузка...</div>
+                <div class="help-text" style="text-align:center;padding:12px 0;">Загрузка...</div>
             </div>
             <div class="admin-divider"></div>
             <div class="add-btn-form">
                 <div class="field-label" style="margin-bottom:2px;">Добавить кнопку</div>
-                <input class="input" type="text" id="newBtnLabel" placeholder="Название" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newBtnLabel" placeholder="Название (TIKTOK)" style="margin-bottom:8px;">
                 <input class="input" type="url"  id="newBtnUrl"   placeholder="https://..." style="margin-bottom:8px;">
-                <input class="input" type="text" id="newBtnIcon"  placeholder="fa-solid fa-link" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newBtnIcon"  placeholder="fa-brands fa-tiktok" style="margin-bottom:8px;">
                 <button class="btn-action" onclick="addCustomButton()">ДОБАВИТЬ</button>
             </div>
             <div class="status-line" id="customBtnStatus"></div>
         </div>
     </div>
 
-    <!-- ════ РЕЛИЗЫ ════ -->
+    <!-- ════ РЕЛИЗ ════ -->
     <div class="tab-content" id="tab-release">
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-record-vinyl"></i>Блок релиза на главной</div>
-            <p class="help-text">Появится над «Слушать музыку». Статус «Выключен» скрывает блок.</p>
+            <div class="section-title"><i class="fa-solid fa-record-vinyl"></i>Блок релиза</div>
+            <p class="help-text">Появляется вверху блока «Музыка». «Выключен» — скрыть.</p>
 
             <div class="field-row">
                 <div class="field-label">СТАТУС</div>
                 <div class="radio-group" id="releaseStatusGroup">
-                    <label class="radio-label">
-                        <input type="radio" name="releaseStatus" value="disabled" checked>
-                        <span class="radio-custom"></span><span>Выключен</span>
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="releaseStatus" value="presave">
-                        <span class="radio-custom"></span><span>Пресейв</span>
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="releaseStatus" value="listen">
-                        <span class="radio-custom"></span><span>Слушать</span>
-                    </label>
+                    <label class="radio-label"><input type="radio" name="releaseStatus" value="disabled" checked><span class="radio-custom"></span><span>Выключен</span></label>
+                    <label class="radio-label"><input type="radio" name="releaseStatus" value="presave"><span class="radio-custom"></span><span>Пресейв</span></label>
+                    <label class="radio-label"><input type="radio" name="releaseStatus" value="listen"><span class="radio-custom"></span><span>Слушать</span></label>
                 </div>
             </div>
 
             <div class="field-row">
-                <div class="field-label">НАЗВАНИЕ (поверх обложки)</div>
+                <div class="field-label">НАЗВАНИЕ ТРЕКА</div>
                 <input class="input" type="text" id="fieldReleaseTitle" placeholder="BULAVIN — ТРЕК">
             </div>
 
             <div class="field-label">ОБЛОЖКА</div>
-            <label class="upload-label" for="releaseCoverFile">
-                <i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ОБЛОЖКУ
-            </label>
+            <label class="upload-label" for="releaseCoverFile"><i class="fa-solid fa-image"></i> ЗАГРУЗИТЬ ОБЛОЖКУ</label>
             <input type="file" id="releaseCoverFile" accept="image/*">
-            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;">
+            <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:1px;text-transform:uppercase;margin:6px 0;">
                 <div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>ИЛИ ССЫЛКА<div style="flex:1;height:1px;background:rgba(255,255,255,0.07);"></div>
             </div>
             <input class="input" type="url" id="fieldReleaseCover" placeholder="https://...">
 
-            <div class="field-row">
-                <div class="field-label">URL ТРЕКА (Bandlink / площадки)</div>
-                <input class="input" type="url" id="fieldReleaseTrack" placeholder="https://bandlink.ru/...">
+            <div class="field-row" style="margin-top:12px;">
+                <div class="field-label">ССЫЛКА (пресейв / площадки)</div>
+                <input class="input" type="url" id="fieldReleaseTrack" placeholder="https://band.link/...">
             </div>
-
             <div class="field-row">
                 <div class="field-label">ТЕКСТ КНОПКИ</div>
                 <input class="input" type="text" id="fieldReleaseBtnLabel" placeholder="ПРЕСЕЙВ">
-            </div>
-
-            <div class="field-label">ЦВЕТ КНОПКИ</div>
-            <div class="color-row">
-                <div class="color-preview" id="releaseBtnColorSwatch" style="background:#6ec6ff;">
-                    <input type="color" id="releaseBtnColorInput" value="#6ec6ff"
-                        oninput="document.getElementById('releaseBtnColorSwatch').style.background=this.value;document.getElementById('releaseBtnColorValue').textContent=this.value;">
-                </div>
-                <div class="color-info">
-                    <div class="toggle-label-text">Акцент кнопки</div>
-                    <div class="color-value" id="releaseBtnColorValue">#6ec6ff</div>
-                </div>
             </div>
 
             <div class="btn-row">
@@ -367,39 +213,39 @@
         </div>
     </div>
 
-    <!-- ════ КОМЬЮНИТИ ════ -->
-    <div class="tab-content" id="tab-community">
+    <!-- ════ АФИША: концерты ════ -->
+    <div class="tab-content" id="tab-afisha">
         <div class="admin-section">
-            <div class="section-title"><i class="fa-solid fa-users"></i>Secret Gallery — модерация</div>
-            <p class="help-text">Все фото загруженные участниками Inner Circle. Удаляй нежелательный контент.</p>
-            <div class="community-stats" id="communityStats">Загрузка...</div>
-            <div class="community-grid" id="communityGrid">
-                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:20px 0;grid-column:1/-1;">Загрузка...</div>
+            <div class="section-title"><i class="fa-solid fa-ticket"></i>Концерты</div>
+            <p class="help-text">Список городов на сайте. Пусто — на сайте «пока — тишина» + кнопка «Я организатор».</p>
+            <div class="custom-btn-list" id="concertAdminList">
+                <div class="help-text" style="text-align:center;padding:12px 0;">Загрузка...</div>
             </div>
-            <div class="status-line" id="communityStatus"></div>
+            <div class="admin-divider"></div>
+            <div class="add-btn-form">
+                <div class="field-label" style="margin-bottom:2px;">Добавить концерт</div>
+                <input class="input" type="text" id="newConcCity"   placeholder="Город (АЛМАТЫ)" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newConcDate"   placeholder="Дата (21.12.2026)" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newConcVenue"  placeholder="Площадка (напр. Дворец Республики)" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newConcPrice"  placeholder="Цена (от 5 000 ₸)" style="margin-bottom:8px;">
+                <input class="input" type="url"  id="newConcUrl"    placeholder="Ссылка на билеты https://..." style="margin-bottom:8px;">
+                <button class="btn-action" onclick="addConcert()">ДОБАВИТЬ КОНЦЕРТ</button>
+            </div>
+            <div class="status-line" id="concertStatus"></div>
+        </div>
+
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-briefcase"></i>Кнопка «Я организатор»</div>
+            <div class="field-row">
+                <div class="field-label">Ссылка (когда концертов нет)</div>
+                <input class="input" type="url" id="fieldOrgUrl" placeholder="https://t.me/...">
+            </div>
+            <button class="btn-action" onclick="saveField('fieldOrgUrl','organizer_url','orgStatus')">СОХРАНИТЬ</button>
+            <div class="status-line" id="orgStatus"></div>
         </div>
     </div>
 
     <a href="/" class="back-link">← ВЕРНУТЬСЯ НА САЙТ</a>
-</div>
-
-<!-- ══ CROPPER MODAL (аватарка) ══ -->
-<div class="glass-modal" id="avatarCropperModal">
-    <div class="cropper-card" onclick="event.stopPropagation()">
-        <div class="cropper-header">
-            <span style="font-size:13px;font-weight:800;letter-spacing:2px;">КАДРИРОВАТЬ АВАТАРКУ</span>
-            <button class="cropper-close-btn" onclick="closeAvatarCropper()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-        <div class="cropper-wrap">
-            <img id="avatarCropperImg" src="" alt="">
-        </div>
-        <button class="btn-action" onclick="confirmAvatarCrop()">
-            <i class="fa-solid fa-check" style="margin-right:8px;"></i>СОХРАНИТЬ АВАТАРКУ
-        </button>
-        <div class="status-line" id="avatarCropStatus"></div>
-    </div>
 </div>
 
 <script src="/js/config.js"></script>
