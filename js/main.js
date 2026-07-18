@@ -1,58 +1,33 @@
 /* ================================================
-   BULAVIN SYSTEM — MAIN PAGE LOGIC v8
-   !! НЕ ТРОГАТЬ: auth, SEO, анимации аватарки !!
-   v8: + лайки, просмотры, кнопка загрузки fixed
+   BULAVIN.SPACE — MAIN SITE LOGIC (redesign 2026)
+   Supabase-проводка: site_content / concerts / custom_buttons
+   3D: /img/skull.glb + /img/splint.glb (three.js r128)
    ================================================ */
 
+'use strict';
+
 /* ────────────────────────────────────────────────
-   0. СОСТОЯНИЕ ПОЛЬЗОВАТЕЛЯ
+   0. УТИЛИТЫ
    ──────────────────────────────────────────────── */
-let _currentUser = null;
-let _currentUsername = '';
-
-async function initUserState() {
-    const { data: { session } } = await _supabase.auth.getSession();
-    if (session && session.user) {
-        _currentUser = session.user;
-        _currentUsername = session.user.user_metadata?.username
-            || ('@' + session.user.email.split('@')[0]);
-        showUserBadge(_currentUsername);
-        document.getElementById('authNavBtn')?.classList.remove('has-dot');
-    }
+function _esc(s) {
+    return String(s).replace(/[&<>"']/g, c =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-
-function showUserBadge(username) {
-    const badge = document.getElementById('userBadge');
-    if (!badge) return;
-    badge.textContent = username.toUpperCase();
-    badge.style.display = 'block';
-    badge.style.cursor = 'pointer';
-    badge.title = 'Нажми для выхода';
-    badge.onclick = promptLogout;
+function _setLink(id, url) {
+    const el = document.getElementById(id);
+    if (el && url) el.href = url;
 }
-
-function promptLogout() {
-    if (confirm('Выйти из системы?')) {
-        _supabase.auth.signOut().then(() => {
-            sessionStorage.clear();
-            window.location.reload();
-        });
-    }
-}
-
-function onAuthNavClick() {
-    if (_currentUser) {
-        handleAvatarClick();
-    } else {
-        openAuthChoice();
-    }
+const _ring = document.querySelector('.cur-ring');
+function _bindHover(el) {
+    if (!_ring) return;
+    el.addEventListener('pointerenter', () => _ring.classList.add('hot'));
+    el.addEventListener('pointerleave', () => _ring.classList.remove('hot'));
 }
 
 /* ────────────────────────────────────────────────
-   1. КОНТЕНТ + FOUC-FREE LOADING
+   1. КОНТЕНТ ИЗ SUPABASE (site_content)
    ──────────────────────────────────────────────── */
 const DEFAULTS = {
-    avatar_url: '',
     bio: '',
     footer_text: '© 2026 BULAVIN',
     telegram_url: 'https://t.me/imbulavin',
@@ -63,52 +38,33 @@ const DEFAULTS = {
     apple_music_url: 'https://music.apple.com/ru/artist/bulavin/1805904899',
     yt_music_url: 'https://music.youtube.com/channel/UCRyTj6rCcgg385Rg58zo_PA',
     soundcloud_url: 'https://soundcloud.com/bulavin',
-    fusion_url: 'https://t.me/imbulavin_bot',
-    afisha_text: 'На данный момент выступлений не запланировано.',
     organizer_url: 'https://t.me/imbulavin',
-    afisha_poster_url: '',
-    afisha_tickets_url: '',
-    exclusive_blur_enabled: 'true',
-    ring_color: '',
     release_status: 'disabled',
     release_cover_url: '',
     release_track_url: '',
     release_title: '',
-    release_btn_label: 'ПРЕСЕЙВ',
+    release_btn_label: '',
     release_btn_color: '',
-    active_story_url: '',
-    active_story_type: 'video',
-    bs_story_global_enabled: 'false',
-    bs_story_label: 'B.S. STORY',
-    bs_story_label_color: '',
-    bs_tooltip_text: 'Здесь публикуются ваши фото. Свайпай вверх. Фото автоматически исчезают через 24 часа.',
+    scene_color1: '',   /* неон   (дефолт #ff0033) */
+    scene_color2: '',   /* кровь  (дефолт #4a000f) */
+    scene_color3: '',   /* тень   (дефолт #080002) */
 };
 
 let _content = { ...DEFAULTS };
-let _contentLoaded = false;
 
 async function loadContent() {
     try {
         const { data, error } = await _supabase.from('site_content').select('key, value');
         if (error) throw error;
-        data.forEach(row => { if (row.value !== null) _content[row.key] = row.value; });
-    } catch (e) { console.warn('[BULAVIN] site_content недоступен.', e.message); }
-    _contentLoaded = true;
+        data.forEach(r => { if (r.value !== null) _content[r.key] = r.value; });
+    } catch (e) { console.warn('[BULAVIN] site_content недоступен:', e.message); }
     applyContent();
-    await loadCustomButtons();
+    loadConcerts();
+    loadCustomButtons();
 }
 
 function applyContent() {
-    if (!_contentLoaded) return;
     const c = _content;
-
-    const bioEl = document.getElementById('bioEl');
-    if (bioEl) {
-        bioEl.textContent = c.bio || 'Казахстанский исполнитель и музыкальный продюсер.';
-        bioEl.classList.remove('skeleton-text');
-    }
-    const footerEl = document.getElementById('footerEl');
-    if (footerEl) footerEl.textContent = c.footer_text || '© 2026 BULAVIN';
 
     _setLink('link-telegram', c.telegram_url);
     _setLink('link-instagram', c.instagram_url);
@@ -118,1004 +74,479 @@ function applyContent() {
     _setLink('link-apple', c.apple_music_url);
     _setLink('link-yt', c.yt_music_url);
     _setLink('link-soundcloud', c.soundcloud_url);
-    _setLink('link-fusion', c.fusion_url);
+    _setLink('link-organizer', c.organizer_url);
 
-    applyAfisha(c);
+    const footerEl = document.getElementById('footerText');
+    if (footerEl && c.footer_text) footerEl.textContent = c.footer_text;
+
+    const bioExtra = document.getElementById('bioExtra');
+    if (bioExtra && c.bio && c.bio.trim()) {
+        bioExtra.textContent = c.bio.trim();
+        bioExtra.style.display = 'block';
+    }
+
     applyRelease(c);
-
-    const labelEl = document.getElementById('bsModalLabel');
-    if (labelEl) {
-        labelEl.textContent = c.bs_story_label || 'B.S. STORY';
-        if (c.bs_story_label_color) labelEl.style.color = c.bs_story_label_color;
-    }
-    const tooltipEl = document.getElementById('bsTooltipBox');
-    if (tooltipEl && c.bs_tooltip_text) tooltipEl.textContent = c.bs_tooltip_text;
-
-    const avatarImg = document.getElementById('mainAvatarImage');
-    const avatarLink = document.getElementById('avatarLink');
-    const avatarSilhouette = document.getElementById('avatarSilhouette');
-    const dynBg = document.querySelector('.dynamic-bg');
-    const avatarUrl = c.avatar_url && c.avatar_url.trim();
-
-    window._blurEnabled = c.exclusive_blur_enabled !== 'false';
-
-    if (c.ring_color && c.ring_color.trim()) {
-        const col = c.ring_color.trim();
-        document.documentElement.style.setProperty(
-            '--ring-gradient',
-            `linear-gradient(45deg, ${col} 0%, transparent 50%, ${col} 100%)`
-        );
-    }
-
-    if (avatarUrl) {
-        const img = new Image();
-        img.onload = () => {
-            avatarImg.src = avatarUrl;
-            avatarImg.style.opacity = '1';
-            if (avatarLink) {
-                avatarLink.classList.remove('avatar-loading');
-                avatarLink.classList.add('avatar-ready');
-            }
-            if (dynBg) dynBg.style.backgroundImage = `url('${avatarUrl}')`;
-            if (avatarSilhouette) {
-                avatarSilhouette.style.transition = 'opacity 0.4s ease';
-                avatarSilhouette.style.opacity = '0';
-                setTimeout(() => { avatarSilhouette.style.display = 'none'; }, 450);
-            }
-            initAvatarAnimation();
-        };
-        img.onerror = () => { };
-        img.src = avatarUrl;
-    }
+    applyScene(c);
 }
 
-function applyAfisha(c) {
-    const afishaTextEl = document.getElementById('afisha-text');
-    const organizerWrap = document.getElementById('organizer-wrap');
-    const posterWrap = document.getElementById('afisha-poster-wrap');
-    const hasPoster = c.afisha_poster_url && c.afisha_poster_url.trim();
-    if (hasPoster) {
-        if (afishaTextEl) afishaTextEl.style.display = 'none';
-        if (organizerWrap) organizerWrap.style.display = 'none';
-        if (posterWrap) {
-            posterWrap.style.display = 'block';
-            const img = posterWrap.querySelector('.afisha-poster-img');
-            if (img) img.src = c.afisha_poster_url;
-            if (c.afisha_tickets_url && c.afisha_tickets_url.trim()) {
-                posterWrap.onclick = () => window.open(c.afisha_tickets_url, '_blank');
-                posterWrap.style.cursor = 'pointer';
-                const badge = posterWrap.querySelector('.poster-badge');
-                if (badge) badge.style.display = 'flex';
-            }
-        }
-    } else {
-        if (afishaTextEl) { afishaTextEl.style.display = 'block'; afishaTextEl.textContent = c.afisha_text; }
-        if (organizerWrap) organizerWrap.style.display = 'block';
-        const orgLink = document.getElementById('link-organizer');
-        if (orgLink && c.organizer_url) orgLink.href = c.organizer_url;
-        if (posterWrap) posterWrap.style.display = 'none';
-    }
-}
-
-/* ────────────────────────────────────────────────
-   RELEASE BLOCK v2
-   ──────────────────────────────────────────────── */
-let _releaseUrl = '';
-let _releaseTapHintTimer = null;
-
+/* ── РЕЛИЗ (release_*) ── */
 function applyRelease(c) {
     const block = document.getElementById('releaseBlock');
     if (!block) return;
     const status = c.release_status || 'disabled';
-    if (status === 'disabled' || !c.release_cover_url) { block.style.display = 'none'; return; }
+    if (status === 'disabled') { block.style.display = 'none'; return; }
 
-    _releaseUrl = c.release_track_url || '';
-    const cover = document.getElementById('releaseCover');
-    if (cover) cover.src = c.release_cover_url;
-
-    const titleEl = document.getElementById('releaseTitle');
-    if (titleEl) {
-        if (c.release_title && c.release_title.trim()) {
-            titleEl.textContent = c.release_title;
-            titleEl.style.display = 'block';
-        } else { titleEl.style.display = 'none'; }
+    const img = document.getElementById('releaseCoverImg');
+    const ph = document.getElementById('releaseCoverPh');
+    if (c.release_cover_url && c.release_cover_url.trim()) {
+        img.src = c.release_cover_url;
+        img.style.display = 'block';
+        if (ph) ph.style.display = 'none';
+    } else {
+        img.style.display = 'none';
+        if (ph) ph.style.display = 'block';
     }
 
-    const btn = document.getElementById('releaseCTA');
-    if (btn) {
-        btn.textContent = (c.release_btn_label && c.release_btn_label.trim())
+    const titleEl = document.getElementById('releaseTitle');
+    if (titleEl && c.release_title && c.release_title.trim()) titleEl.textContent = c.release_title;
+
+    const cta = document.getElementById('releaseCTA');
+    if (cta) {
+        cta.textContent = (c.release_btn_label && c.release_btn_label.trim())
             ? c.release_btn_label
-            : (status === 'presave' ? 'ПРЕСЕЙВ' : 'СЛУШАТЬ');
+            : (status === 'presave' ? 'Пресейв' : 'Слушать');
+        if (c.release_track_url && c.release_track_url.trim()) cta.href = c.release_track_url;
         const col = c.release_btn_color && c.release_btn_color.trim();
         if (col) {
-            btn.style.background = col + '30';
-            btn.style.borderColor = col + '80';
-            btn.style.color = col;
-        } else if (status === 'presave') {
-            btn.style.background = 'rgba(0,149,246,0.22)';
-            btn.style.borderColor = 'rgba(0,149,246,0.5)';
-            btn.style.color = '#6ec6ff';
-        } else {
-            btn.style.background = 'rgba(30,215,96,0.18)';
-            btn.style.borderColor = 'rgba(30,215,96,0.45)';
-            btn.style.color = '#1ed760';
+            cta.style.borderColor = col + '99';
+            cta.style.background = col + '18';
         }
     }
 
-    block.style.display = 'block';
-    const hint = document.getElementById('releaseTapHint');
-    if (hint) {
-        hint.style.display = 'flex'; hint.style.opacity = '1';
-        if (_releaseTapHintTimer) clearTimeout(_releaseTapHintTimer);
-        _releaseTapHintTimer = setTimeout(() => {
-            hint.style.transition = 'opacity 0.8s ease';
-            hint.style.opacity = '0';
-            setTimeout(() => { hint.style.display = 'none'; }, 850);
-        }, 10000);
-    }
-}
-
-function openRelease() {
-    if (_releaseUrl) window.open(_releaseUrl, '_blank', 'noopener');
-    const hint = document.getElementById('releaseTapHint');
-    if (hint) { if (_releaseTapHintTimer) clearTimeout(_releaseTapHintTimer); hint.style.display = 'none'; }
-}
-
-function _setLink(id, url) {
-    const el = document.getElementById(id);
-    if (el && url) el.href = url;
+    block.style.display = 'grid';
 }
 
 /* ────────────────────────────────────────────────
-   2. ДИНАМИЧЕСКИЕ КНОПКИ
+   2. КОНЦЕРТЫ (таблица concerts)
+   ──────────────────────────────────────────────── */
+async function loadConcerts() {
+    const list = document.getElementById('concertList');
+    const silence = document.getElementById('afishaSilence');
+    if (!list) return;
+    let rows = [];
+    try {
+        const { data, error } = await _supabase
+            .from('concerts').select('*')
+            .eq('visible', true)
+            .order('position', { ascending: true });
+        if (error) throw error;
+        rows = data || [];
+    } catch (e) { console.warn('[BULAVIN] concerts недоступен:', e.message); }
+
+    if (!rows.length) return;   /* тишина остаётся */
+
+    list.innerHTML = '';
+    rows.forEach((c, i) => {
+        const row = document.createElement('a');
+        row.className = 'concert';
+        row.href = c.tickets_url || '#';
+        row.target = '_blank';
+        row.rel = 'noopener';
+        const meta = [c.date_text, c.venue, c.price_text].filter(v => v && v.trim());
+        row.innerHTML = `
+            <span class="cn">${String(i + 1).padStart(2, '0')}</span>
+            <div>
+                <div class="city">${_esc(c.city)}</div>
+                ${meta.length ? `<div class="cmeta"><b>${_esc(meta[0])}</b>${meta.slice(1).map(m => ' · ' + _esc(m)).join('')}</div>` : ''}
+            </div>
+            <span class="btn-doom sm">Билеты</span>`;
+        if (!c.tickets_url) row.addEventListener('click', e => e.preventDefault());
+        _bindHover(row);
+        list.appendChild(row);
+    });
+    list.style.display = 'block';
+    if (silence) silence.style.display = 'none';
+    _syncAccordion('afishaToggle', 'afishaAcc');
+}
+
+/* ────────────────────────────────────────────────
+   3. КАСТОМНЫЕ КНОПКИ (в ящик SOCIAL)
    ──────────────────────────────────────────────── */
 async function loadCustomButtons() {
+    const ledger = document.getElementById('socialLedger');
+    if (!ledger) return;
     try {
         const { data, error } = await _supabase
             .from('custom_buttons').select('*')
-            .eq('visible', true).order('position', { ascending: true });
+            .eq('visible', true)
+            .order('position', { ascending: true });
         if (error) throw error;
-        renderCustomButtons(data || []);
-    } catch (e) { console.warn('[BULAVIN] custom_buttons недоступен.', e.message); }
-}
-
-function renderCustomButtons(buttons) {
-    const container = document.getElementById('custom-buttons-container');
-    if (!container) return;
-    container.innerHTML = '';
-    if (!buttons.length) { container.style.display = 'none'; return; }
-    container.style.display = 'flex';
-    buttons.forEach(btn => {
-        const a = document.createElement('a');
-        a.href = btn.url; a.target = '_blank'; a.rel = 'noopener'; a.className = 'btn';
-        a.innerHTML = `<i class="${_escHtml(btn.icon || 'fa-solid fa-link')}"></i><span>${_escHtml(btn.label)}</span>`;
-        container.appendChild(a);
-    });
-}
-
-/* ────────────────────────────────────────────────
-   3. QR / МОДАЛЬНЫЕ ОКНА
-   ──────────────────────────────────────────────── */
-function openQR() { document.getElementById('qrModal').classList.add('show'); }
-function closeQR() { document.getElementById('qrModal').classList.remove('show'); }
-function openAuthChoice() { document.getElementById('authChoiceModal').classList.add('show'); }
-function closeAuthChoice() { document.getElementById('authChoiceModal').classList.remove('show'); }
-
-/* ────────────────────────────────────────────────
-   4. КЛИК ПО АВАТАРКЕ — ВЕТВЛЕНИЕ
-   ──────────────────────────────────────────────── */
-function handleAvatarClick() {
-    const isGlobal = _content.bs_story_global_enabled === 'true';
-    if (isGlobal) {
-        openBSStory();
-    } else {
-        const storyUrl = _content.active_story_url && _content.active_story_url.trim();
-        if (!storyUrl) return;
-        handleStoryOpen();
-    }
-}
-
-/* ────────────────────────────────────────────────
-   4a. ЛИЧНАЯ СТОРИС — НЕ ТРОГАТЬ
-   ──────────────────────────────────────────────── */
-const videoElement = document.getElementById('storyVideo');
-const progressBar = document.getElementById('progress-bar');
-
-videoElement.addEventListener('timeupdate', () => {
-    const pct = (videoElement.currentTime / videoElement.duration) * 100;
-    progressBar.style.width = pct + '%';
-});
-videoElement.addEventListener('ended', closeStory);
-
-function openStory() {
-    document.getElementById('storyModal').classList.add('show');
-    videoElement.src = STORY_URL_BASE + '?v=' + Date.now();
-    progressBar.style.width = '0%';
-    videoElement.currentTime = 0;
-    videoElement.play();
-}
-function closeStory() {
-    document.getElementById('storyModal').classList.remove('show');
-    videoElement.pause();
-}
-
-let _storyImageTimer = null;
-
-function handleStoryOpen() {
-    const storyType = (_content.active_story_type || 'video').toLowerCase();
-    const storyUrl = _content.active_story_url && _content.active_story_url.trim();
-    const imgEl = document.getElementById('storyImage');
-    const modal = document.getElementById('storyModal');
-
-    if (storyType === 'image' && storyUrl) {
-        videoElement.style.display = 'none';
-        imgEl.src = storyUrl; imgEl.style.display = 'block';
-        modal.classList.add('show');
-        progressBar.style.transition = 'none'; progressBar.style.width = '0%';
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                progressBar.style.transition = 'width 7s linear';
-                progressBar.style.width = '100%';
-            });
+        (data || []).forEach(btn => {
+            const a = document.createElement('a');
+            a.href = btn.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.innerHTML = `<i class="${_esc(btn.icon || 'fa-solid fa-link')} row-ic"></i>` +
+                `<span class="row-end">${_esc(String(btn.label).toUpperCase())}</span>`;
+            _bindHover(a);
+            ledger.appendChild(a);
         });
-        if (_storyImageTimer) clearTimeout(_storyImageTimer);
-        _storyImageTimer = setTimeout(() => handleStoryClose(), 7000);
-    } else {
-        if (imgEl) imgEl.style.display = 'none';
-        videoElement.style.display = 'block';
-        const url = storyUrl || (STORY_URL_BASE + '?v=' + Date.now());
-        modal.classList.add('show');
-        videoElement.src = url;
-        progressBar.style.transition = 'none'; progressBar.style.width = '0%';
-        videoElement.currentTime = 0;
-        videoElement.play().catch(() => { });
-    }
-}
-
-function handleStoryClose() {
-    if (_storyImageTimer) { clearTimeout(_storyImageTimer); _storyImageTimer = null; }
-    const imgEl = document.getElementById('storyImage');
-    if (imgEl) { imgEl.style.display = 'none'; imgEl.src = ''; }
-    progressBar.style.transition = 'none'; progressBar.style.width = '0%';
-    closeStory();
+        _syncAccordion('socialToggle', 'socialAcc');
+    } catch (e) { console.warn('[BULAVIN] custom_buttons недоступен:', e.message); }
 }
 
 /* ────────────────────────────────────────────────
-   4b. B.S. STORY MODAL — ЛАЙКИ + ПРОСМОТРЫ v8
+   4. UI: курсор / появление / шапка / аккордеоны
    ──────────────────────────────────────────────── */
-let _bsSwipeHintDismissed = false;
-let _bsLoaded = false;
-// Загружаем просмотренные фото из localStorage — сохраняются между перезагрузками
-let _viewedPhotoIds = (() => {
-    try {
-        const stored = localStorage.getItem('bs_viewed_photos');
-        return stored ? new Set(JSON.parse(stored)) : new Set();
-    } catch (e) { return new Set(); }
+(function () {
+    const dot = document.querySelector('.cur-dot');
+    if (!dot || !_ring) return;
+    let rx = innerWidth / 2, ry = innerHeight / 2, mx = rx, my = ry;
+    addEventListener('pointermove', e => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.transform = `translate(${mx - 2.5}px,${my - 2.5}px)`;
+    }, { passive: true });
+    (function loop() {
+        requestAnimationFrame(loop);
+        rx += (mx - rx) * .14; ry += (my - ry) * .14;
+        _ring.style.transform = `translate(${rx - _ring.offsetWidth / 2}px,${ry - _ring.offsetHeight / 2}px)`;
+    })();
+    document.querySelectorAll('[data-h]').forEach(_bindHover);
+    document.addEventListener('mouseleave', () => {
+        document.querySelectorAll('.cur-dot,.cur-ring').forEach(el => el.style.opacity = '0');
+    });
+    document.addEventListener('mouseenter', () => {
+        document.querySelectorAll('.cur-dot,.cur-ring').forEach(el => el.style.opacity = '1');
+    });
 })();
-let _viewObserver = null;
 
-function openBSStory() {
-    document.getElementById('bsStoryModal').classList.add('show');
-    document.body.style.overflow = 'hidden';
-    if (!_bsLoaded) loadBSStory();
-}
+(function () {
+    const io = new IntersectionObserver(es => {
+        es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); io.unobserve(e.target); } });
+    }, { threshold: .12 });
+    document.querySelectorAll('.rv').forEach(el => io.observe(el));
+})();
 
-function closeBSStory() {
-    document.getElementById('bsStoryModal').classList.remove('show');
-    document.body.style.overflow = '';
-    document.getElementById('bsTooltipBox')?.classList.remove('show');
-}
+(function () {
+    const nav = document.querySelector('nav');
+    addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', scrollY > innerHeight * 0.72);
+    }, { passive: true });
+})();
 
-function toggleBSTooltip() {
-    const box = document.getElementById('bsTooltipBox');
-    box.classList.toggle('show');
-    if (box.classList.contains('show')) {
-        setTimeout(() => box.classList.remove('show'), 4000);
-    }
+function bindAccordion(btnId, accId) {
+    const btn = document.getElementById(btnId);
+    const acc = document.getElementById(accId);
+    if (!btn || !acc) return;
+    btn.addEventListener('click', () => {
+        const open = btn.classList.toggle('open');
+        acc.classList.toggle('open', open);
+        acc.style.maxHeight = open ? acc.scrollHeight + 'px' : '0px';
+    });
 }
+/* контент ящика подгрузился ПОСЛЕ открытия — пересчитать высоту */
+function _syncAccordion(btnId, accId) {
+    const btn = document.getElementById(btnId);
+    const acc = document.getElementById(accId);
+    if (btn && acc && btn.classList.contains('open')) acc.style.maxHeight = acc.scrollHeight + 'px';
+}
+bindAccordion('musicToggle', 'musicAcc');
+bindAccordion('afishaToggle', 'afishaAcc');
+bindAccordion('socialToggle', 'socialAcc');
+
+/* глушим переход только у ссылок, которые ПРЯМО СЕЙЧАС ведут на "#"
+   (releaseCTA получает настоящий href позже — его глушить нельзя) */
 document.addEventListener('click', e => {
-    if (!e.target.closest('#bsTooltipBtn')) {
-        document.getElementById('bsTooltipBox')?.classList.remove('show');
-    }
+    const a = e.target.closest('a');
+    if (a && a.getAttribute('href') === '#') e.preventDefault();
 });
 
-async function loadBSStory() {
-    const skeleton = document.getElementById('bsSkeleton');
-    const reel = document.getElementById('bsReel');
+/* ────────────────────────────────────────────────
+   5. 3D-СЦЕНА: череп + шина + сердце + пепел
+   ──────────────────────────────────────────────── */
+const _sceneUniforms = [];   /* {uTime, uC1, uC2, uC3} на каждый материал */
 
-    // Отключаем старый observer
-    if (_viewObserver) { _viewObserver.disconnect(); _viewObserver = null; }
-
-    try {
-        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
-        // Основной запрос фото
-        const { data: photos, error } = await _supabase
-            .from('community_photos')
-            .select('id, image_url, username, email, created_at, comment, view_count')
-            .gte('created_at', since)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-
-        // Скрываем скелетон
-        skeleton.style.transition = 'opacity 0.4s ease';
-        skeleton.style.opacity = '0';
-        setTimeout(() => { skeleton.style.display = 'none'; }, 420);
-
-        if (!photos || photos.length === 0) {
-            reel.innerHTML = `
-                <div class="reel-empty">
-                    <div class="reel-empty-icon"></div>
-                    <p>ПОКА ПУСТО</p>
-                    <span>Будь первым — загрузи фото</span>
-                    <button class="reel-add-btn" onclick="triggerBSPhotoUpload()" style="margin-top:12px;max-width:260px;">
-                        <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
-                    </button>
-                </div>`;
-            _bsLoaded = true;
-            return;
-        }
-
-        // Загружаем лайки параллельно
-        const photoIds = photos.map(p => p.id);
-        const likeCounts = {};
-        const userLikedSet = new Set();
-
-        const [likesResult, myLikesResult] = await Promise.all([
-            _supabase
-                .from('photo_likes')
-                .select('photo_id')
-                .in('photo_id', photoIds),
-            _currentUser
-                ? _supabase
-                    .from('photo_likes')
-                    .select('photo_id')
-                    .in('photo_id', photoIds)
-                    .eq('user_id', _currentUser.id)
-                : Promise.resolve({ data: [] })
-        ]);
-
-        (likesResult.data || []).forEach(l => {
-            likeCounts[l.photo_id] = (likeCounts[l.photo_id] || 0) + 1;
-        });
-        (myLikesResult.data || []).forEach(l => userLikedSet.add(l.photo_id));
-
-        // Рендерим слайды
-        reel.innerHTML = '';
-        photos.forEach(photo => {
-            const slide = document.createElement('div');
-            slide.className = 'reel-slide';
-            slide.dataset.id = photo.id;
-
-            const name = photo.username || ('@' + (photo.email || 'anon').split('@')[0]);
-            const ago = _timeAgo(photo.created_at);
-            const likeCount = likeCounts[photo.id] || 0;
-            const isLiked = userLikedSet.has(photo.id);
-            const viewCount = photo.view_count || 0;
-
-            const commentHTML = photo.comment ? `
-                <div class="reel-comment" onclick="toggleBSComment(event,this)">
-                    <span class="reel-comment-text">${_escHtml(photo.comment)}</span>
-                </div>` : '';
-
-            slide.innerHTML = `
-                <img src="${_escHtml(photo.image_url)}" alt="" loading="lazy"
-                     onerror="this.closest('.reel-slide').style.display='none'">
-
-                <!-- просмотры: левый верхний угол -->
-                <div class="reel-views">
-                    <i class="fa-solid fa-eye"></i>
-                    <span class="view-count-num">${_fmtNum(viewCount)}</span>
-                </div>
-
-                <!-- лайк: правая сторона, середина экрана — TikTok style -->
-                <div class="reel-side-actions">
-                    <button class="reel-like-btn${isLiked ? ' liked' : ''}"
-                            onclick="toggleLike(this,'${photo.id}')"
-                            aria-label="Лайк">
-                        <i class="fa-${isLiked ? 'solid' : 'regular'} fa-heart"></i>
-                        <span class="like-count">${_fmtNum(likeCount)}</span>
-                    </button>
-                </div>
-
-                <!-- нижний градиент-оверлей -->
-                <div class="reel-overlay-bottom">
-                    <!-- автор + время -->
-                    <div class="reel-meta-row">
-                        <span class="reel-author">${_escHtml(name)}</span>
-                        <span class="reel-time">${ago}</span>
-                    </div>
-                    <!-- комментарий -->
-                    ${commentHTML}
-                    <!-- кнопка загрузки -->
-                    <button class="reel-add-btn" onclick="triggerBSPhotoUpload()">
-                        <i class="fa-solid fa-plus"></i> ЗАГРУЗИТЬ ФОТО
-                    </button>
-                </div>`;
-
-            reel.appendChild(slide);
-        });
-
-        // Свайп-подсказка
-        if (!_bsSwipeHintDismissed && photos.length > 1) {
-            _showBSSwipeHint();
-        } else {
-            const hint = document.getElementById('bsSwipeHint');
-            if (hint) hint.style.display = 'none';
-        }
-        reel.addEventListener('scroll', () => _dismissBSSwipeHint(), { once: true });
-
-        // Запускаем отслеживание просмотров
-        _setupViewObserver();
-
-        _bsLoaded = true;
-
-    } catch (e) {
-        console.warn('[BS STORY]', e);
-        if (skeleton) skeleton.innerHTML =
-            '<p style="font-size:11px;color:rgba(255,255,255,0.25);letter-spacing:1px;">ОШИБКА ЗАГРУЗКИ</p>';
-    }
-}
-
-/* ── ЛАЙКИ ─────────────────────────────────────── */
-async function toggleLike(btn, photoId) {
-    // Защита от двойного клика / race condition
-    if (btn.disabled) return;
-    btn.disabled = true;
-
-    // Гость → авторизация
-    if (!_currentUser) {
-        btn.disabled = false;
-        _openAuthForUpload('ВОЙДИ', 'Чтобы ставить лайки');
-        return;
-    }
-
-    const isLiked = btn.classList.contains('liked');
-    const countEl = btn.querySelector('.like-count');
-    const iconEl = btn.querySelector('i');
-    const curCount = parseInt(countEl.textContent.replace(/[^0-9]/g, '')) || 0;
-
-    // Оптимистичное обновление
-    if (isLiked) {
-        btn.classList.remove('liked');
-        iconEl.className = 'fa-regular fa-heart';
-        countEl.textContent = _fmtNum(Math.max(0, curCount - 1));
-    } else {
-        btn.classList.add('liked');
-        iconEl.className = 'fa-solid fa-heart';
-        countEl.textContent = _fmtNum(curCount + 1);
-        // Анимация
-        iconEl.classList.add('heart-pop');
-        setTimeout(() => iconEl.classList.remove('heart-pop'), 400);
-    }
-
-    // Синхронизация с БД
-    try {
-        if (isLiked) {
-            await _supabase.from('photo_likes')
-                .delete()
-                .eq('photo_id', photoId)
-                .eq('user_id', _currentUser.id);
-        } else {
-            await _supabase.from('photo_likes')
-                .insert({ photo_id: photoId, user_id: _currentUser.id });
-        }
-    } catch (e) {
-        console.warn('[LIKE]', e);
-        // Откатываем при ошибке
-        if (isLiked) {
-            btn.classList.add('liked');
-            iconEl.className = 'fa-solid fa-heart';
-            countEl.textContent = _fmtNum(curCount);
-        } else {
-            btn.classList.remove('liked');
-            iconEl.className = 'fa-regular fa-heart';
-            countEl.textContent = _fmtNum(curCount);
-        }
-    } finally {
-        // Разблокируем в любом случае
-        btn.disabled = false;
-    }
-}
-
-/* ── ПРОСМОТРЫ (IntersectionObserver) ──────────── */
-function _setupViewObserver() {
-    _viewObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const slide = entry.target;
-            const photoId = slide.dataset.id;
-
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-                // Начинаем отсчёт — 1.2 сек видимости = просмотр
-                if (!slide._viewTimer && !_viewedPhotoIds.has(photoId)) {
-                    slide._viewTimer = setTimeout(() => {
-                        if (!_viewedPhotoIds.has(photoId)) {
-                            _viewedPhotoIds.add(photoId);
-                            // Персистим в localStorage чтобы не накручивать при перезагрузке
-                            try {
-                                localStorage.setItem('bs_viewed_photos',
-                                    JSON.stringify([..._viewedPhotoIds]));
-                            } catch (e) { }
-                            _incrementView(photoId, slide);
-                        }
-                        slide._viewTimer = null;
-                    }, 1200);
-                }
-            } else {
-                // Скрылся до истечения таймера — сбрасываем
-                if (slide._viewTimer) {
-                    clearTimeout(slide._viewTimer);
-                    slide._viewTimer = null;
-                }
-            }
-        });
-    }, { threshold: [0, 0.6] });
-
-    document.querySelectorAll('#bsReel .reel-slide').forEach(s => {
-        _viewObserver.observe(s);
+function applyScene(c) {
+    const set = (u, hex, defHex) => {
+        const v = (hex && /^#[0-9a-fA-F]{6}$/.test(hex.trim())) ? hex.trim() : defHex;
+        u.value.set(v);
+    };
+    _sceneUniforms.forEach(s => {
+        if (!s.uC1) return;
+        set(s.uC1, c.scene_color1, '#ff0033');
+        set(s.uC2, c.scene_color2, '#4a000f');
+        set(s.uC3, c.scene_color3, '#080002');
     });
 }
 
-async function _incrementView(photoId, slide) {
+(function () {
+    const stage = document.getElementById('stage');
+    if (!stage || !window.THREE) return;
+
+    let renderer;
     try {
-        await _supabase.rpc('increment_photo_view', { p_photo_id: photoId });
-        // Обновляем счётчик на слайде
-        const numEl = slide.querySelector('.view-count-num');
-        if (numEl) {
-            const cur = parseInt(numEl.textContent.replace(/[^0-9]/g, '')) || 0;
-            numEl.textContent = _fmtNum(cur + 1);
-        }
-    } catch (e) { console.warn('[VIEW INC]', e); }
-}
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    } catch (e) { console.warn('[BULAVIN] WebGL недоступен — сайт работает без 3D'); return; }
 
-/* ── УТИЛИТЫ ЛЕНТЫ ──────────────────────────────── */
-function _showBSSwipeHint() {
-    const hint = document.getElementById('bsSwipeHint');
-    if (!hint) return;
-    hint.style.display = 'flex';
-    setTimeout(() => _dismissBSSwipeHint(), 3500);
-}
-function _dismissBSSwipeHint() {
-    if (_bsSwipeHintDismissed) return;
-    _bsSwipeHintDismissed = true;
-    const hint = document.getElementById('bsSwipeHint');
-    if (!hint) return;
-    hint.style.transition = 'opacity 0.5s ease';
-    hint.style.opacity = '0';
-    setTimeout(() => { hint.remove(); }, 550);
-}
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x000000, 0.0035);
 
-function toggleBSComment(e, el) {
-    e.stopPropagation();
-    el.classList.toggle('expanded');
-}
+    const camera = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 1, 3000);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    stage.appendChild(renderer.domElement);
 
-/* ── ВОРОНКА АВТОРИЗАЦИИ: загрузка фото ──────────
-   triggerBSPhotoUpload() — СТРОГО СИНХРОННАЯ.
-   iOS/Android блокируют fileInput.click() если
-   перед ним есть await. Поэтому все проверки
-   происходят в обработчике 'change', НЕ здесь.
-   ──────────────────────────────────────────────── */
-function triggerBSPhotoUpload() {
-    if (!_currentUser) {
-        _openAuthForUpload('INNER CIRCLE', 'Для публикации фото требуется авторизация');
-        return;
-    }
-    // Синхронно — диалог откроется на любом мобильном
-    document.getElementById('bsPhotoInput').click();
-}
+    /* свет: холодный ключ сверху, кровавое свечение снизу, костяной контровой */
+    const key = new THREE.DirectionalLight(0xffffff, 1.05);
+    key.position.set(0.5, 1.4, 1.2);
+    scene.add(key);
+    const under = new THREE.DirectionalLight(0xa50d1d, 1.3);
+    under.position.set(0, -1.2, 0.6);
+    scene.add(under);
+    const rim = new THREE.DirectionalLight(0xe6e3db, 1.25);
+    rim.position.set(-1.7, 0.3, -1.3);
+    scene.add(rim);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.09));
 
-let _authResetListener = null;
+    const world = new THREE.Group();
+    scene.add(world);
+    const holder = new THREE.Group();
+    world.add(holder);
 
-function _openAuthForUpload(badge, sub) {
-    const badgeEl = document.getElementById('authChoiceBadge');
-    const subEl = document.getElementById('authChoiceSub');
-    if (badgeEl) badgeEl.textContent = badge || 'INNER CIRCLE';
-    if (subEl) subEl.textContent = sub || 'Для публикации требуется авторизация';
-    openAuthChoice();
-    // Сброс при закрытии — убираем старый listener перед добавлением нового
-    const modal = document.getElementById('authChoiceModal');
-    if (_authResetListener) {
-        modal.removeEventListener('click', _authResetListener);
-    }
-    _authResetListener = () => {
-        if (badgeEl) badgeEl.textContent = 'SYSTEM ACCESS';
-        if (subEl) subEl.textContent = 'BULAVIN INNER CIRCLE';
-        modal.removeEventListener('click', _authResetListener);
-        _authResetListener = null;
-    };
-    modal.addEventListener('click', _authResetListener);
-}
+    /* ── жидкие материалы: fbm-шум внутри освещённого шейдера ── */
+    const NOISE_GLSL = `
+uniform float uTime;
+varying vec3 vLiq;
+float lhash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453123); }
+float lnoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); vec2 u=f*f*(3.0-2.0*f);
+  return mix(mix(lhash(i),lhash(i+vec2(1.,0.)),u.x), mix(lhash(i+vec2(0.,1.)),lhash(i+vec2(1.,1.)),u.x), u.y); }
+float lfbm(vec2 p){ float v=0.0; float a=0.5; mat2 rot=mat2(0.8,0.6,-0.6,0.8);
+  for(int i=0;i<4;i++){ v+=a*lnoise(p); p=rot*p*2.0+uTime*0.04; a*=0.5; } return v; }`;
 
-/* change-handler — async здесь безопасен:
-   .click() уже произошёл синхронно выше */
-document.getElementById('bsPhotoInput').addEventListener('change', async function () {
-    const file = this.files[0];
-    if (!file) return;
+    const BONE_CHUNK = `
+{
+    vec2 q = vec2(lfbm(vLiq.xy*0.06 + uTime*0.06), lfbm(vLiq.yz*0.06 - uTime*0.05));
+    float lf = lfbm(vLiq.xz*0.06 + q*3.0) / 0.9375;
+    vec3 lpal = mix(uC3, uC2, smoothstep(0.10, 0.50, lf));
+    lpal = mix(lpal, uC1, smoothstep(0.40, 0.90, lf));
+    float lk = smoothstep(0.30, 0.72, lf) * 0.62;
+    diffuseColor.rgb = mix(diffuseColor.rgb, lpal, lk);
+    diffuseColor.rgb += uC1 * smoothstep(0.62, 0.88, lf) * 0.22;
+}`;
 
-    const statusEl = document.getElementById('bsUploadStatus');
+    const METAL_CHUNK = `
+{
+    float mf = lfbm(vLiq.xy*0.9 + uTime*0.30) / 0.9375;
+    vec3 cool = vec3(0.72, 0.80, 0.95);
+    vec3 warm = vec3(1.05, 0.88, 0.66);
+    vec3 irid = mix(cool, warm, smoothstep(0.30, 0.70, mf));
+    diffuseColor.rgb *= irid;
+    diffuseColor.rgb += uC1 * smoothstep(0.72, 0.92, mf) * 0.35;
+}`;
 
-    /* Anti-spam: max 2 фото за 24 ч */
-    try {
-        const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-        const { count, error: cntErr } = await _supabase
-            .from('community_photos')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', _currentUser.id)
-            .gte('created_at', since24h);
-
-        if (!cntErr && count >= 2) {
-            this.value = '';
-            if (statusEl) {
-                statusEl.textContent = '⚠️ Лимит: 2 фото в сутки — приходи завтра!';
-                statusEl.className = 'bs-upload-status err';
-                setTimeout(() => {
-                    statusEl.textContent = '';
-                    statusEl.className = 'bs-upload-status';
-                }, 4000);
-            }
-            return;
-        }
-    } catch (spamErr) {
-        console.warn('[SPAM CHECK]', spamErr);
-    }
-
-    _openBSCropper(file);
-    this.value = '';
-});
-
-/* ── CROPPER ─────────────────────────────────────── */
-let _bsCropper = null;
-
-function _openBSCropper(file) {
-    const modal = document.getElementById('bsCropperModal');
-    const img = document.getElementById('bsCropperImage');
-    modal.classList.add('show');
-    // Сброс статуса при каждом открытии
-    document.getElementById('bsCropperStatus').textContent = '';
-    document.getElementById('bsCropperStatus').className = 'status-line';
-    if (_bsCropper) { _bsCropper.destroy(); _bsCropper = null; }
-    const reader = new FileReader();
-    reader.onload = e => {
-        img.src = e.target.result;
-        img.onload = () => {
-            _bsCropper = new Cropper(img, {
-                aspectRatio: 3 / 4, viewMode: 1, dragMode: 'move',
-                autoCropArea: 0.85, restore: false, guides: false,
-                center: true, highlight: false,
-                cropBoxMovable: true, cropBoxResizable: true,
-                toggleDragModeOnDblclick: false,
+    function makeLiquidMat(kind) {
+        const metal = kind === 'metal';
+        const m = new THREE.MeshStandardMaterial(metal
+            ? { color: 0xd9dee6, roughness: 0.24, metalness: 0.78 }
+            : { color: 0xd4d1c8, roughness: 0.5, metalness: 0.05 });
+        const grain = metal ? '0.22' : '0.10';
+        m.onBeforeCompile = (shader) => {
+            shader.uniforms.uTime = { value: 0 };
+            shader.uniforms.uC1 = { value: new THREE.Color('#ff0033') };
+            shader.uniforms.uC2 = { value: new THREE.Color('#4a000f') };
+            shader.uniforms.uC3 = { value: new THREE.Color('#080002') };
+            _sceneUniforms.push({
+                uTime: shader.uniforms.uTime,
+                uC1: shader.uniforms.uC1, uC2: shader.uniforms.uC2, uC3: shader.uniforms.uC3
             });
+            applyScene(_content);   /* контент мог загрузиться раньше шейдера */
+            shader.vertexShader = shader.vertexShader
+                .replace('#include <common>', '#include <common>\nvarying vec3 vLiq;')
+                .replace('#include <begin_vertex>', '#include <begin_vertex>\nvLiq = position;');
+            shader.fragmentShader = shader.fragmentShader
+                .replace('#include <common>', '#include <common>\nuniform vec3 uC1;\nuniform vec3 uC2;\nuniform vec3 uC3;' + NOISE_GLSL)
+                .replace('vec4 diffuseColor = vec4( diffuse, opacity );',
+                    'vec4 diffuseColor = vec4( diffuse, opacity );' + (metal ? METAL_CHUNK : BONE_CHUNK))
+                .replace('#include <dithering_fragment>', `#include <dithering_fragment>
+float lg = lhash(gl_FragCoord.xy + vec2(fract(uTime)*371.0, fract(uTime*1.7)*713.0));
+gl_FragColor.rgb += (lg - 0.5) * ${grain};`);
         };
-    };
-    reader.readAsDataURL(file);
-}
-
-function closeBSCropper() {
-    document.getElementById('bsCropperModal').classList.remove('show');
-    if (_bsCropper) { _bsCropper.destroy(); _bsCropper = null; }
-    document.getElementById('bsCropperStatus').textContent = '';
-    // bsPhotoComment — id тот же, просто textarea переехала
-    const commentEl = document.getElementById('bsPhotoComment');
-    if (commentEl) { commentEl.value = ''; }
-    updateBSCommentCounter();
-    // Сброс кнопки публикации
-    const pubBtn = document.querySelector('.bsc-publish-btn');
-    if (pubBtn) { pubBtn.classList.remove('busy'); pubBtn.innerHTML = 'ДАЛЕЕ <i class="fa-solid fa-arrow-right"></i>'; }
-}
-
-function updateBSCommentCounter() {
-    const el = document.getElementById('bsPhotoComment');
-    const c = document.getElementById('bsCommentCounter');
-    if (el && c) c.textContent = el.value.length + ' / 150';
-}
-
-async function confirmBSCrop() {
-    if (!_bsCropper) return;
-
-    const statusEl = document.getElementById('bsCropperStatus');
-    const pubBtn = document.querySelector('.bsc-publish-btn');
-
-    // Блокируем кнопку
-    statusEl.textContent = 'ЗАГРУЗКА...';
-    statusEl.className = 'status-line busy';
-    if (pubBtn) { pubBtn.disabled = true; pubBtn.classList.add('busy'); pubBtn.textContent = '...'; }
-
-    try {
-        // Оборачиваем toBlob в Promise чтобы использовать try-finally
-        const blob = await new Promise((resolve, reject) => {
-            _bsCropper.getCroppedCanvas({ maxWidth: 1080, maxHeight: 1440 })
-                .toBlob(b => b ? resolve(b) : reject(new Error('ОШИБКА ОБРЕЗКИ')), 'image/jpeg', 0.88);
-        });
-
-        const path = `${_currentUser.id}/${Date.now()}.jpg`;
-        const { error: storErr } = await _supabase.storage
-            .from('community_photos')
-            .upload(path, blob, { contentType: 'image/jpeg', upsert: false });
-
-        if (storErr) throw new Error(storErr.message);
-
-        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/community_photos/${path}`;
-        const commentVal = (document.getElementById('bsPhotoComment')?.value || '').substring(0, 150).trim();
-
-        const { error: dbErr } = await _supabase.from('community_photos').insert({
-            user_id: _currentUser.id,
-            email: _currentUser.email,
-            username: _currentUsername,
-            image_url: publicUrl,
-            storage_path: path,
-            comment: commentVal || null,
-        });
-
-        if (dbErr) throw new Error(dbErr.message);
-
-        // Успех
-        statusEl.textContent = '✓ ФОТО ОПУБЛИКОВАНО!';
-        statusEl.className = 'status-line ok';
-        setTimeout(() => {
-            closeBSCropper();
-            _bsLoaded = false;
-            const reel = document.getElementById('bsReel');
-            if (reel) reel.innerHTML = '';
-            const sk = document.getElementById('bsSkeleton');
-            if (sk) { sk.style.display = 'flex'; sk.style.opacity = '1'; }
-            loadBSStory();
-        }, 1200);
-
-    } catch (err) {
-        statusEl.textContent = 'ОШИБКА: ' + err.message;
-        statusEl.className = 'status-line err';
-    } finally {
-        // Разблокируем кнопку В ЛЮБОМ СЛУЧАЕ
-        if (pubBtn) {
-            pubBtn.disabled = false;
-            pubBtn.classList.remove('busy');
-            pubBtn.innerHTML = 'ДАЛЕЕ <i class="fa-solid fa-arrow-right"></i>';
-        }
+        return m;
     }
-}
+    const makeBoneMat = () => makeLiquidMat('bone');
 
-/* ────────────────────────────────────────────────
-   5. АВТОРИЗАЦИЯ — НЕ ТРОГАТЬ
-   ──────────────────────────────────────────────── */
-let isLoginMode = true;
+    /* ── калиброванная база: голова в КТ повёрнута ~30° влево ── */
+    const BASE_YAW = 0.55;
+    const base = new THREE.Group();
+    base.rotation.y = BASE_YAW;
+    holder.add(base);
 
-function openAuth(loginMode) {
-    closeAuthChoice();
-    isLoginMode = loginMode;
-    document.getElementById('authTitle').innerText = loginMode ? 'ВХОД' : 'РЕГИСТРАЦИЯ';
-    document.getElementById('authBtn').innerText = 'ПРОДОЛЖИТЬ';
-    document.getElementById('authUsername').style.display = loginMode ? 'none' : 'block';
-    document.getElementById('forgotPasswordLink').style.display = loginMode ? 'block' : 'none';
-    const rememberRow = document.getElementById('rememberMeRow');
-    if (rememberRow) rememberRow.style.display = loginMode ? 'flex' : 'none';
-    document.getElementById('authInputs').style.display = 'block';
-    document.getElementById('authSuccess').style.display = 'none';
-    document.getElementById('authModal').classList.add('show');
-}
-function closeAuth() { document.getElementById('authModal').classList.remove('show'); }
+    let skull = null, R = 60;
 
-document.getElementById('authUsername').addEventListener('input', function () {
-    let val = this.value.replace(/\s/g, '');
-    if (val.length > 0 && !val.startsWith('@')) val = '@' + val;
-    this.value = val;
-});
+    function fitCamera() {
+        const halfW = R * 0.60;
+        const need = halfW / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect);
+        camera.position.set(0, 0, Math.max(R * 2.3, need));
+        camera.lookAt(0, 0, 0);
+    }
 
-async function executeAuth() {
-    const email = document.getElementById('authEmail').value;
-    const password = document.getElementById('authPassword').value;
-    const username = document.getElementById('authUsername').value;
-    const btn = document.getElementById('authBtn');
-    if (!email || !password) return alert('Заполни поля!');
+    const loader = new THREE.GLTFLoader();
+    loader.load('/img/skull.glb', (gltf) => {
+        skull = gltf.scene;
+        skull.traverse(o => { if (o.isMesh) { o.material = makeBoneMat(); o.geometry.computeVertexNormals(); } });
+        const box = new THREE.Box3().setFromObject(skull);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        skull.position.copy(center).negate();
+        base.add(skull);
+        base.userData.centerOff = skull.position.clone();
+        R = Math.max(size.x, size.y, size.z);
+        fitCamera();
+        scene.fog.density = 0.55 / (R * 2.3);
+        buildExtras();
 
-    const rememberMeEl = document.getElementById('rememberMeCheck');
-    const rememberMe = rememberMeEl ? rememberMeEl.checked : true;
-    if (!rememberMe) sessionStorage.setItem('bulavin_no_persist', '1');
-    else sessionStorage.removeItem('bulavin_no_persist');
+        /* шина Тигерштедта — те же координаты, металл */
+        loader.load('/img/splint.glb', (g2) => {
+            g2.scene.traverse(o => { if (o.isMesh) { o.material = makeLiquidMat('metal'); o.geometry.computeVertexNormals(); } });
+            g2.scene.position.copy(base.userData.centerOff);
+            base.add(g2.scene);
+        }, undefined, e => console.warn('[BULAVIN] splint:', e));
 
-    btn.disabled = true; btn.innerText = 'СВЯЗЬ...';
+        stage.style.opacity = '0';
+        requestAnimationFrame(() => {
+            stage.style.transition = 'opacity 2s ease';
+            stage.style.opacity = '1';
+            setTimeout(() => { stage.style.transition = 'opacity .15s linear'; }, 2100);
+        });
+    }, undefined, e => console.warn('[BULAVIN] skull:', e));
 
-    if (isLoginMode) {
-        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-            alert(error.message);
-            btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ';
-        } else {
-            _currentUser = data.user;
-            _currentUsername = data.user.user_metadata?.username
-                || ('@' + data.user.email.split('@')[0]);
-            showUserBadge(_currentUsername);
-            document.getElementById('authNavBtn')?.classList.remove('has-dot');
-            closeAuth();
-            if (_content.bs_story_global_enabled === 'true') {
-                openBSStory();
-            }
+    /* ── разбитое сердце ── */
+    const heartGroup = new THREE.Group();
+    world.add(heartGroup);
+
+    const CRACK = [
+        new THREE.Vector2(0, -11.5),
+        new THREE.Vector2(-1.6, -7.5),
+        new THREE.Vector2(1.4, -4),
+        new THREE.Vector2(-1.4, -0.5),
+        new THREE.Vector2(1.6, 3),
+        new THREE.Vector2(-1, 5.8),
+        new THREE.Vector2(0, 7.5)
+    ];
+
+    function makeHalfGeo(left) {
+        const m = left ? 1 : -1;
+        const s = new THREE.Shape();
+        s.moveTo(0, 7.5);
+        s.bezierCurveTo(-1.5 * m, 11, -4.5 * m, 13.5, -7.5 * m, 13.5);
+        s.bezierCurveTo(-12.5 * m, 13.5, -14.5 * m, 9.5, -14.5 * m, 6);
+        s.bezierCurveTo(-14.5 * m, 1, -9 * m, -3.5, 0, -11.5);
+        for (let i = 1; i < CRACK.length; i++) s.lineTo(CRACK[i].x, CRACK[i].y);
+        const g = new THREE.ExtrudeGeometry(s, { depth: 4.5, bevelEnabled: true, bevelThickness: 1.1, bevelSize: 1.1, bevelSegments: 4, curveSegments: 22 });
+        g.translate(0, -1, -2.25);
+        return g;
+    }
+
+    let ash = null;
+
+    function buildExtras() {
+        const scale = R * 0.014;
+        const hL = new THREE.Mesh(makeHalfGeo(true), makeBoneMat());
+        const hR = new THREE.Mesh(makeHalfGeo(false), makeBoneMat());
+        hL.position.set(-2.1, 0.4, 0); hL.rotation.z = 0.18; hL.rotation.y = 0.12;
+        hR.position.set(2.1, -0.6, 0.6); hR.rotation.z = -0.22; hR.rotation.y = -0.14;
+        heartGroup.add(hL, hR);
+        heartGroup.scale.setScalar(scale);
+        const portrait = innerWidth < innerHeight;
+        heartGroup.position.set(R * (portrait ? 0.52 : 0.95), R * (portrait ? 0.55 : 0.32), -R * 0.25);
+
+        const N = 420;
+        const pos = new Float32Array(N * 3);
+        for (let i = 0; i < N; i++) {
+            pos[i * 3] = (Math.random() - 0.5) * R * 4.5;
+            pos[i * 3 + 1] = (Math.random() - 0.5) * R * 3;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * R * 2.5;
         }
+        const pg = new THREE.BufferGeometry();
+        pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        const pm = new THREE.PointsMaterial({ color: 0xe6e3db, size: R * 0.006, transparent: true, opacity: 0.38, depthWrite: false });
+        ash = new THREE.Points(pg, pm);
+        world.add(ash);
+    }
+
+    function resize() {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight, false);
+        if (skull) fitCamera();
+    }
+    resize();
+    addEventListener('resize', resize);
+
+    /* мышь / гироскоп / скролл-призрак */
+    let tx = 0, ty = 0, lastMove = 0;
+    addEventListener('pointermove', e => {
+        if (e.pointerType && e.pointerType !== 'mouse') return;
+        tx = (e.clientX / innerWidth - 0.5) * 2.0;
+        ty = (e.clientY / innerHeight - 0.5) * 0.7;
+        lastMove = performance.now();
+    }, { passive: true });
+
+    function bindGyro() {
+        addEventListener('deviceorientation', (e) => {
+            if (e.gamma === null) return;
+            tx = Math.max(-1, Math.min(1, e.gamma / 32)) * 0.9;
+            ty = Math.max(-1, Math.min(1, (e.beta - 45) / 38)) * 0.5;
+            lastMove = performance.now();
+        }, { passive: true });
+    }
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+        addEventListener('touchend', function ask() {
+            removeEventListener('touchend', ask);
+            DeviceOrientationEvent.requestPermission()
+                .then(s => { if (s === 'granted') bindGyro(); })
+                .catch(() => { });
+        }, { once: true });
     } else {
-        const { error } = await _supabase.auth.signUp({ email, password, options: { data: { username } } });
-        if (error) {
-            alert(error.message);
-            btn.disabled = false; btn.innerText = 'ПРОДОЛЖИТЬ';
-        } else {
-            document.getElementById('authSuccessText').innerHTML =
-                'Ссылка для подтверждения отправлена на ваш email.' +
-                '<br><span style="opacity:0.55;font-size:10px;">Если письма нет — проверьте папку Спам.</span>';
-            document.getElementById('authIcon').className = 'fa-regular fa-envelope';
-            document.getElementById('authInputs').style.display = 'none';
-            const successEl = document.getElementById('authSuccess');
-            successEl.style.opacity = '0';
-            successEl.style.display = 'block';
-            // Плавное появление
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    successEl.style.transition = 'opacity 0.4s ease';
-                    successEl.style.opacity = '1';
-                });
-            });
+        bindGyro();
+    }
+
+    addEventListener('scroll', () => {
+        const k = Math.min(scrollY / innerHeight, 1);
+        stage.style.opacity = 1 - k * 0.94;
+    }, { passive: true });
+
+    const clock = new THREE.Clock();
+    (function tick() {
+        requestAnimationFrame(tick);
+        const t = clock.getElapsedTime();
+        for (let i = 0; i < _sceneUniforms.length; i++) _sceneUniforms[i].uTime.value = t;
+        if (skull) {
+            const idle = performance.now() - lastMove > 3500;
+            const gx = idle ? Math.sin(t * 0.38) * 0.42 : tx;
+            const gy = idle ? Math.sin(t * 0.26) * 0.15 : ty;
+            holder.rotation.y += (gx - holder.rotation.y) * 0.055;
+            holder.rotation.x += (gy - holder.rotation.x) * 0.055;
+            holder.position.y = Math.sin(t * 0.75) * (R * 0.02);
         }
-    }
-}
+        heartGroup.rotation.y = Math.sin(t * 0.45) * 0.55;
+        heartGroup.rotation.x = Math.sin(t * 0.3) * 0.14;
+        heartGroup.rotation.z = Math.sin(t * 0.22) * 0.08;
+        heartGroup.position.y += Math.sin(t * 0.6) * R * 0.0004;
+        if (ash) {
+            ash.rotation.y = t * 0.016;
+            const p = ash.geometry.attributes.position;
+            for (let i = 0; i < p.count; i++) {
+                let y = p.getY(i) + R * 0.0006;
+                if (y > R * 1.5) y = -R * 1.5;
+                p.setY(i, y);
+            }
+            p.needsUpdate = true;
+        }
+        renderer.render(scene, camera);
+    })();
+})();
 
-async function resetPasswordTrigger() {
-    const email = document.getElementById('authEmail').value;
-    if (!email) return alert('Введите Email!');
-    const link = document.getElementById('forgotPasswordLink');
-    const orig = link.innerText;
-    link.innerText = 'ОТПРАВКА...';
-    const { error } = await _supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://bulavin.space/password-reset/' });
-    link.innerText = orig;
-    if (error) alert(error.message);
-    else {
-        document.getElementById('authSuccessText').innerText = 'Ссылка отправлена на почту.';
-        document.getElementById('authIcon').className = 'fa-solid fa-paper-plane';
-        document.getElementById('authInputs').style.display = 'none';
-        document.getElementById('authSuccess').style.display = 'block';
-    }
-}
-
-/* ────────────────────────────────────────────────
-   6. АККОРДЕОН — НЕ ТРОГАТЬ
-   ──────────────────────────────────────────────── */
-function setupCollapse(btnId, wrapperId) {
-    document.getElementById(btnId).onclick = () => {
-        const el = document.getElementById(wrapperId);
-        document.querySelectorAll('.collapse-wrapper').forEach(w => {
-            if (w.id !== wrapperId) w.classList.remove('show');
-        });
-        el.classList.toggle('show');
-    };
-}
-setupCollapse('music-btn', 'music-wrapper');
-setupCollapse('afisha-btn', 'afisha-wrapper');
-
-/* ────────────────────────────────────────────────
-   7. ПЛАВАЮЩИЕ ЭМОДЗИ — НЕ ТРОГАТЬ
-   ──────────────────────────────────────────────── */
-const canvas = document.getElementById('global-canvas');
-const ctx = canvas.getContext('2d');
-let emojis = [], lastW = window.innerWidth;
-
-class FloatingEmoji {
-    constructor() { this.init(true); }
-    init(first) {
-        this.x = Math.random() * window.innerWidth;
-        this.y = first ? Math.random() * window.innerHeight : -50;
-        this.emoji = ['🖤', '💼', '🎧'][Math.floor(Math.random() * 3)];
-        this.size = Math.random() * 20 + 20;
-        this.vx = (Math.random() - 0.5) * 0.4;
-        this.vy = (Math.random() - 0.5) * 0.4;
-        this.rot = Math.random() * Math.PI * 2;
-        this.rs = (Math.random() - 0.5) * 0.01;
-        this.op = Math.random() * 0.18 + 0.08;
-    }
-    update() {
-        this.x += this.vx; this.y += this.vy; this.rot += this.rs;
-        if (this.y > window.innerHeight + 50 || this.x < -50 || this.x > window.innerWidth + 50) this.init(false);
-    }
-    draw() {
-        ctx.save();
-        ctx.translate(this.x, this.y); ctx.rotate(this.rot);
-        ctx.globalAlpha = this.op;
-        ctx.font = `${this.size}px serif`; ctx.textAlign = 'center';
-        ctx.fillText(this.emoji, 0, 0);
-        ctx.restore();
-    }
-}
-function initEmojis() {
-    if (Math.abs(lastW - window.innerWidth) > 50 || emojis.length === 0) {
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        lastW = window.innerWidth;
-        emojis = Array.from({ length: 15 }, () => new FloatingEmoji());
-    } else { canvas.height = window.innerHeight; }
-}
-function animEmojis() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    emojis.forEach(e => { e.update(); e.draw(); });
-    requestAnimationFrame(animEmojis);
-}
-window.addEventListener('resize', initEmojis);
-initEmojis(); animEmojis();
-
-/* ────────────────────────────────────────────────
-   8. API ПРЕДСКАЗАНИЙ — НЕ ТРОГАТЬ
-   ──────────────────────────────────────────────── */
-async function fetchPrediction() {
-    try {
-        const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://fucking-great-advice.ru/api/random'));
-        const d = await r.json();
-        document.getElementById('prediction').innerText = JSON.parse(d.contents).text;
-    } catch { document.getElementById('prediction').innerText = 'Продолжай делать своё дело.'; }
-}
-fetchPrediction();
-
-/* ────────────────────────────────────────────────
-   9. АНИМАЦИЯ АВАТАРКИ — НЕ ТРОГАТЬ
-   ──────────────────────────────────────────────── */
-function initAvatarAnimation() {
-    const avatarImg = document.getElementById('mainAvatarImage');
-    const placeholder = document.getElementById('avatarPlaceholder');
-    const textEl = document.getElementById('avatarText');
-    const iconEl = document.getElementById('avatarIcon');
-
-    if (!window._blurEnabled) {
-        avatarImg.style.transition = 'filter 0.35s ease';
-        avatarImg.style.filter = 'blur(0px) brightness(1)';
-        if (placeholder) placeholder.style.display = 'none';
-        return;
-    }
-
-    avatarImg.style.transition = 'none';
-    avatarImg.style.filter = 'blur(7px) brightness(0.28)';
-    placeholder.style.display = 'flex';
-    placeholder.style.opacity = '1';
-    placeholder.style.zIndex = '3';
-    textEl.style.display = 'block';
-    iconEl.style.display = 'none';
-
-    setTimeout(() => { textEl.style.display = 'none'; iconEl.style.display = 'block'; }, 3500);
-    setTimeout(() => { iconEl.style.display = 'none'; textEl.style.display = 'block'; }, 7000);
-    setTimeout(() => {
-        placeholder.style.transition = 'opacity 0.7s ease';
-        placeholder.style.opacity = '0';
-        avatarImg.style.transition = 'filter 0.9s ease';
-        avatarImg.style.filter = 'blur(0px) brightness(1)';
-        setTimeout(() => { placeholder.style.display = 'none'; }, 750);
-    }, 11000);
-}
-
-/* ────────────────────────────────────────────────
-   УТИЛИТЫ
-   ──────────────────────────────────────────────── */
-function _escHtml(str) {
-    return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
-function _timeAgo(iso) {
-    const diff = Date.now() - new Date(iso).getTime();
-    const m = Math.floor(diff / 60000);
-    if (m < 1) return 'только что';
-    if (m < 60) return `${m} мин назад`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return `${h} ч назад`;
-    return `${Math.floor(h / 24)} дн назад`;
-}
-
-function _fmtNum(n) {
-    n = parseInt(n) || 0;
-    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-    return String(n);
-}
-
-/* ────────────────────────────────────────────────
-   BOOT
-   ──────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', async () => {
-    await Promise.all([initUserState(), loadContent()]);
-});
+/* ── СТАРТ ── */
+loadContent();

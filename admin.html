@@ -128,6 +128,25 @@
 
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-calendar-check"></i>Афиша</div>
+
+            <!-- ═══ КОНЦЕРТЫ (новый сайт) ═══ -->
+            <div class="field-label">КОНЦЕРТЫ</div>
+            <p class="help-text">Список городов на главной. Нет концертов — на сайте «пока — тишина» + «Я организатор».</p>
+            <div class="custom-btn-list" id="concertAdminList">
+                <div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:12px 0;">Загрузка...</div>
+            </div>
+            <div class="add-btn-form">
+                <div class="field-label" style="margin-bottom:2px;">Добавить концерт</div>
+                <input class="input" type="text" id="newConcCity"   placeholder="Город (АЛМАТЫ)" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newConcDate"   placeholder="Дата (21.12.2026)" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newConcVenue"  placeholder="Площадка" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newConcPrice"  placeholder="Цена (от 5 000 ₸)" style="margin-bottom:8px;">
+                <input class="input" type="url"  id="newConcUrl"    placeholder="Ссылка на билеты https://..." style="margin-bottom:8px;">
+                <button class="btn-action" onclick="addConcert()">ДОБАВИТЬ КОНЦЕРТ</button>
+            </div>
+            <div class="status-line" id="concertStatus"></div>
+            <div class="admin-divider"></div>
+
             <div class="field-row">
                 <div class="field-label">Текст когда нет выступлений</div>
                 <input class="input" type="text" id="fieldAfisha" placeholder="На данный момент...">

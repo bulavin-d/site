@@ -24,6 +24,7 @@ function showPanel(email) {
     document.getElementById('adminEmail').textContent = email;
     loadSettings();
     loadCustomButtons();
+    loadConcertsAdmin();
 }
 async function handleLogin() {
     const password = document.getElementById('passInput').value;
@@ -497,6 +498,84 @@ async function deleteCustomBtn(id, btn) {
         item?.remove();
         setStatus('customBtnStatus', '✓ УДАЛЕНО', 'ok');
     } catch(e) { setStatus('customBtnStatus', 'ОШИБКА: ' + e.message, 'err'); }
+}
+
+/* ── КОНЦЕРТЫ (таблица concerts) ─────────────── */
+async function loadConcertsAdmin() {
+    const list = document.getElementById('concertAdminList');
+    if (!list) return;
+    try {
+        const { data, error } = await _supabase.from('concerts').select('*').order('position', { ascending: true });
+        if (error) throw error;
+        if (!data || data.length === 0) {
+            list.innerHTML = '<div style="text-align:center;font-size:11px;color:rgba(255,255,255,0.2);padding:12px 0;">Концертов нет. На сайте — «пока — тишина».</div>';
+            return;
+        }
+        list.innerHTML = '';
+        data.forEach(c => list.appendChild(buildConcertItem(c)));
+    } catch(e) {
+        list.innerHTML = '<div style="font-size:11px;color:#ff4b2b;padding:8px 0;">Ошибка: ' + e.message + '</div>';
+    }
+}
+function buildConcertItem(c) {
+    const div = document.createElement('div');
+    div.className = 'custom-btn-item';
+    const meta = [c.date_text, c.venue, c.price_text].filter(Boolean).join(' · ');
+    div.innerHTML = `
+        <div class="cb-icon"><i class="fa-solid fa-ticket"></i></div>
+        <div class="cb-info">
+            <div class="cb-label">${escHtml(c.city)}</div>
+            <div class="cb-url">${escHtml(meta || 'без деталей')}</div>
+        </div>
+        <div class="cb-actions">
+            <button class="cb-act-btn ${c.visible ? '' : 'hidden'}" title="${c.visible ? 'Скрыть' : 'Показать'}"
+                onclick="toggleConcertVisible(${c.id}, ${c.visible}, this)">
+                <i class="fa-solid ${c.visible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+            </button>
+            <button class="cb-act-btn del" onclick="deleteConcert(${c.id}, this)">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>`;
+    return div;
+}
+async function addConcert() {
+    const city  = document.getElementById('newConcCity').value.trim();
+    const date_text  = document.getElementById('newConcDate').value.trim();
+    const venue = document.getElementById('newConcVenue').value.trim();
+    const price_text = document.getElementById('newConcPrice').value.trim();
+    const tickets_url = document.getElementById('newConcUrl').value.trim();
+    if (!city) { setStatus('concertStatus', 'УКАЖИ ГОРОД', 'err'); return; }
+    setStatus('concertStatus', 'ДОБАВЛЯЮ...', 'busy');
+    try {
+        const { error } = await _supabase.from('concerts')
+            .insert({ city, date_text, venue, price_text, tickets_url, visible: true, position: 0 });
+        if (error) throw error;
+        ['newConcCity','newConcDate','newConcVenue','newConcPrice','newConcUrl']
+            .forEach(id => document.getElementById(id).value = '');
+        setStatus('concertStatus', '✓ КОНЦЕРТ ДОБАВЛЕН', 'ok');
+        await loadConcertsAdmin();
+    } catch(e) { setStatus('concertStatus', 'ОШИБКА: ' + e.message, 'err'); }
+}
+async function toggleConcertVisible(id, currentVisible, btn) {
+    const newVisible = !currentVisible;
+    try {
+        const { error } = await _supabase.from('concerts').update({ visible: newVisible }).eq('id', id);
+        if (error) throw error;
+        btn.classList.toggle('hidden', !newVisible);
+        btn.title = newVisible ? 'Скрыть' : 'Показать';
+        btn.innerHTML = `<i class="fa-solid ${newVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>`;
+        btn.onclick = () => toggleConcertVisible(id, newVisible, btn);
+    } catch(e) { alert('Ошибка: ' + e.message); }
+}
+async function deleteConcert(id, btn) {
+    const item = btn.closest('.custom-btn-item');
+    if (!confirm('Удалить концерт?')) return;
+    try {
+        const { error } = await _supabase.from('concerts').delete().eq('id', id);
+        if (error) throw error;
+        item?.remove();
+        setStatus('concertStatus', '✓ УДАЛЕНО', 'ok');
+    } catch(e) { setStatus('concertStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
 
 /* ── КОМЬЮНИТИ — МОДЕРАЦИЯ ───────────────────── */
