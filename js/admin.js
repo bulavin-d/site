@@ -22,6 +22,7 @@ function showPanel(email) {
     loadSettings();
     loadCustomButtons();
     loadConcertsAdmin();
+    initScenePreview();
 }
 async function handleLogin() {
     const password = document.getElementById('passInput').value;
@@ -122,10 +123,8 @@ async function loadSettings() {
         const rs = c.release_status || 'disabled';
         document.querySelectorAll('input[name="releaseStatus"]').forEach(r => { r.checked = r.value === rs; });
 
-        /* цвета сцены (пусто = дефолт) */
-        _setSceneColor(1, c.scene_color1, '#ff0033');
-        _setSceneColor(2, c.scene_color2, '#4a000f');
-        _setSceneColor(3, c.scene_color3, '#080002');
+        /* сцена: цвета + параметры (пусто = дефолт) */
+        loadSceneControls(c);
     } catch (e) { console.warn('[ADMIN] loadSettings:', e); }
 }
 
@@ -148,42 +147,153 @@ async function saveAllLinks() {
     } catch (e) { setStatus('linksStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
 
-/* ── ЦВЕТА СЦЕНЫ ─────────────────────────────── */
-function _setSceneColor(n, val, def) {
-    const hex = (val && /^#[0-9a-fA-F]{6}$/.test(val)) ? val : def;
-    const input = document.getElementById('sceneColor' + n);
-    const label = document.getElementById('sceneVal' + n);
-    if (input) input.value = hex;
-    if (label) label.textContent = (val && val.trim()) ? hex : hex + ' (дефолт)';
-    const input2 = document.getElementById('sceneColor' + n);
-    if (input2) input2.oninput = () => {
-        if (label) label.textContent = input2.value;
+/* ── СЦЕНА: цвета + скорость/шум/зерно/насыщенность + живой превью ── */
+const SCENE_DEF = { c1: '#ff0033', c2: '#4a000f', c3: '#080002', speed: 1.0, noise: 1.0, grain: 0.10, mix: 0.62 };
+
+function loadSceneControls(c) {
+    const col = (n, val, def) => {
+        const hex = (val && /^#[0-9a-fA-F]{6}$/.test(val)) ? val : def;
+        const inp = document.getElementById('sceneColor' + n);
+        const lab = document.getElementById('sceneVal' + n);
+        if (inp) inp.value = hex;
+        if (lab) lab.textContent = hex;
     };
+    col(1, c.scene_color1, SCENE_DEF.c1);
+    col(2, c.scene_color2, SCENE_DEF.c2);
+    col(3, c.scene_color3, SCENE_DEF.c3);
+    const sld = (id, val, def, labId, digits) => {
+        const n = parseFloat(val); const v = isFinite(n) ? n : def;
+        const el = document.getElementById(id); if (el) el.value = v;
+        const l = document.getElementById(labId); if (l) l.textContent = v.toFixed(digits);
+    };
+    sld('sceneSpeed', c.scene_speed, SCENE_DEF.speed, 'valSpeed', 1);
+    sld('sceneNoise', c.scene_noise, SCENE_DEF.noise, 'valNoise', 1);
+    sld('sceneGrain', c.scene_grain, SCENE_DEF.grain, 'valGrain', 2);
+    sld('sceneMix', c.scene_mix, SCENE_DEF.mix, 'valMix', 2);
+    _syncPreview();
 }
+
 async function saveScene() {
     setStatus('sceneStatus', 'СОХРАНЯЮ...', 'busy');
+    const g = id => document.getElementById(id).value;
     try {
         await _saveMulti([
-            { key: 'scene_color1', value: document.getElementById('sceneColor1').value },
-            { key: 'scene_color2', value: document.getElementById('sceneColor2').value },
-            { key: 'scene_color3', value: document.getElementById('sceneColor3').value },
+            { key: 'scene_color1', value: g('sceneColor1') },
+            { key: 'scene_color2', value: g('sceneColor2') },
+            { key: 'scene_color3', value: g('sceneColor3') },
+            { key: 'scene_speed', value: g('sceneSpeed') },
+            { key: 'scene_noise', value: g('sceneNoise') },
+            { key: 'scene_grain', value: g('sceneGrain') },
+            { key: 'scene_mix', value: g('sceneMix') },
         ]);
-        setStatus('sceneStatus', '✓ ЦВЕТА СОХРАНЕНЫ — обнови сайт', 'ok');
+        setStatus('sceneStatus', '✓ СОХРАНЕНО — обнови сайт (Ctrl+Shift+R)', 'ok');
     } catch (e) { setStatus('sceneStatus', 'ОШИБКА: ' + e.message, 'err'); }
 }
 async function resetScene() {
     setStatus('sceneStatus', 'СБРОС...', 'busy');
     try {
-        await _saveMulti([
-            { key: 'scene_color1', value: '' },
-            { key: 'scene_color2', value: '' },
-            { key: 'scene_color3', value: '' },
-        ]);
-        _setSceneColor(1, '', '#ff0033');
-        _setSceneColor(2, '', '#4a000f');
-        _setSceneColor(3, '', '#080002');
+        await _saveMulti(['scene_color1', 'scene_color2', 'scene_color3', 'scene_speed', 'scene_noise', 'scene_grain', 'scene_mix']
+            .map(key => ({ key, value: '' })));
+        loadSceneControls({});   /* пусто → дефолты */
         setStatus('sceneStatus', '✓ ВЕРНУЛ КРОВЬ — обнови сайт', 'ok');
     } catch (e) { setStatus('sceneStatus', 'ОШИБКА: ' + e.message, 'err'); }
+}
+
+/* живой превью: тот же жидкий шейдер, что на черепе (кость, тонированная палитрой) */
+let _preview = null;
+const _PREVIEW_FRAG = `
+uniform float u_time; uniform vec2 u_res;
+uniform vec3 u_c1; uniform vec3 u_c2; uniform vec3 u_c3;
+uniform float u_speed; uniform float u_noise; uniform float u_grain; uniform float u_mix;
+float h(vec2 p){ return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123); }
+float nz(vec2 p){ vec2 i=floor(p),f=fract(p),u=f*f*(3.0-2.0*f);
+  return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
+float fbm(vec2 p){ float v=0.,a=.5; mat2 r=mat2(.8,.6,-.6,.8);
+  for(int i=0;i<5;i++){v+=a*nz(p);p=r*p*2.0+u_time*0.04*u_speed;a*=.5;} return v;}
+void main(){
+  vec2 uv = gl_FragCoord.xy/u_res.xy;
+  float asp = u_res.x/u_res.y;
+  vec2 p = vec2(uv.x*asp, uv.y) * (3.0*u_noise);
+  vec2 q = vec2(fbm(p+u_time*0.06*u_speed), fbm(p+vec2(5.2,1.3)-u_time*0.05*u_speed));
+  float f = clamp(fbm(p+3.0*q)/0.9375, 0.0, 1.0);
+  vec3 pal = mix(u_c3,u_c2,smoothstep(0.10,0.50,f));
+  pal = mix(pal,u_c1,smoothstep(0.40,0.90,f));
+  vec3 bone = vec3(0.83,0.82,0.78);
+  float k = smoothstep(0.30,0.72,f)*u_mix;
+  vec3 col = mix(bone, pal, k);
+  col += u_c1 * smoothstep(0.62,0.88,f) * (u_mix*0.35);
+  float g = fract(sin(dot(uv+fract(u_time),vec2(12.9898,78.233)))*43758.5453);
+  col += (g-0.5)*u_grain;
+  gl_FragColor = vec4(col,1.0);
+}`;
+
+function initScenePreview() {
+    if (_preview || !window.THREE) return;
+    const canvas = document.getElementById('scenePreview');
+    if (!canvas) return;
+    let renderer;
+    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); }
+    catch (e) { return; }
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(dpr);
+    const scene = new THREE.Scene();
+    const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const uni = {
+        u_time: { value: 0 }, u_res: { value: new THREE.Vector2(1, 1) },
+        u_c1: { value: new THREE.Color(SCENE_DEF.c1) },
+        u_c2: { value: new THREE.Color(SCENE_DEF.c2) },
+        u_c3: { value: new THREE.Color(SCENE_DEF.c3) },
+        u_speed: { value: 1 }, u_noise: { value: 1 }, u_grain: { value: 0.1 }, u_mix: { value: 0.62 },
+    };
+    const mat = new THREE.ShaderMaterial({
+        uniforms: uni,
+        vertexShader: 'void main(){ gl_Position = vec4(position, 1.0); }',
+        fragmentShader: _PREVIEW_FRAG,
+    });
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat));
+    function size() {
+        const w = canvas.clientWidth || 300, hh = canvas.clientHeight || 190;
+        renderer.setSize(w, hh, false);
+        uni.u_res.value.set(w * dpr, hh * dpr);
+    }
+    size();
+    if (window.ResizeObserver) new ResizeObserver(size).observe(canvas);
+    _preview = { uni };
+    const clock = new THREE.Clock();
+    (function loop() {
+        requestAnimationFrame(loop);
+        uni.u_time.value = clock.getElapsedTime();
+        renderer.render(scene, cam);
+    })();
+
+    /* слайдеры/пипетки → лейбл + превью вживую */
+    [1, 2, 3].forEach(n => {
+        const el = document.getElementById('sceneColor' + n);
+        el && el.addEventListener('input', () => {
+            const l = document.getElementById('sceneVal' + n); if (l) l.textContent = el.value;
+            _syncPreview();
+        });
+    });
+    [['sceneSpeed', 'valSpeed', 1], ['sceneNoise', 'valNoise', 1], ['sceneGrain', 'valGrain', 2], ['sceneMix', 'valMix', 2]]
+        .forEach(([id, lab, d]) => {
+            const el = document.getElementById(id);
+            el && el.addEventListener('input', () => {
+                const l = document.getElementById(lab); if (l) l.textContent = parseFloat(el.value).toFixed(d);
+                _syncPreview();
+            });
+        });
+    _syncPreview();
+}
+function _syncPreview() {
+    if (!_preview) return;
+    const g = id => document.getElementById(id);
+    _preview.uni.u_c1.value.set(g('sceneColor1').value);
+    _preview.uni.u_c2.value.set(g('sceneColor2').value);
+    _preview.uni.u_c3.value.set(g('sceneColor3').value);
+    _preview.uni.u_speed.value = parseFloat(g('sceneSpeed').value);
+    _preview.uni.u_noise.value = parseFloat(g('sceneNoise').value);
+    _preview.uni.u_grain.value = parseFloat(g('sceneGrain').value);
+    _preview.uni.u_mix.value = parseFloat(g('sceneMix').value);
 }
 
 /* ── РЕЛИЗ ───────────────────────────────────── */

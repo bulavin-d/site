@@ -267,15 +267,21 @@ document.addEventListener('click', e => {
 const _sceneUniforms = [];   /* {uTime, uC1, uC2, uC3} на каждый материал */
 
 function applyScene(c) {
-    const set = (u, hex, defHex) => {
-        const v = (hex && /^#[0-9a-fA-F]{6}$/.test(hex.trim())) ? hex.trim() : defHex;
-        u.value.set(v);
-    };
+    const setC = (u, hex, def) => { u.value.set((hex && /^#[0-9a-fA-F]{6}$/.test(hex.trim())) ? hex.trim() : def); };
+    const num = (v, def) => { const n = parseFloat(v); return isFinite(n) ? n : def; };
+    const speed = num(c.scene_speed, 1.0);
+    const noise = num(c.scene_noise, 1.0);
+    const grain = num(c.scene_grain, 0.10);
+    const mixv = num(c.scene_mix, 0.62);
     _sceneUniforms.forEach(s => {
         if (!s.uC1) return;
-        set(s.uC1, c.scene_color1, '#ff0033');
-        set(s.uC2, c.scene_color2, '#4a000f');
-        set(s.uC3, c.scene_color3, '#080002');
+        setC(s.uC1, c.scene_color1, '#ff0033');
+        setC(s.uC2, c.scene_color2, '#4a000f');
+        setC(s.uC3, c.scene_color3, '#080002');
+        s.uSpeed.value = speed;
+        s.uNoise.value = noise;
+        s.uMix.value = mixv;
+        s.uGrain.value = s.isMetal ? Math.min(grain * 2.0, 0.5) : grain;
     });
 }
 
@@ -315,28 +321,29 @@ function applyScene(c) {
 
     /* ── жидкие материалы: fbm-шум внутри освещённого шейдера ── */
     const NOISE_GLSL = `
-uniform float uTime;
+uniform float uTime; uniform float uSpeed; uniform float uNoise; uniform float uGrain; uniform float uMix;
+uniform vec3 uC1; uniform vec3 uC2; uniform vec3 uC3;
 varying vec3 vLiq;
 float lhash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453123); }
 float lnoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); vec2 u=f*f*(3.0-2.0*f);
   return mix(mix(lhash(i),lhash(i+vec2(1.,0.)),u.x), mix(lhash(i+vec2(0.,1.)),lhash(i+vec2(1.,1.)),u.x), u.y); }
 float lfbm(vec2 p){ float v=0.0; float a=0.5; mat2 rot=mat2(0.8,0.6,-0.6,0.8);
-  for(int i=0;i<4;i++){ v+=a*lnoise(p); p=rot*p*2.0+uTime*0.04; a*=0.5; } return v; }`;
+  for(int i=0;i<4;i++){ v+=a*lnoise(p); p=rot*p*2.0+uTime*0.04*uSpeed; a*=0.5; } return v; }`;
 
     const BONE_CHUNK = `
 {
-    vec2 q = vec2(lfbm(vLiq.xy*0.06 + uTime*0.06), lfbm(vLiq.yz*0.06 - uTime*0.05));
-    float lf = lfbm(vLiq.xz*0.06 + q*3.0) / 0.9375;
+    vec2 q = vec2(lfbm(vLiq.xy*0.06*uNoise + uTime*0.06*uSpeed), lfbm(vLiq.yz*0.06*uNoise - uTime*0.05*uSpeed));
+    float lf = lfbm(vLiq.xz*0.06*uNoise + q*3.0) / 0.9375;
     vec3 lpal = mix(uC3, uC2, smoothstep(0.10, 0.50, lf));
     lpal = mix(lpal, uC1, smoothstep(0.40, 0.90, lf));
-    float lk = smoothstep(0.30, 0.72, lf) * 0.62;
+    float lk = smoothstep(0.30, 0.72, lf) * uMix;
     diffuseColor.rgb = mix(diffuseColor.rgb, lpal, lk);
-    diffuseColor.rgb += uC1 * smoothstep(0.62, 0.88, lf) * 0.22;
+    diffuseColor.rgb += uC1 * smoothstep(0.62, 0.88, lf) * (uMix * 0.35);
 }`;
 
     const METAL_CHUNK = `
 {
-    float mf = lfbm(vLiq.xy*0.9 + uTime*0.30) / 0.9375;
+    float mf = lfbm(vLiq.xy*0.9*uNoise + uTime*0.30*uSpeed) / 0.9375;
     vec3 cool = vec3(0.72, 0.80, 0.95);
     vec3 warm = vec3(1.05, 0.88, 0.66);
     vec3 irid = mix(cool, warm, smoothstep(0.30, 0.70, mf));
@@ -349,14 +356,19 @@ float lfbm(vec2 p){ float v=0.0; float a=0.5; mat2 rot=mat2(0.8,0.6,-0.6,0.8);
         const m = new THREE.MeshStandardMaterial(metal
             ? { color: 0xd9dee6, roughness: 0.24, metalness: 0.78 }
             : { color: 0xd4d1c8, roughness: 0.5, metalness: 0.05 });
-        const grain = metal ? '0.22' : '0.10';
         m.onBeforeCompile = (shader) => {
             shader.uniforms.uTime = { value: 0 };
+            shader.uniforms.uSpeed = { value: 1.0 };
+            shader.uniforms.uNoise = { value: 1.0 };
+            shader.uniforms.uGrain = { value: metal ? 0.20 : 0.10 };
+            shader.uniforms.uMix = { value: 0.62 };
             shader.uniforms.uC1 = { value: new THREE.Color('#ff0033') };
             shader.uniforms.uC2 = { value: new THREE.Color('#4a000f') };
             shader.uniforms.uC3 = { value: new THREE.Color('#080002') };
             _sceneUniforms.push({
-                uTime: shader.uniforms.uTime,
+                isMetal: metal,
+                uTime: shader.uniforms.uTime, uSpeed: shader.uniforms.uSpeed,
+                uNoise: shader.uniforms.uNoise, uGrain: shader.uniforms.uGrain, uMix: shader.uniforms.uMix,
                 uC1: shader.uniforms.uC1, uC2: shader.uniforms.uC2, uC3: shader.uniforms.uC3
             });
             applyScene(_content);   /* контент мог загрузиться раньше шейдера */
@@ -364,12 +376,12 @@ float lfbm(vec2 p){ float v=0.0; float a=0.5; mat2 rot=mat2(0.8,0.6,-0.6,0.8);
                 .replace('#include <common>', '#include <common>\nvarying vec3 vLiq;')
                 .replace('#include <begin_vertex>', '#include <begin_vertex>\nvLiq = position;');
             shader.fragmentShader = shader.fragmentShader
-                .replace('#include <common>', '#include <common>\nuniform vec3 uC1;\nuniform vec3 uC2;\nuniform vec3 uC3;' + NOISE_GLSL)
+                .replace('#include <common>', '#include <common>' + NOISE_GLSL)
                 .replace('vec4 diffuseColor = vec4( diffuse, opacity );',
                     'vec4 diffuseColor = vec4( diffuse, opacity );' + (metal ? METAL_CHUNK : BONE_CHUNK))
                 .replace('#include <dithering_fragment>', `#include <dithering_fragment>
 float lg = lhash(gl_FragCoord.xy + vec2(fract(uTime)*371.0, fract(uTime*1.7)*713.0));
-gl_FragColor.rgb += (lg - 0.5) * ${grain};`);
+gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
         };
         return m;
     }
