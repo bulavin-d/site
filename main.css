@@ -1,0 +1,542 @@
+/* ================================================
+   BULAVIN.SPACE — MAIN SITE STYLES (redesign 2026)
+   admin.css / shared.css / dashboard.css — не трогать
+   ================================================ */
+:root {
+            --bg: #030303;
+            --bone: #e6e3db;
+            --bone-dim: rgba(230, 227, 219, .5);
+            --blood: #a50d1d;
+            --blood-glow: rgba(165, 13, 29, .45);
+            --line: rgba(230, 227, 219, .09);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; background: var(--bg); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--bone);
+            overflow-x: hidden;
+        }
+
+        ::selection { background: var(--blood); color: #000; }
+
+        /* thin dark scrollbar */
+        ::-webkit-scrollbar { width: 9px; }
+        ::-webkit-scrollbar-track { background: #060606; }
+        ::-webkit-scrollbar-thumb { background: #1d1c1a; border-radius: 4px; border: 2px solid #060606; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--blood); }
+
+        /* keyboard focus */
+        a:focus-visible, button:focus-visible {
+            outline: 1px solid var(--blood);
+            outline-offset: 3px;
+        }
+
+        /* grain + vignette */
+        body::before {
+            content: "";
+            position: fixed; inset: 0; z-index: 98; pointer-events: none;
+            background: radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0, 0, 0, .75) 100%);
+        }
+
+        body::after {
+            content: "";
+            position: fixed; inset: 0; z-index: 99; pointer-events: none; opacity: .06;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* ═══ custom cursor ═══ */
+        @media (pointer: fine) {
+            body { cursor: none; }
+            a, button { cursor: none; }
+
+            .cur-dot, .cur-ring {
+                position: fixed; top: 0; left: 0; z-index: 200;
+                pointer-events: none; border-radius: 50%;
+            }
+
+            .cur-dot { width: 5px; height: 5px; background: var(--bone); }
+
+            .cur-ring {
+                width: 34px; height: 34px;
+                border: 1px solid rgba(230, 227, 219, .35);
+                transition: width .25s, height .25s, border-color .25s;
+            }
+
+            .cur-ring.hot {
+                width: 60px; height: 60px;
+                border-color: var(--blood);
+            }
+        }
+
+        @media (pointer: coarse) { .cur-dot, .cur-ring { display: none; } }
+
+        /* ═══ fixed 3D stage ═══ */
+        #stage {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 0;
+            height: 100vh;      /* fallback */
+            height: 100lvh;     /* стабильная высота — не прыгает от адресной строки на мобиле */
+            pointer-events: none;
+        }
+
+        #stage canvas { width: 100% !important; height: 100% !important; }
+
+        /* ═══ nav ═══ */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: clamp(18px, 2.6vw, 30px) clamp(20px, 4vw, 60px);
+            transition: background .4s ease, backdrop-filter .4s ease, padding .4s ease;
+        }
+
+        /* after the hero: nav gets a dark glass plate so it reads over content */
+        nav.scrolled {
+            background: rgba(3, 3, 3, .72);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding-top: clamp(12px, 1.6vw, 18px);
+            padding-bottom: clamp(12px, 1.6vw, 18px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        nav .brand {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900; font-size: 14px; letter-spacing: .22em;
+            color: var(--bone); text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: clamp(20px, 3vw, 44px); }
+
+        .nav-links a {
+            color: var(--bone-dim); text-decoration: none;
+            font-size: 11px; font-weight: 600;
+            letter-spacing: .26em; text-transform: uppercase;
+            transition: color .3s, text-shadow .3s;
+        }
+
+        .nav-links a:hover { color: var(--bone); text-shadow: 0 0 18px var(--blood-glow); }
+
+        /* ═══ hero ═══ */
+        .hero {
+            position: relative; z-index: 1;
+            height: 100svh; min-height: 560px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+
+        .hero-name {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(54px, 12.5vw, 200px);
+            line-height: 1;
+            letter-spacing: -.02em;
+            margin-top: -12vh;
+            user-select: none;
+            /* film grain lives INSIDE the letters: noise layer clipped to the glyphs */
+            color: transparent;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='260' height='260' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"),
+                linear-gradient(#fff, #fff);
+            background-size: 260px 260px, 100% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            mix-blend-mode: difference; /* letters invert over the white skull — always readable */
+            animation: heroIn 1.6s cubic-bezier(.2, .7, .2, 1) both, grainJump .7s steps(1) infinite;
+        }
+
+        @keyframes grainJump {
+            0% { background-position: 0 0, 0 0; }
+            25% { background-position: -74px 38px, 0 0; }
+            50% { background-position: 41px -85px, 0 0; }
+            75% { background-position: -12px 61px, 0 0; }
+            100% { background-position: 0 0, 0 0; }
+        }
+
+        @keyframes heroIn {
+            0% { opacity: 0; transform: translateY(26px); filter: blur(14px); letter-spacing: .08em; }
+            100% { opacity: 1; transform: none; filter: blur(0); letter-spacing: -.02em; }
+        }
+
+        /* entrance lives on the svg, pulse on the wrapper — no opacity conflict */
+        .hero-arrow svg { animation: arrowIn 1s ease 1.4s both; }
+
+        @keyframes arrowIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .hero-arrow {
+            position: absolute; bottom: clamp(26px, 4.6vh, 50px); left: 50%;
+            transform: translateX(-50%);
+            width: 18px; height: 44px;
+            animation: dip 2.6s ease-in-out infinite;
+        }
+
+        .hero-arrow svg { width: 100%; height: 100%; }
+
+        @keyframes dip {
+            0%, 100% { transform: translate(-50%, 0); opacity: .4; }
+            50% { transform: translate(-50%, 9px); opacity: .9; }
+        }
+
+        /* ═══ the rail — one continuous framed column, everything lives inside ═══ */
+        .rail {
+            position: relative; z-index: 1;
+            max-width: 1060px;
+            margin: 0 auto;
+            border-left: 1px solid var(--line);
+            border-right: 1px solid var(--line);
+            border-top: 1px solid var(--line);
+        }
+
+        /* rows glue together — one line between neighbours, no phantom cells */
+        .blk { padding: 0; }
+
+        .rv { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s cubic-bezier(.2, .7, .2, 1); }
+        .rv.vis { opacity: 1; transform: none; }
+
+        /* ═══ release strip ═══ */
+        .release {
+            display: grid;
+            grid-template-columns: clamp(110px, 13vw, 170px) 1fr auto;
+            align-items: center;
+            gap: clamp(20px, 3vw, 46px);
+            border-bottom: 1px solid var(--line);
+            padding: clamp(20px, 2.6vw, 34px) clamp(16px, 2.6vw, 30px);
+            position: relative;
+        }
+
+        .release::before {
+            content: "";
+            position: absolute; left: 0; top: 0; bottom: -1px;
+            width: 2px;
+            background: linear-gradient(var(--blood), transparent);
+        }
+
+        .release-cover {
+            aspect-ratio: 1;
+            background: #0a0a0a;
+            border: 1px solid rgba(165, 13, 29, .35);
+            box-shadow: 0 0 44px rgba(165, 13, 29, .18), inset 0 0 40px rgba(0, 0, 0, .8);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 9px; letter-spacing: .45em;
+            color: rgba(230, 227, 219, .25);
+            transition: box-shadow .5s, border-color .5s;
+        }
+
+        .release:hover .release-cover {
+            box-shadow: 0 0 80px rgba(165, 13, 29, .38), inset 0 0 40px rgba(0, 0, 0, .8);
+            border-color: rgba(165, 13, 29, .7);
+        }
+
+        .release-info { text-align: left; }
+
+        .release-info .rk {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic; font-size: clamp(14px, 1.4vw, 18px);
+            color: var(--bone-dim);
+            margin-bottom: 8px; display: block;
+        }
+
+        .release-info h3 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: clamp(17px, 2.4vw, 34px);
+            letter-spacing: -.01em;
+        }
+
+        /* ═══ doom button ═══ */
+        .btn-doom {
+            position: relative; z-index: 0;
+            display: inline-flex; align-items: center; gap: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px; font-weight: 600;
+            letter-spacing: .34em; text-transform: uppercase;
+            color: var(--bone);
+            text-decoration: none;
+            border: 1px solid rgba(165, 13, 29, .55);
+            padding: 17px 38px;
+            clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+            background: rgba(165, 13, 29, .06);
+            transition: color .35s, box-shadow .35s;
+            white-space: nowrap;
+        }
+
+        /* liquid blood fill — animated gradient revealed on hover */
+        .btn-doom::before {
+            content: "";
+            position: absolute; inset: 0; z-index: -1;
+            background: linear-gradient(115deg,
+                #2b0208 0%, #a50d1d 22%, #ff0033 42%, #4a000f 60%, #ff1a3c 80%, #2b0208 100%);
+            background-size: 320% 320%;
+            opacity: 0;
+            transition: opacity .4s ease;
+            animation: liqflow 5s ease-in-out infinite;
+        }
+
+        @keyframes liqflow {
+            0% { background-position: 0% 30%; }
+            50% { background-position: 100% 70%; }
+            100% { background-position: 0% 30%; }
+        }
+
+        .btn-doom:hover {
+            color: #fff;
+            box-shadow: 0 0 50px var(--blood-glow);
+            animation: flick .35s steps(2) 1;
+        }
+
+        .btn-doom:hover::before { opacity: 1; }
+
+        @keyframes flick {
+            0% { opacity: .4; }
+            50% { opacity: 1; }
+            75% { opacity: .6; }
+            100% { opacity: 1; }
+        }
+
+        /* ═══ rows: icon anchored left, giant word anchored right — one axis ═══ */
+        .ledger a,
+        .ledger-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            width: 100%;
+            background: none; border: none;
+            border-bottom: 1px solid var(--line);
+            padding: clamp(14px, 1.9vw, 26px) clamp(16px, 2.6vw, 30px);
+            text-decoration: none;
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 900;
+            font-size: clamp(21px, 3.2vw, 46px);
+            line-height: 1.1;
+            white-space: nowrap;
+            letter-spacing: -.01em;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(230, 227, 219, .38);
+            transition: color .35s, -webkit-text-stroke-color .35s, text-shadow .35s, background .35s;
+            user-select: none;
+        }
+
+        .row-ic {
+            font-size: clamp(15px, 1.6vw, 22px);
+            color: rgba(230, 227, 219, .3);
+            -webkit-text-stroke: 0;
+            width: clamp(22px, 2.4vw, 32px);
+            text-align: left;
+            flex-shrink: 0;
+            transition: color .35s, text-shadow .35s;
+        }
+
+        .row-end {
+            display: inline-flex; align-items: center;
+            gap: clamp(12px, 1.6vw, 22px);
+        }
+
+        /* --pc = platform brand colour; doors fall back to blood */
+        .ledger a:hover,
+        .ledger-toggle:hover {
+            color: var(--pc, var(--blood));
+            -webkit-text-stroke-color: transparent;
+            text-shadow: 0 0 60px color-mix(in srgb, var(--pc, var(--blood)) 50%, transparent);
+            background: color-mix(in srgb, var(--pc, var(--blood)) 5%, transparent);
+        }
+
+        .ledger a:hover .row-ic,
+        .ledger-toggle:hover .row-ic {
+            color: var(--pc, var(--blood));
+            text-shadow: 0 0 24px color-mix(in srgb, var(--pc, var(--blood)) 55%, transparent);
+        }
+
+        /* doors read as headers: subtle plate + full weight */
+        .ledger-toggle { background: rgba(230, 227, 219, .018); }
+
+        /* drawer content speaks in the SECOND voice: fine tracked caps, like vinyl credits */
+        .ledger a {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: clamp(12px, 1.15vw, 15px);
+            letter-spacing: .34em;
+            text-transform: uppercase;
+            color: rgba(230, 227, 219, .55);
+            -webkit-text-stroke: 0;
+            padding: clamp(14px, 1.7vw, 21px) clamp(16px, 2.6vw, 30px);
+        }
+
+        .ledger .row-ic { font-size: clamp(12px, 1.3vw, 17px); }
+
+        .ledger { padding-bottom: clamp(10px, 1.4vw, 18px); }
+
+        .tgl-arrow {
+            width: clamp(13px, 1.6vw, 20px);
+            color: rgba(230, 227, 219, .4);
+            transition: transform .45s cubic-bezier(.2, .7, .2, 1), color .35s;
+            flex-shrink: 0;
+        }
+
+        .ledger-toggle:hover .tgl-arrow { color: var(--blood); }
+
+        .ledger-toggle.open .tgl-arrow { transform: rotate(180deg); color: var(--blood); }
+
+        .accordion {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height .7s cubic-bezier(.2, .7, .2, 1), opacity .5s ease;
+        }
+
+        .accordion.open {
+            opacity: 1;
+            border-bottom: 1px solid var(--line);
+        }
+
+        /* the accordion's own bottom line closes the card */
+        .accordion .ledger a:last-child { border-bottom: none; }
+
+        /* ═══ afisha: concert rows — same axis as everything else:
+               left = number + tickets chip, right = city, whole row is the link ═══ */
+        .concerts { padding-bottom: clamp(10px, 1.4vw, 18px); }
+
+        .concert {
+            display: grid;
+            grid-template-columns: clamp(30px, 3.4vw, 46px) 1fr auto;
+            align-items: center;
+            gap: clamp(12px, 2vw, 26px);
+            padding: clamp(14px, 1.8vw, 22px) clamp(16px, 2.6vw, 30px);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .concerts .concert:last-child { border-bottom: none; }
+
+        .concert .cn {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700; font-size: 10px;
+            color: var(--blood);
+            letter-spacing: .18em;
+        }
+
+        .concert .city {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700;
+            font-size: clamp(17px, 2.2vw, 32px);
+            letter-spacing: -.01em;
+            line-height: 1.1;
+            color: var(--bone);
+        }
+
+        .concert .cmeta {
+            font-size: 12px;
+            color: var(--bone-dim);
+            margin-top: 5px;
+            letter-spacing: .05em;
+        }
+
+        .concert .cmeta b { color: var(--bone); font-weight: 500; }
+
+        .btn-doom.sm {
+            padding: 12px 22px;
+            font-size: 10px;
+            letter-spacing: .26em;
+            gap: 8px;
+        }
+
+        .afisha-silence {
+            text-align: center;
+            padding: clamp(36px, 5vw, 60px) 0 clamp(40px, 5.6vw, 66px);
+        }
+
+        .afisha-line {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic; font-weight: 500;
+            font-size: clamp(24px, 3.4vw, 44px);
+            color: var(--bone-dim);
+            margin-bottom: 44px;
+        }
+
+        .afisha-line b { color: var(--bone); font-weight: 600; }
+
+        /* ═══ bio — liner notes (SEO) ═══ */
+        .rail { padding-bottom: clamp(70px, 10vw, 130px); }
+
+        .liner {
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+            padding: clamp(32px, 4.6vw, 56px) clamp(20px, 3vw, 40px) 0;
+        }
+
+        .liner .flower { width: 22px; margin: 0 auto clamp(22px, 3vw, 34px); opacity: .5; }
+
+        .liner h2 {
+            font-family: 'Unbounded', sans-serif;
+            font-weight: 700; font-size: 12px;
+            letter-spacing: .4em; text-transform: uppercase;
+            color: var(--bone-dim);
+            margin-bottom: 18px;
+        }
+
+        .liner p {
+            font-size: 12.5px; line-height: 1.9;
+            color: rgba(230, 227, 219, .38);
+            letter-spacing: .02em;
+        }
+
+        .liner p b { color: rgba(230, 227, 219, .6); font-weight: 500; }
+
+        .foot-note {
+            position: relative; z-index: 1;
+            text-align: center;
+            font-size: 11px; line-height: 1.8;
+            letter-spacing: .06em;
+            color: rgba(230, 227, 219, .3);
+            padding: 0 clamp(20px, 4vw, 60px) clamp(26px, 3.6vw, 44px);
+        }
+
+        footer {
+            position: relative; z-index: 1;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px;
+            padding: 26px clamp(20px, 4vw, 60px);
+            border-top: 1px solid var(--line);
+            font-size: 10px; font-weight: 500;
+            letter-spacing: .3em; text-transform: uppercase;
+            color: rgba(230, 227, 219, .3);
+        }
+
+        /* ═══ mobile ═══ */
+        @media (max-width: 720px) {
+            .hero-name { font-size: 15.5vw; margin-top: -16vh; }
+            .rail { margin: 0 12px; }
+            nav .brand { font-size: 12px; }
+            nav .nav-links { gap: 16px; }
+            nav .nav-links a { font-size: 10px; letter-spacing: .18em; }
+
+            .release { grid-template-columns: clamp(90px, 24vw, 120px) 1fr; }
+            .release .btn-doom { grid-column: 1 / -1; justify-content: center; }
+
+            .ledger-toggle { font-size: 6.4vw; padding: 14px; }
+
+            .concert { grid-template-columns: 1fr auto; gap: 10px; padding: 13px 14px; }
+            .concert .cn { display: none; }
+            .concert .city { font-size: 5.2vw; }
+            .concert .cmeta { font-size: 10px; }
+            .btn-doom.sm { padding: 10px 16px; font-size: 9px; }
+
+            .ledger a { font-size: 11px; letter-spacing: .28em; padding: 13px 14px; }
+            .row-ic { font-size: 13px; width: 20px; }
+            .ledger .row-ic { font-size: 11px; }
+            .row-end { gap: 9px; }
+            .tgl-arrow { width: 11px; }
+        }
+
+/* ═══ release cover image (задаётся из админки) ═══ */
+.release-cover { position: relative; overflow: hidden; }
+
+.release-cover img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
