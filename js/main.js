@@ -474,14 +474,22 @@ gl_FragColor.rgb += (lg - 0.5) * ${grain};`);
         world.add(ash);
     }
 
+    /* размер берём у контейнера (#stage), а не у окна: он прибит к 100lvh в CSS,
+       поэтому скрытие адресной строки на мобиле НЕ меняет его высоту → череп не плющит */
     function resize() {
-        camera.aspect = innerWidth / innerHeight;
+        const w = stage.clientWidth || innerWidth;
+        const h = stage.clientHeight || innerHeight;
+        camera.aspect = w / h;
         camera.updateProjectionMatrix();
-        renderer.setSize(innerWidth, innerHeight, false);
+        renderer.setSize(w, h, false);
         if (skull) fitCamera();
     }
     resize();
-    addEventListener('resize', resize);
+    if (window.ResizeObserver) {
+        new ResizeObserver(resize).observe(stage);
+    } else {
+        addEventListener('orientationchange', () => setTimeout(resize, 200));
+    }
 
     /* мышь / гироскоп / скролл-призрак */
     let tx = 0, ty = 0, lastMove = 0;
@@ -492,9 +500,12 @@ gl_FragColor.rgb += (lg - 0.5) * ${grain};`);
         lastMove = performance.now();
     }, { passive: true });
 
+    let _gyroBound = false;
     function bindGyro() {
+        if (_gyroBound) return;
+        _gyroBound = true;
         addEventListener('deviceorientation', (e) => {
-            if (e.gamma === null) return;
+            if (e.gamma === null || e.gamma === undefined) return;
             tx = Math.max(-1, Math.min(1, e.gamma / 32)) * 0.9;
             ty = Math.max(-1, Math.min(1, (e.beta - 45) / 38)) * 0.5;
             lastMove = performance.now();
@@ -502,13 +513,16 @@ gl_FragColor.rgb += (lg - 0.5) * ${grain};`);
     }
     if (typeof DeviceOrientationEvent !== 'undefined' &&
         typeof DeviceOrientationEvent.requestPermission === 'function') {
-        addEventListener('touchend', function ask() {
-            removeEventListener('touchend', ask);
+        /* iOS 13+: разрешение выдаётся ТОЛЬКО из обработчика явного тапа (click) */
+        const askGyro = () => {
             DeviceOrientationEvent.requestPermission()
                 .then(s => { if (s === 'granted') bindGyro(); })
                 .catch(() => { });
-        }, { once: true });
+            document.removeEventListener('click', askGyro);
+        };
+        document.addEventListener('click', askGyro, { once: true });
     } else {
+        /* Android / прочие — без запроса */
         bindGyro();
     }
 
