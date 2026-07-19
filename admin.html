@@ -10,6 +10,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <link rel="icon" href="/bulavinnewflav.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/shared.css">
     <link rel="stylesheet" href="/css/admin.css">
@@ -77,6 +80,191 @@
         .slider-row input[type=range]::-moz-range-thumb {
             width: 18px; height: 18px; border-radius: 50%;
             background: #a50d1d; border: 2px solid #ff5a6a; cursor: pointer;
+        }
+    </style>
+
+    <!-- ═══════════ ФИРМЕННЫЙ СКИН (стиль сайта) — переопределяет admin.css ═══════════ -->
+    <style>
+        :root {
+            --blue: #a50d1d;              /* аккцент админки → кровь (был #0095f6) */
+            --bg: #050505;
+            --bone: #e6e3db;
+            --bone-dim: rgba(230, 227, 219, .5);
+            --blood: #a50d1d;
+            --line: rgba(230, 227, 219, .1);
+        }
+
+        body {
+            background: #050505 !important;
+            color: var(--bone) !important;
+            font-family: 'Inter', sans-serif !important;
+        }
+
+        /* лёгкое зерно как на сайте */
+        body::after {
+            content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .04;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        .admin-layout, .login-wrap { position: relative; z-index: 1; }
+
+        /* ── ШАПКА ── */
+        .admin-header {
+            border-bottom: 1px solid var(--line) !important;
+            background: rgba(5, 5, 5, .7) !important;
+            backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 40;
+        }
+        .admin-logo {
+            font-family: 'Unbounded', sans-serif !important;
+            font-weight: 900 !important; letter-spacing: .12em !important;
+            color: var(--bone) !important;
+        }
+        .admin-logo span { color: var(--blood) !important; }
+        .admin-session { color: var(--bone-dim) !important; font-size: 11px; letter-spacing: .04em; }
+        .logout-btn {
+            border: 1px solid var(--line) !important; color: var(--bone) !important;
+            background: none !important; border-radius: 2px !important;
+            font-weight: 600; letter-spacing: .1em; text-transform: uppercase; font-size: 11px;
+            transition: background .3s, color .3s;
+        }
+        .logout-btn:hover { background: var(--blood) !important; color: #000 !important; border-color: var(--blood) !important; }
+
+        /* ── ВКЛАДКИ ── */
+        .admin-tabs {
+            border-bottom: 1px solid var(--line) !important;
+            overflow-x: auto; -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .admin-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            font-family: 'Inter', sans-serif !important;
+            color: var(--bone-dim) !important; background: none !important;
+            font-size: 11px !important; font-weight: 600 !important;
+            letter-spacing: .18em !important; text-transform: uppercase !important;
+            border: none !important; border-bottom: 2px solid transparent !important;
+            white-space: nowrap;
+        }
+        .tab-btn.active {
+            color: var(--bone) !important;
+            border-bottom-color: var(--blood) !important;
+            background: none !important;
+        }
+        .tab-btn i { color: var(--blood) !important; }
+
+        /* ── СЕКЦИИ ── */
+        .admin-section {
+            background: rgba(230, 227, 219, .02) !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 3px !important;
+        }
+        .section-title {
+            font-family: 'Unbounded', sans-serif !important;
+            font-weight: 700 !important; font-size: 14px !important;
+            letter-spacing: .02em !important; color: var(--bone) !important;
+        }
+        .section-title i { color: var(--blood) !important; }
+        .field-label, .toggle-label-text {
+            color: var(--bone-dim) !important;
+            letter-spacing: .1em; text-transform: uppercase; font-size: 11px;
+        }
+        .help-text { color: rgba(230, 227, 219, .38) !important; }
+        .help-text code, .field-label code {
+            background: rgba(165, 13, 29, .15); color: #ff8a94; border-radius: 4px; padding: 1px 5px;
+        }
+        .admin-divider { background: var(--line) !important; }
+
+        /* ── ПОЛЯ ── */
+        .input, .admin-textarea {
+            background: rgba(0, 0, 0, .35) !important;
+            border: 1px solid var(--line) !important;
+            color: var(--bone) !important;
+            border-radius: 2px !important;
+            font-family: 'Inter', sans-serif !important;
+            transition: border-color .3s, box-shadow .3s;
+        }
+        .input:focus, .admin-textarea:focus {
+            border-color: rgba(165, 13, 29, .6) !important;
+            box-shadow: 0 0 0 3px rgba(165, 13, 29, .12) !important;
+            outline: none !important;
+        }
+        .input::placeholder, .admin-textarea::placeholder { color: rgba(230, 227, 219, .28) !important; }
+
+        /* ── КНОПКИ (в стиле сайта: срезанные углы, кровь) ── */
+        .btn-action {
+            background: rgba(165, 13, 29, .08) !important;
+            border: 1px solid rgba(165, 13, 29, .5) !important;
+            color: var(--bone) !important;
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 600 !important; letter-spacing: .12em !important;
+            text-transform: uppercase !important; font-size: 12px !important;
+            border-radius: 0 !important;
+            clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+            transition: background .3s, color .3s, box-shadow .3s;
+        }
+        .btn-action:hover {
+            background: var(--blood) !important; color: #000 !important;
+            box-shadow: 0 0 40px rgba(165, 13, 29, .4) !important;
+        }
+        .btn-action.btn-danger {
+            background: rgba(255, 75, 43, .06) !important;
+            border-color: rgba(255, 75, 43, .5) !important;
+        }
+        .btn-action.btn-danger:hover { background: #ff4b2b !important; color: #000 !important; box-shadow: 0 0 40px rgba(255, 75, 43, .35) !important; }
+
+        .upload-label {
+            background: rgba(230, 227, 219, .04) !important;
+            border: 1px dashed var(--line) !important;
+            color: var(--bone-dim) !important; border-radius: 3px !important;
+            letter-spacing: .08em; text-transform: uppercase; font-size: 11px;
+        }
+        .upload-label:hover { border-color: rgba(165, 13, 29, .5) !important; color: var(--bone) !important; }
+
+        /* ── СТАТУСЫ ── */
+        .status-line.ok { color: #7ee787 !important; }
+        .status-line.err { color: #ff6a5a !important; }
+        .status-line.busy { color: var(--bone-dim) !important; }
+
+        /* ── РАДИО / ЦВЕТА / ПРЕВЬЮ (уже свои, чуть согласуем) ── */
+        .radio-custom { border-color: var(--line) !important; }
+        .radio-label input:checked + .radio-custom { border-color: var(--blood) !important; background: var(--blood) !important; }
+        .color-value { color: var(--bone-dim) !important; font-family: 'Inter', monospace; }
+        .scene-preview, .scene-swatch { border-color: var(--line) !important; }
+
+        /* ── ЛОГИН ── */
+        .login-card {
+            background: rgba(230, 227, 219, .03) !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 4px !important;
+        }
+        .login-title {
+            font-family: 'Unbounded', sans-serif !important;
+            font-weight: 900 !important; color: var(--bone) !important; letter-spacing: .06em;
+        }
+        .login-sub { color: var(--bone-dim) !important; letter-spacing: .2em; }
+        .back-link { color: var(--bone-dim) !important; letter-spacing: .06em; }
+        .back-link:hover { color: var(--blood) !important; }
+
+        /* ── СПИСКИ (концерты/кнопки) в тон ── */
+        .list-item {
+            background: rgba(230, 227, 219, .03) !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 4px !important;
+        }
+        .list-item .li-title { color: var(--bone) !important; }
+        .list-item .li-sub { color: var(--bone-dim) !important; }
+        .li-act { background: rgba(230, 227, 219, .06) !important; }
+        .li-act:hover { background: rgba(230, 227, 219, .13) !important; }
+        .li-act.del:hover { background: var(--blood) !important; }
+
+        /* ── МОБИЛКА ── */
+        @media (max-width: 640px) {
+            .admin-header { flex-wrap: wrap; gap: 8px; padding: 14px 16px !important; }
+            .admin-tabs { gap: 2px; }
+            .tab-btn { padding: 12px 14px !important; font-size: 10px !important; letter-spacing: .12em !important; }
+            .tab-btn i { display: none; }
+            .admin-section { padding: 18px 16px !important; }
+            .btn-row { flex-direction: column; }
+            .color-row { flex-wrap: wrap; }
         }
     </style>
 </head>
