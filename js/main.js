@@ -79,11 +79,8 @@ function applyContent() {
     const footerEl = document.getElementById('footerText');
     if (footerEl && c.footer_text) footerEl.textContent = c.footer_text;
 
-    const bioExtra = document.getElementById('bioExtra');
-    if (bioExtra && c.bio && c.bio.trim()) {
-        bioExtra.textContent = c.bio.trim();
-        bioExtra.style.display = 'block';
-    }
+    const bioMain = document.getElementById('bioMain');
+    if (bioMain && c.bio && c.bio.trim()) bioMain.textContent = c.bio.trim();
 
     applyRelease(c);
     applyScene(c);
@@ -266,18 +263,25 @@ document.addEventListener('click', e => {
    ──────────────────────────────────────────────── */
 const _sceneUniforms = [];   /* {uTime, uC1, uC2, uC3} на каждый материал */
 
+let _underLight = null;   /* нижний «свет настроения» — красится в акцентный цвет сцены */
 function applyScene(c) {
-    const setC = (u, hex, def) => { u.value.set((hex && /^#[0-9a-fA-F]{6}$/.test(hex.trim())) ? hex.trim() : def); };
+    const hexOr = (v, def) => (v && /^#[0-9a-fA-F]{6}$/.test(v.trim())) ? v.trim() : def;
     const num = (v, def) => { const n = parseFloat(v); return isFinite(n) ? n : def; };
+    const c1 = hexOr(c.scene_color1, '#ff0033');
+    const c2 = hexOr(c.scene_color2, '#4a000f');
+    const c3 = hexOr(c.scene_color3, '#080002');
+    const cmetal = hexOr(c.scene_metal, '#cfd6e0');
     const speed = num(c.scene_speed, 1.0);
     const noise = num(c.scene_noise, 1.0);
     const grain = num(c.scene_grain, 0.10);
     const mixv = num(c.scene_mix, 0.62);
+    if (_underLight) _underLight.color.set(c1);
     _sceneUniforms.forEach(s => {
         if (!s.uC1) return;
-        setC(s.uC1, c.scene_color1, '#ff0033');
-        setC(s.uC2, c.scene_color2, '#4a000f');
-        setC(s.uC3, c.scene_color3, '#080002');
+        s.uC1.value.set(c1);
+        s.uC2.value.set(c2);
+        s.uC3.value.set(c3);
+        if (s.uMetal) s.uMetal.value.set(cmetal);
         s.uSpeed.value = speed;
         s.uNoise.value = noise;
         s.uMix.value = mixv;
@@ -309,6 +313,7 @@ function applyScene(c) {
     const under = new THREE.DirectionalLight(0xa50d1d, 1.3);
     under.position.set(0, -1.2, 0.6);
     scene.add(under);
+    _underLight = under;   /* красится в акцентный цвет через applyScene */
     const rim = new THREE.DirectionalLight(0xe6e3db, 1.25);
     rim.position.set(-1.7, 0.3, -1.3);
     scene.add(rim);
@@ -322,7 +327,7 @@ function applyScene(c) {
     /* ── жидкие материалы: fbm-шум внутри освещённого шейдера ── */
     const NOISE_GLSL = `
 uniform float uTime; uniform float uSpeed; uniform float uNoise; uniform float uGrain; uniform float uMix;
-uniform vec3 uC1; uniform vec3 uC2; uniform vec3 uC3;
+uniform vec3 uC1; uniform vec3 uC2; uniform vec3 uC3; uniform vec3 uMetal;
 varying vec3 vLiq;
 float lhash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453123); }
 float lnoise(vec2 p){ vec2 i=floor(p); vec2 f=fract(p); vec2 u=f*f*(3.0-2.0*f);
@@ -343,9 +348,10 @@ float lfbm(vec2 p){ float v=0.0; float a=0.5; mat2 rot=mat2(0.8,0.6,-0.6,0.8);
 
     const METAL_CHUNK = `
 {
+    diffuseColor.rgb *= uMetal * 1.35;                 /* базовый оттенок шины (из админки) */
     float mf = lfbm(vLiq.xy*0.9*uNoise + uTime*0.30*uSpeed) / 0.9375;
-    vec3 cool = vec3(0.72, 0.80, 0.95);
-    vec3 warm = vec3(1.05, 0.88, 0.66);
+    vec3 cool = mix(vec3(0.72,0.80,0.95), uMetal, 0.4);
+    vec3 warm = mix(vec3(1.05,0.88,0.66), uMetal, 0.4);
     vec3 irid = mix(cool, warm, smoothstep(0.30, 0.70, mf));
     diffuseColor.rgb *= irid;
     diffuseColor.rgb += uC1 * smoothstep(0.72, 0.92, mf) * 0.35;
@@ -365,11 +371,13 @@ float lfbm(vec2 p){ float v=0.0; float a=0.5; mat2 rot=mat2(0.8,0.6,-0.6,0.8);
             shader.uniforms.uC1 = { value: new THREE.Color('#ff0033') };
             shader.uniforms.uC2 = { value: new THREE.Color('#4a000f') };
             shader.uniforms.uC3 = { value: new THREE.Color('#080002') };
+            shader.uniforms.uMetal = { value: new THREE.Color('#cfd6e0') };
             _sceneUniforms.push({
                 isMetal: metal,
                 uTime: shader.uniforms.uTime, uSpeed: shader.uniforms.uSpeed,
                 uNoise: shader.uniforms.uNoise, uGrain: shader.uniforms.uGrain, uMix: shader.uniforms.uMix,
-                uC1: shader.uniforms.uC1, uC2: shader.uniforms.uC2, uC3: shader.uniforms.uC3
+                uC1: shader.uniforms.uC1, uC2: shader.uniforms.uC2, uC3: shader.uniforms.uC3,
+                uMetal: shader.uniforms.uMetal
             });
             applyScene(_content);   /* контент мог загрузиться раньше шейдера */
             shader.vertexShader = shader.vertexShader

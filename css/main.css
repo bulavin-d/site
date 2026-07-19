@@ -407,7 +407,12 @@
             gap: clamp(12px, 2vw, 26px);
             padding: clamp(14px, 1.8vw, 22px) clamp(16px, 2.6vw, 30px);
             border-bottom: 1px solid var(--line);
+            text-decoration: none;
+            color: var(--bone);
+            transition: background .3s;
         }
+
+        .concert:hover { background: rgba(165, 13, 29, .05); }
 
         .concerts .concert:last-child { border-bottom: none; }
 

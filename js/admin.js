@@ -148,7 +148,7 @@ async function saveAllLinks() {
 }
 
 /* ── СЦЕНА: цвета + скорость/шум/зерно/насыщенность + живой превью ── */
-const SCENE_DEF = { c1: '#ff0033', c2: '#4a000f', c3: '#080002', speed: 1.0, noise: 1.0, grain: 0.10, mix: 0.62 };
+const SCENE_DEF = { c1: '#ff0033', c2: '#4a000f', c3: '#080002', metal: '#cfd6e0', speed: 1.0, noise: 1.0, grain: 0.10, mix: 0.62 };
 
 function loadSceneControls(c) {
     const col = (n, val, def) => {
@@ -161,6 +161,9 @@ function loadSceneControls(c) {
     col(1, c.scene_color1, SCENE_DEF.c1);
     col(2, c.scene_color2, SCENE_DEF.c2);
     col(3, c.scene_color3, SCENE_DEF.c3);
+    const cm = (c.scene_metal && /^#[0-9a-fA-F]{6}$/.test(c.scene_metal)) ? c.scene_metal : SCENE_DEF.metal;
+    const mInp = document.getElementById('sceneMetal'); if (mInp) mInp.value = cm;
+    const mLab = document.getElementById('sceneValMetal'); if (mLab) mLab.textContent = cm;
     const sld = (id, val, def, labId, digits) => {
         const n = parseFloat(val); const v = isFinite(n) ? n : def;
         const el = document.getElementById(id); if (el) el.value = v;
@@ -181,6 +184,7 @@ async function saveScene() {
             { key: 'scene_color1', value: g('sceneColor1') },
             { key: 'scene_color2', value: g('sceneColor2') },
             { key: 'scene_color3', value: g('sceneColor3') },
+            { key: 'scene_metal', value: g('sceneMetal') },
             { key: 'scene_speed', value: g('sceneSpeed') },
             { key: 'scene_noise', value: g('sceneNoise') },
             { key: 'scene_grain', value: g('sceneGrain') },
@@ -192,7 +196,7 @@ async function saveScene() {
 async function resetScene() {
     setStatus('sceneStatus', 'СБРОС...', 'busy');
     try {
-        await _saveMulti(['scene_color1', 'scene_color2', 'scene_color3', 'scene_speed', 'scene_noise', 'scene_grain', 'scene_mix']
+        await _saveMulti(['scene_color1', 'scene_color2', 'scene_color3', 'scene_metal', 'scene_speed', 'scene_noise', 'scene_grain', 'scene_mix']
             .map(key => ({ key, value: '' })));
         loadSceneControls({});   /* пусто → дефолты */
         setStatus('sceneStatus', '✓ ВЕРНУЛ КРОВЬ — обнови сайт', 'ok');
@@ -273,6 +277,10 @@ function initScenePreview() {
             const l = document.getElementById('sceneVal' + n); if (l) l.textContent = el.value;
             _syncPreview();
         });
+    });
+    const mEl = document.getElementById('sceneMetal');
+    mEl && mEl.addEventListener('input', () => {
+        const l = document.getElementById('sceneValMetal'); if (l) l.textContent = mEl.value;
     });
     [['sceneSpeed', 'valSpeed', 1], ['sceneNoise', 'valNoise', 1], ['sceneGrain', 'valGrain', 2], ['sceneMix', 'valMix', 2]]
         .forEach(([id, lab, d]) => {
