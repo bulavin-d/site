@@ -17,6 +17,21 @@ function _setLink(id, url) {
     const el = document.getElementById(id);
     if (el && url) el.href = url;
 }
+/* текст ставим ТОЛЬКО при непустом значении → пусто в базе = дефолт из index.html */
+function _setText(id, val) {
+    const el = document.getElementById(id);
+    if (el && val && val.trim()) el.textContent = val.trim();
+}
+/* тумблер секции: 'false' в базе = скрыть блок (и пункт меню). Пусто/'true' = показать. */
+function _toggleSection(sectionId, navId, key) {
+    const hidden = _content[key] === 'false';
+    const sec = document.getElementById(sectionId);
+    if (sec) sec.style.display = hidden ? 'none' : '';
+    if (navId) {
+        const nav = document.getElementById(navId);
+        if (nav) nav.style.display = hidden ? 'none' : '';
+    }
+}
 const _ring = document.querySelector('.cur-ring');
 function _bindHover(el) {
     if (!_ring) return;
@@ -48,9 +63,43 @@ const DEFAULTS = {
     scene_color1: '',   /* неон   (дефолт #ff0033) */
     scene_color2: '',   /* кровь  (дефолт #4a000f) */
     scene_color3: '',   /* тень   (дефолт #080002) */
+    /* тексты интерфейса — пусто = дефолт из index.html (см. applyContent → _setText) */
+    ui_hero_name: '',
+    ui_nav_music: '', ui_nav_afisha: '', ui_nav_social: '',
+    ui_door_music: '', ui_door_afisha: '', ui_door_social: '',
+    ui_release_kicker: '',
+    ui_silence_text: '',
+    ui_organizer_label: '',
+    ui_bio_title: '',
+    ui_footnote: '',
+    ui_tickets_label: '',
+    /* тумблеры видимости — пусто/'true' = показать (дефолт), 'false' = скрыть */
+    show_music: '', show_afisha: '', show_social: '', show_bio: '',
+    show_heart: '', show_splint: '', show_ash: '',
+    show_cursor: '', show_grain_page: '',
+    /* сцена PRO (Фаза 5) — пусто = дефолт */
+    scene_bone_color: '', scene_light_key: '', scene_light_under: '', scene_light_rim: '',
+    scene_fog: '', scene_ash_count: '', scene_ash_speed: '',
+    scene_sway: '', scene_mouse: '', scene_yaw: '', scene_skull_scale: '',
+    scene_heart_x: '', scene_heart_y: '',
+    /* тема сайта (Фаза 6) + SEO (Фаза 7) — пусто = дефолт */
+    theme_accent: '', theme_bg: '', theme_text: '',
+    seo_title: '', seo_description: '', og_image_url: '',
 };
 
 let _content = { ...DEFAULTS };
+
+/* прелоадер: скрываем, КОГДА данные применены → нет «прыжка» текста с дефолта на значение из базы.
+   Идемпотентно (первый вызов побеждает; страховочный таймаут не даст залипнуть при мёртвом Supabase). */
+let _preloaderHidden = false;
+function hidePreloader() {
+    if (_preloaderHidden) return;
+    _preloaderHidden = true;
+    const pl = document.getElementById('preloader');
+    if (!pl) return;
+    pl.classList.add('loaded');
+    setTimeout(() => pl.classList.add('gone'), 650);   /* после fade — убрать из потока */
+}
 
 async function loadContent() {
     try {
@@ -59,12 +108,17 @@ async function loadContent() {
         data.forEach(r => { if (r.value !== null) _content[r.key] = r.value; });
     } catch (e) { console.warn('[BULAVIN] site_content недоступен:', e.message); }
     applyContent();
+    hidePreloader();   /* тексты/ссылки/релиз уже проставлены — можно показывать */
     loadConcerts();
     loadCustomButtons();
+    loadPlatforms();
 }
 
 function applyContent() {
     const c = _content;
+
+    applyTheme(c);   /* цвета UI (Фаза 6) — до остального, чтобы всё уже в теме */
+    applySeo(c);     /* title/description/og (Фаза 7) */
 
     _setLink('link-telegram', c.telegram_url);
     _setLink('link-instagram', c.instagram_url);
@@ -82,8 +136,72 @@ function applyContent() {
     const bioMain = document.getElementById('bioMain');
     if (bioMain && c.bio && c.bio.trim()) bioMain.textContent = c.bio.trim();
 
+    /* ── тексты интерфейса (ui_*) — пусто = дефолт из index.html ── */
+    _setText('heroName', c.ui_hero_name);
+    _setText('navBrand', c.ui_hero_name);
+    _setText('navMusic', c.ui_nav_music);
+    _setText('navAfisha', c.ui_nav_afisha);
+    _setText('navSocial', c.ui_nav_social);
+    _setText('doorMusic', c.ui_door_music);
+    _setText('doorAfisha', c.ui_door_afisha);
+    _setText('doorSocial', c.ui_door_social);
+    _setText('releaseKicker', c.ui_release_kicker);
+    _setText('silenceText', c.ui_silence_text);
+    _setText('link-organizer', c.ui_organizer_label);
+    _setText('bioTitle', c.ui_bio_title);
+    _setText('footNote', c.ui_footnote);
+
+    /* ── тумблеры видимости (show_*) — 'false' скрывает ── */
+    _toggleSection('music', 'navMusic', 'show_music');
+    _toggleSection('afisha', 'navAfisha', 'show_afisha');
+    _toggleSection('connect', 'navSocial', 'show_social');
+    _toggleSection('bio', null, 'show_bio');
+    document.body.classList.toggle('no-cur', c.show_cursor === 'false');
+    document.body.classList.toggle('no-grain', c.show_grain_page === 'false');
+
     applyRelease(c);
     applyScene(c);
+}
+
+/* ── ТЕМА UI (Фаза 6): акцент/фон/текст + производные (dim/line/glow) ── */
+function _hexToRgb(hex) {
+    const m = /^#?([0-9a-fA-F]{6})$/.exec((hex || '').trim());
+    if (!m) return null;
+    const n = parseInt(m[1], 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function applyTheme(c) {
+    const root = document.documentElement.style;
+    const pick = (v, def) => (v && /^#[0-9a-fA-F]{6}$/.test(v.trim())) ? v.trim() : def;
+    const accent = pick(c.theme_accent, '#a50d1d');
+    const bg = pick(c.theme_bg, '#030303');
+    const text = pick(c.theme_text, '#e6e3db');
+    root.setProperty('--blood', accent);
+    root.setProperty('--bg', bg);
+    root.setProperty('--bone', text);
+    const ar = _hexToRgb(accent);
+    if (ar) root.setProperty('--blood-glow', `rgba(${ar[0]},${ar[1]},${ar[2]},.45)`);
+    const tr = _hexToRgb(text);
+    if (tr) {
+        root.setProperty('--bone-dim', `rgba(${tr[0]},${tr[1]},${tr[2]},.5)`);
+        root.setProperty('--line', `rgba(${tr[0]},${tr[1]},${tr[2]},.09)`);
+    }
+}
+
+/* ── SEO/шапка (Фаза 7): подмена title/description/og; статичные меты остаются дефолтом ── */
+function _setMeta(selector, val) {
+    if (!val || !val.trim()) return;
+    const el = document.querySelector(selector);
+    if (el) el.setAttribute('content', val.trim());
+}
+function applySeo(c) {
+    if (c.seo_title && c.seo_title.trim()) {
+        document.title = c.seo_title.trim();
+        _setMeta('meta[property="og:title"]', c.seo_title);
+    }
+    _setMeta('meta[name="description"]', c.seo_description);
+    _setMeta('meta[property="og:description"]', c.seo_description);
+    _setMeta('meta[property="og:image"]', c.og_image_url);
 }
 
 /* ── РЕЛИЗ (release_*) ── */
@@ -142,6 +260,8 @@ async function loadConcerts() {
 
     if (!rows.length) return;   /* тишина остаётся */
 
+    const ticketsLabel = (_content.ui_tickets_label && _content.ui_tickets_label.trim())
+        ? _content.ui_tickets_label.trim() : 'Билеты';
     list.innerHTML = '';
     rows.forEach((c, i) => {
         const row = document.createElement('a');
@@ -156,7 +276,7 @@ async function loadConcerts() {
                 <div class="city">${_esc(c.city)}</div>
                 ${meta.length ? `<div class="cmeta"><b>${_esc(meta[0])}</b>${meta.slice(1).map(m => ' · ' + _esc(m)).join('')}</div>` : ''}
             </div>
-            <span class="btn-doom sm">Билеты</span>`;
+            <span class="btn-doom sm">${_esc(ticketsLabel)}</span>`;
         if (!c.tickets_url) row.addEventListener('click', e => e.preventDefault());
         _bindHover(row);
         list.appendChild(row);
@@ -190,6 +310,42 @@ async function loadCustomButtons() {
         });
         _syncAccordion('socialToggle', 'socialAcc');
     } catch (e) { console.warn('[BULAVIN] custom_buttons недоступен:', e.message); }
+}
+
+/* ── ПЛОЩАДКИ (таблица platforms, Фаза 3) ──────
+   Есть строки → заменяем статический список в #musicAcc. Пусто/ошибка → оставляем хардкод из index.html. */
+const YANDEX_STAR = '<svg viewBox="0 0 24 24" fill="currentColor" style="height:1em;width:auto;display:block;"><path d="M11.8 3.3 L12.7 9.4 L17.2 4.0 L14.2 9.9 L20.6 7.5 L14.6 11.4 L23.1 13.5 L14.6 13.0 L20.7 19.7 L13.5 14.5 L13.9 20.2 L11.7 14.8 L9.9 20.4 L10.4 14.8 L4.5 19.0 L9.4 13.3 L3.7 13.2 L9.3 11.7 L3.2 7.8 L9.7 10.0 L6.9 4.2 L11.2 8.9 Z"/></svg>';
+async function loadPlatforms() {
+    const ledger = document.querySelector('#musicAcc .ledger');
+    if (!ledger) return;
+    let rows = [];
+    try {
+        const { data, error } = await _supabase
+            .from('platforms').select('*')
+            .eq('visible', true)
+            .order('position', { ascending: true });
+        if (error) throw error;
+        rows = data || [];
+    } catch (e) { console.warn('[BULAVIN] platforms недоступен:', e.message); return; }
+
+    if (!rows.length) return;   /* фолбэк: статические строки из index.html */
+
+    ledger.innerHTML = '';
+    rows.forEach(p => {
+        const a = document.createElement('a');
+        a.href = p.url || '#';
+        a.target = '_blank';
+        a.rel = 'noopener';
+        if (p.color && p.color.trim()) a.style.setProperty('--pc', p.color.trim());
+        const iconHtml = (p.icon === 'yandex-star')
+            ? `<i class="row-ic">${YANDEX_STAR}</i>`
+            : `<i class="${_esc(p.icon || 'fa-solid fa-music')} row-ic"></i>`;
+        a.innerHTML = iconHtml + `<span class="row-end">${_esc(String(p.label).toUpperCase())}</span>`;
+        if (!p.url) a.addEventListener('click', e => e.preventDefault());
+        _bindHover(a);
+        ledger.appendChild(a);
+    });
+    _syncAccordion('musicToggle', 'musicAcc');
 }
 
 /* ────────────────────────────────────────────────
@@ -264,6 +420,8 @@ document.addEventListener('click', e => {
 const _sceneUniforms = [];   /* {uTime, uC1, uC2, uC3} на каждый материал */
 
 let _underLight = null;   /* нижний «свет настроения» — красится в акцентный цвет сцены */
+let _heartGroup = null, _ashPoints = null, _splintScene = null;   /* ссылки для тумблеров show_* */
+let _applyScenePro = null;   /* ставится внутри IIFE сцены — расширенные параметры (Фаза 5) */
 function applyScene(c) {
     const hexOr = (v, def) => (v && /^#[0-9a-fA-F]{6}$/.test(v.trim())) ? v.trim() : def;
     const num = (v, def) => { const n = parseFloat(v); return isFinite(n) ? n : def; };
@@ -287,6 +445,11 @@ function applyScene(c) {
         s.uMix.value = mixv;
         s.uGrain.value = s.isMetal ? Math.min(grain * 2.0, 0.5) : grain;
     });
+    /* тумблеры 3D-элементов (ссылки могут быть ещё не готовы — тогда применится при их создании) */
+    if (_heartGroup) _heartGroup.visible = c.show_heart !== 'false';
+    if (_ashPoints) _ashPoints.visible = c.show_ash !== 'false';
+    if (_splintScene) _splintScene.visible = c.show_splint !== 'false';
+    if (_applyScenePro) _applyScenePro(c);
 }
 
 (function () {
@@ -357,11 +520,13 @@ float lfbm(vec2 p){ float v=0.0; float a=0.5; mat2 rot=mat2(0.8,0.6,-0.6,0.8);
     diffuseColor.rgb += uC1 * smoothstep(0.72, 0.92, mf) * 0.35;
 }`;
 
+    const boneMats = [];   /* базовые костяные материалы — для scene_bone_color (Фаза 5) */
     function makeLiquidMat(kind) {
         const metal = kind === 'metal';
         const m = new THREE.MeshStandardMaterial(metal
             ? { color: 0xd9dee6, roughness: 0.24, metalness: 0.78 }
             : { color: 0xd4d1c8, roughness: 0.5, metalness: 0.05 });
+        if (!metal) boneMats.push(m);
         m.onBeforeCompile = (shader) => {
             shader.uniforms.uTime = { value: 0 };
             shader.uniforms.uSpeed = { value: 1.0 };
@@ -403,6 +568,31 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
 
     let skull = null, R = 60;
 
+    /* ── расширенные параметры сцены (Фаза 5): свет/туман/поведение — вживую; пепел-кол-во при старте ── */
+    let swayMul = 1, mouseMul = 1, ashSpeedMul = 1;
+    function applyScenePro(c) {
+        const n = (v, d) => { const x = parseFloat(v); return isFinite(x) ? x : d; };
+        key.intensity = n(c.scene_light_key, 1.05);
+        under.intensity = n(c.scene_light_under, 1.30);
+        rim.intensity = n(c.scene_light_rim, 1.25);
+        const bone = (c.scene_bone_color && /^#[0-9a-fA-F]{6}$/.test(c.scene_bone_color.trim()))
+            ? c.scene_bone_color.trim() : '#d4d1c8';
+        boneMats.forEach(m => m.color.set(bone));
+        base.rotation.y = n(c.scene_yaw, BASE_YAW);
+        holder.scale.setScalar(n(c.scene_skull_scale, 1.0));
+        if (scene.fog && skull) scene.fog.density = (0.55 / (R * 2.3)) * n(c.scene_fog, 1.0);
+        if (_heartGroup) {
+            const portrait = innerWidth < innerHeight;
+            const hx = isFinite(parseFloat(c.scene_heart_x)) ? parseFloat(c.scene_heart_x) : (portrait ? 0.52 : 0.95);
+            const hy = isFinite(parseFloat(c.scene_heart_y)) ? parseFloat(c.scene_heart_y) : (portrait ? 0.55 : 0.32);
+            _heartGroup.position.set(R * hx, R * hy, -R * 0.25);
+        }
+        swayMul = n(c.scene_sway, 1.0);
+        mouseMul = n(c.scene_mouse, 1.0);
+        ashSpeedMul = n(c.scene_ash_speed, 1.0);
+    }
+    _applyScenePro = applyScenePro;
+
     function fitCamera() {
         const halfW = R * 0.60;
         const need = halfW / (Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect);
@@ -430,6 +620,8 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
             g2.scene.traverse(o => { if (o.isMesh) { o.material = makeLiquidMat('metal'); o.geometry.computeVertexNormals(); } });
             g2.scene.position.copy(base.userData.centerOff);
             base.add(g2.scene);
+            _splintScene = g2.scene;
+            applyScene(_content);   /* шина готова — применить тумблер show_splint */
         }, undefined, e => console.warn('[BULAVIN] splint:', e));
 
         stage.style.opacity = '0';
@@ -443,6 +635,7 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
     /* ── разбитое сердце ── */
     const heartGroup = new THREE.Group();
     world.add(heartGroup);
+    _heartGroup = heartGroup;   /* для тумблера show_heart */
 
     const CRACK = [
         new THREE.Vector2(0, -11.5),
@@ -480,7 +673,7 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
         const portrait = innerWidth < innerHeight;
         heartGroup.position.set(R * (portrait ? 0.52 : 0.95), R * (portrait ? 0.55 : 0.32), -R * 0.25);
 
-        const N = 420;
+        const N = Math.max(0, Math.min(3000, Math.round(parseFloat(_content.scene_ash_count) || 420)));
         const pos = new Float32Array(N * 3);
         for (let i = 0; i < N; i++) {
             pos[i * 3] = (Math.random() - 0.5) * R * 4.5;
@@ -492,6 +685,8 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
         const pm = new THREE.PointsMaterial({ color: 0xe6e3db, size: R * 0.006, transparent: true, opacity: 0.38, depthWrite: false });
         ash = new THREE.Points(pg, pm);
         world.add(ash);
+        _ashPoints = ash;
+        applyScene(_content);   /* сердце/пепел готовы — применить их тумблеры */
     }
 
     /* размер берём у контейнера (#stage), а не у окна: он прибит к 100lvh в CSS,
@@ -558,8 +753,8 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
         for (let i = 0; i < _sceneUniforms.length; i++) _sceneUniforms[i].uTime.value = t;
         if (skull) {
             const idle = performance.now() - lastMove > 3500;
-            const gx = idle ? Math.sin(t * 0.38) * 0.42 : tx;
-            const gy = idle ? Math.sin(t * 0.26) * 0.15 : ty;
+            const gx = idle ? Math.sin(t * 0.38) * 0.42 * swayMul : tx * mouseMul;
+            const gy = idle ? Math.sin(t * 0.26) * 0.15 * swayMul : ty * mouseMul;
             holder.rotation.y += (gx - holder.rotation.y) * 0.055;
             holder.rotation.x += (gy - holder.rotation.x) * 0.055;
             holder.position.y = Math.sin(t * 0.75) * (R * 0.02);
@@ -572,7 +767,7 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
             ash.rotation.y = t * 0.016;
             const p = ash.geometry.attributes.position;
             for (let i = 0; i < p.count; i++) {
-                let y = p.getY(i) + R * 0.0006;
+                let y = p.getY(i) + R * 0.0006 * ashSpeedMul;
                 if (y > R * 1.5) y = -R * 1.5;
                 p.setY(i, y);
             }
@@ -582,5 +777,18 @@ gl_FragColor.rgb += (lg - 0.5) * uGrain;`);
     })();
 })();
 
+/* ── LIVE-ПРЕВЬЮ (Фаза 8): страница в iframe админки слушает изменения сцены/темы ── */
+if (new URLSearchParams(location.search).get('preview') === '1') {
+    window.addEventListener('message', (e) => {
+        if (e.origin !== location.origin) return;
+        const m = e.data;
+        if (!m || m.type !== 'scene' || !m.payload) return;
+        Object.assign(_content, m.payload);
+        applyScene(_content);
+        applyTheme(_content);
+    });
+}
+
 /* ── СТАРТ ── */
+setTimeout(hidePreloader, 4000);   /* страховка: не держать экран, если Supabase завис */
 loadContent();

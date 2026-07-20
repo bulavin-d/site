@@ -82,23 +82,31 @@
 </head>
 
 <body>
+    <!-- прелоадер: держит экран, пока не подгрузятся данные из Supabase (без «прыжка» текста) -->
+    <div id="preloader" aria-hidden="true">
+        <div class="pl-inner">
+            <div class="pl-word">BULAVIN</div>
+            <div class="pl-bar"><span></span></div>
+        </div>
+    </div>
+
     <div class="cur-dot"></div>
     <div class="cur-ring"></div>
 
     <div id="stage"></div>
 
     <nav>
-        <a class="brand" href="#">BULAVIN</a>
+        <a class="brand" href="#" id="navBrand">BULAVIN</a>
         <div class="nav-links">
-            <a href="#music">Музыка</a>
-            <a href="#afisha">Афиша</a>
-            <a href="#connect">Social</a>
+            <a href="#music" id="navMusic">Музыка</a>
+            <a href="#afisha" id="navAfisha">Афиша</a>
+            <a href="#connect" id="navSocial">Social</a>
         </div>
     </nav>
 
     <!-- ══ HERO ══ -->
     <header class="hero">
-        <h1 class="hero-name">BULAVIN</h1>
+        <h1 class="hero-name" id="heroName">BULAVIN</h1>
         <div class="hero-arrow" aria-hidden="true">
             <svg viewBox="0 0 18 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 0 V40 M2 33 L9 41 L16 33" stroke="#e6e3db" stroke-width="1.2" />
@@ -117,7 +125,7 @@
                     <img id="releaseCoverImg" src="" alt="Обложка релиза BULAVIN" style="display:none;">
                 </div>
                 <div class="release-info">
-                    <span class="rk">новый релиз</span>
+                    <span class="rk" id="releaseKicker">новый релиз</span>
                     <h3 id="releaseTitle">НАЗВАНИЕ ТРЕКА</h3>
                 </div>
                 <a href="#" class="btn-doom" id="releaseCTA" target="_blank" rel="noopener" data-h>Пресейв</a>
@@ -126,7 +134,7 @@
             <div class="rv">
                 <button class="ledger-toggle" id="musicToggle" data-h>
                     <i class="fa-solid fa-compact-disc row-ic"></i>
-                    <span class="row-end">МУЗЫКА
+                    <span class="row-end"><span id="doorMusic">МУЗЫКА</span>
                         <svg class="tgl-arrow" viewBox="0 0 16 10" fill="none"><path d="M1 1 L8 8 L15 1" stroke="currentColor" stroke-width="1.4"/></svg>
                     </span>
                 </button>
@@ -154,14 +162,14 @@
             <div class="rv">
                 <button class="ledger-toggle" id="afishaToggle" data-h>
                     <i class="fa-solid fa-ticket row-ic"></i>
-                    <span class="row-end">АФИША
+                    <span class="row-end"><span id="doorAfisha">АФИША</span>
                         <svg class="tgl-arrow" viewBox="0 0 16 10" fill="none"><path d="M1 1 L8 8 L15 1" stroke="currentColor" stroke-width="1.4"/></svg>
                     </span>
                 </button>
                 <div class="accordion" id="afishaAcc">
                     <div class="concerts" id="concertList" style="display:none;"></div>
                     <div class="afisha-silence" id="afishaSilence">
-                        <div class="afisha-line">пока — <b>тишина.</b></div>
+                        <div class="afisha-line" id="silenceText">пока — <b>тишина.</b></div>
                         <a id="link-organizer" href="https://t.me/imbulavin" target="_blank" rel="noopener" class="btn-doom" data-h>Я организатор</a>
                     </div>
                 </div>
@@ -173,7 +181,7 @@
             <div class="rv">
                 <button class="ledger-toggle" id="socialToggle" data-h>
                     <i class="fa-solid fa-at row-ic"></i>
-                    <span class="row-end">SOCIAL
+                    <span class="row-end"><span id="doorSocial">SOCIAL</span>
                         <svg class="tgl-arrow" viewBox="0 0 16 10" fill="none"><path d="M1 1 L8 8 L15 1" stroke="currentColor" stroke-width="1.4"/></svg>
                     </span>
                 </button>
@@ -203,7 +211,7 @@
                     <ellipse cx="12.2" cy="27.8" rx="8" ry="4.6" transform="rotate(-45 12.2 27.8)" />
                 </g>
             </svg>
-            <h2>BULAVIN</h2>
+            <h2 id="bioTitle">BULAVIN</h2>
             <p id="bioMain">Касьяненко Даниил Юрьевич — казахстанский музыкант, исполнитель, продюсер и звукорежиссёр,
                 известный под псевдонимом BULAVIN (БУЛАВИН).</p>
             </div>
@@ -211,7 +219,7 @@
 
     </div><!-- /rail -->
 
-    <div class="foot-note">Официальный сайт артиста: музыка на всех площадках, афиша выступлений и прямые контакты.</div>
+    <div class="foot-note" id="footNote">Официальный сайт артиста: музыка на всех площадках, афиша выступлений и прямые контакты.</div>
 
     <footer>
         <span id="footerText">© 2026 BULAVIN</span>

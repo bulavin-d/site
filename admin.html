@@ -48,6 +48,22 @@
         .li-act:hover { background: rgba(255, 255, 255, .14); }
         .li-act.hidden { opacity: .4; }
         .li-act.del:hover { background: #a50d1d; }
+        .crud-wrap { margin-bottom: 8px; }
+        .crud-wrap .list-item { margin-bottom: 0; }
+        .crud-edit {
+            padding: 12px 14px; margin-top: 6px;
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 10px;
+        }
+        .crud-edit .btn-row { display: flex; gap: 8px; }
+        .crud-edit .btn-action { flex: 1; }
+        .btn-action.active-w { background: #a50d1d !important; color: #000 !important; }
+        /* узкие телефоны: кнопки-действия переносим на свою строку, чтобы название не схлопывалось */
+        @media (max-width: 430px) {
+            .list-item { flex-wrap: wrap; }
+            .list-item .li-acts { width: 100%; justify-content: flex-end; }
+        }
         .scene-colors { display: flex; flex-direction: column; gap: 10px; margin: 10px 0 4px; }
         .scene-swatch {
             width: 46px; height: 40px; border-radius: 10px; flex-shrink: 0;
@@ -227,6 +243,13 @@
         /* ── РАДИО / ЦВЕТА / ПРЕВЬЮ (уже свои, чуть согласуем) ── */
         .radio-custom { border-color: var(--line) !important; }
         .radio-label input:checked + .radio-custom { border-color: var(--blood) !important; background: var(--blood) !important; }
+        /* тумблеры в кровь (admin.css по умолчанию синие) */
+        .toggle input:checked + .toggle-slider {
+            background: rgba(165, 13, 29, .3) !important;
+            border-color: rgba(165, 13, 29, .55) !important;
+            box-shadow: 0 0 12px rgba(165, 13, 29, .22) !important;
+        }
+        .toggle input:checked + .toggle-slider::before { box-shadow: 0 2px 10px rgba(165, 13, 29, .5) !important; }
         .color-value { color: var(--bone-dim) !important; font-family: 'Inter', monospace; }
         .scene-preview, .scene-swatch { border-color: var(--line) !important; }
 
@@ -298,6 +321,8 @@
         <button class="tab-btn" onclick="switchTab('tab-links', this)"><i class="fa-solid fa-link"></i>Ссылки</button>
         <button class="tab-btn" onclick="switchTab('tab-release', this)"><i class="fa-solid fa-record-vinyl"></i>Релиз</button>
         <button class="tab-btn" onclick="switchTab('tab-afisha', this)"><i class="fa-solid fa-ticket"></i>Афиша</button>
+        <button class="tab-btn" onclick="switchTab('tab-texts', this)"><i class="fa-solid fa-sliders"></i>Страница</button>
+        <button class="tab-btn" onclick="switchTab('tab-preview', this); ensurePreview()"><i class="fa-solid fa-eye"></i>Превью</button>
     </div>
 
     <!-- ════ ГЛАВНАЯ: тексты + цвета сцены ════ -->
@@ -342,12 +367,37 @@
                     <div class="scene-swatch" id="sceneSwatchMetal"><input type="color" id="sceneMetal" value="#cfd6e0"></div>
                     <div class="color-info"><div class="toggle-label-text">Шина Тигерштедта (металл)</div><div class="color-value" id="sceneValMetal">#cfd6e0</div></div>
                 </div>
+                <div class="color-row" style="margin:0;">
+                    <div class="scene-swatch" id="sceneSwatchBone"><input type="color" id="sceneBone" value="#d4d1c8"></div>
+                    <div class="color-info"><div class="toggle-label-text">Базовый цвет кости</div><div class="color-value" id="sceneValBone">#d4d1c8</div></div>
+                </div>
             </div>
 
             <div class="slider-row"><label>Скорость течения <b id="valSpeed">1.0</b></label><input type="range" id="sceneSpeed" min="0" max="3" step="0.05" value="1"></div>
             <div class="slider-row"><label>Масштаб шума <b id="valNoise">1.0</b></label><input type="range" id="sceneNoise" min="0.3" max="3" step="0.05" value="1"></div>
             <div class="slider-row"><label>Зерно (плёнка) <b id="valGrain">0.10</b></label><input type="range" id="sceneGrain" min="0" max="0.3" step="0.01" value="0.1"></div>
             <div class="slider-row"><label>Насыщенность <b id="valMix">0.62</b></label><input type="range" id="sceneMix" min="0" max="1" step="0.02" value="0.62"></div>
+
+            <div class="admin-divider"></div>
+            <p class="help-text">Свет, поведение и атмосфера видны только на самом сайте (в превью выше их не видно). После сохранения — обнови сайт.</p>
+
+            <div class="field-label" style="margin:4px 0 2px;">Свет</div>
+            <div class="slider-row"><label>Верхний ключ <b id="vLightKey">1.05</b></label><input type="range" id="sLightKey" min="0" max="3" step="0.05" value="1.05"></div>
+            <div class="slider-row"><label>Нижний (настроение) <b id="vLightUnder">1.30</b></label><input type="range" id="sLightUnder" min="0" max="3" step="0.05" value="1.3"></div>
+            <div class="slider-row"><label>Контровой <b id="vLightRim">1.25</b></label><input type="range" id="sLightRim" min="0" max="3" step="0.05" value="1.25"></div>
+
+            <div class="field-label" style="margin:10px 0 2px;">Поведение</div>
+            <div class="slider-row"><label>Поворот головы <b id="vYaw">0.55</b></label><input type="range" id="sYaw" min="-1.5" max="1.5" step="0.01" value="0.55"></div>
+            <div class="slider-row"><label>Масштаб черепа <b id="vScale">1.00</b></label><input type="range" id="sScale" min="0.4" max="2" step="0.02" value="1"></div>
+            <div class="slider-row"><label>Качание в покое <b id="vSway">1.00</b></label><input type="range" id="sSway" min="0" max="3" step="0.05" value="1"></div>
+            <div class="slider-row"><label>Реакция на мышь <b id="vMouse">1.00</b></label><input type="range" id="sMouse" min="0" max="3" step="0.05" value="1"></div>
+            <div class="slider-row"><label>Сердце по X <b id="vHeartX">0.95</b></label><input type="range" id="sHeartX" min="-2" max="2" step="0.02" value="0.95"></div>
+            <div class="slider-row"><label>Сердце по Y <b id="vHeartY">0.32</b></label><input type="range" id="sHeartY" min="-2" max="2" step="0.02" value="0.32"></div>
+
+            <div class="field-label" style="margin:10px 0 2px;">Атмосфера</div>
+            <div class="slider-row"><label>Туман <b id="vFog">1.00</b></label><input type="range" id="sFog" min="0" max="3" step="0.05" value="1"></div>
+            <div class="slider-row"><label>Пепел: скорость <b id="vAshSpeed">1.00</b></label><input type="range" id="sAshSpeed" min="0" max="4" step="0.05" value="1"></div>
+            <div class="slider-row"><label>Пепел: количество <span style="opacity:.6">(после обновления сайта)</span> <b id="vAshCount">420</b></label><input type="range" id="sAshCount" min="0" max="2000" step="20" value="420"></div>
 
             <div class="btn-row">
                 <button class="btn-action" onclick="saveScene()">СОХРАНИТЬ СЦЕНУ</button>
@@ -356,23 +406,67 @@
             <div class="status-line" id="sceneStatus"></div>
         </div>
 
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-palette"></i>Тема сайта</div>
+            <p class="help-text">Перекрашивает весь интерфейс (не только 3D). ⚠️ Следи за контрастом: тёмный текст на тёмном фоне будет нечитаем. Сброс = дефолт (кровь на чёрном). После сохранения обнови сайт.</p>
+            <div class="scene-colors">
+                <div class="color-row" style="margin:0;">
+                    <div class="scene-swatch" id="themeSwatchAccent"><input type="color" id="themeAccent" value="#a50d1d"></div>
+                    <div class="color-info"><div class="toggle-label-text">Акцент (кнопки, ховеры)</div><div class="color-value" id="themeValAccent">#a50d1d</div></div>
+                </div>
+                <div class="color-row" style="margin:0;">
+                    <div class="scene-swatch" id="themeSwatchBg"><input type="color" id="themeBg" value="#030303"></div>
+                    <div class="color-info"><div class="toggle-label-text">Фон страницы</div><div class="color-value" id="themeValBg">#030303</div></div>
+                </div>
+                <div class="color-row" style="margin:0;">
+                    <div class="scene-swatch" id="themeSwatchText"><input type="color" id="themeText" value="#e6e3db"></div>
+                    <div class="color-info"><div class="toggle-label-text">Текст</div><div class="color-value" id="themeValText">#e6e3db</div></div>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button class="btn-action" onclick="saveTheme()">СОХРАНИТЬ ТЕМУ</button>
+                <button class="btn-action btn-danger" onclick="resetTheme()">СБРОС</button>
+            </div>
+            <div class="status-line" id="themeStatus"></div>
+        </div>
+
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-magnifying-glass"></i>SEO и шапка</div>
+            <p class="help-text">Для соцсетей/шаринга и вкладки браузера. Полное SEO для Google — в статичном index.html (эти поля дополняют, не заменяют). Пусто = дефолт.</p>
+            <div class="field-row"><div class="field-label">Заголовок (title / og:title)</div><input class="input" type="text" id="fieldSeoTitle" placeholder="BULAVIN — Официальный сайт | ..."></div>
+            <div class="field-row"><div class="field-label">Описание (description / og)</div><textarea class="admin-textarea" id="fieldSeoDesc" rows="2" placeholder="БУЛАВИН (BULAVIN) — официальный сайт..."></textarea></div>
+            <div class="field-row"><div class="field-label">Картинка для шаринга (og:image)</div><input class="input" type="url" id="fieldOgImage" placeholder="https://..."></div>
+            <button class="btn-action" onclick="saveSeo()">СОХРАНИТЬ SEO</button>
+            <div class="status-line" id="seoStatus"></div>
+        </div>
+
     </div>
 
     <!-- ════ ССЫЛКИ: площадки + соцсети + доп.кнопки ════ -->
     <div class="tab-content" id="tab-links">
         <div class="admin-section">
             <div class="section-title"><i class="fa-solid fa-compact-disc"></i>Музыкальные площадки</div>
-            <div class="field-row"><div class="field-label"><i class="fa-solid fa-compact-disc" style="margin-right:5px;"></i>Яндекс Музыка</div><input class="input" type="url" id="fieldYandex"></div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-spotify" style="margin-right:5px;"></i>Spotify</div><input class="input" type="url" id="fieldSpotify"></div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-apple" style="margin-right:5px;"></i>Apple Music</div><input class="input" type="url" id="fieldApple"></div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-vk" style="margin-right:5px;"></i>VK Music</div><input class="input" type="url" id="fieldVk"></div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-youtube" style="margin-right:5px;"></i>YouTube Music</div><input class="input" type="url" id="fieldYt"></div>
-            <div class="field-row"><div class="field-label"><i class="fa-brands fa-soundcloud" style="margin-right:5px;"></i>SoundCloud</div><input class="input" type="url" id="fieldSoundcloud"></div>
+            <p class="help-text">Порядок ▲▼, редактирование ✏️, скрытие 👁, удаление 🗑. Иконка — класс FA (напр. <code>fa-brands fa-spotify</code>) или спец-значение <code>yandex-star</code>. Цвет — hex ховера (пусто = кровь).</p>
+            <div class="custom-btn-list" id="platformAdminList">
+                <div class="help-text" style="text-align:center;padding:12px 0;">Загрузка...</div>
+            </div>
             <div class="admin-divider"></div>
-            <div class="section-title" style="margin-top:0;"><i class="fa-solid fa-at"></i>Соцсети (блок SOCIAL)</div>
+            <div class="add-btn-form">
+                <div class="field-label" style="margin-bottom:2px;">Добавить площадку</div>
+                <input class="input" type="text" id="newPlatLabel" placeholder="Название (SPOTIFY)" style="margin-bottom:8px;">
+                <input class="input" type="url"  id="newPlatUrl"   placeholder="https://..." style="margin-bottom:8px;">
+                <input class="input" type="text" id="newPlatIcon"  placeholder="fa-brands fa-spotify (или yandex-star)" style="margin-bottom:8px;">
+                <input class="input" type="text" id="newPlatColor" placeholder="#1DB954 (пусто = кровь)" style="margin-bottom:8px;">
+                <button class="btn-action" onclick="addPlatform()">ДОБАВИТЬ ПЛОЩАДКУ</button>
+            </div>
+            <div class="status-line" id="platformStatus"></div>
+        </div>
+
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-at"></i>Соцсети (блок SOCIAL)</div>
             <div class="field-row"><div class="field-label"><i class="fa-brands fa-telegram" style="margin-right:5px;"></i>Telegram</div><input class="input" type="url" id="fieldTelegram"></div>
             <div class="field-row"><div class="field-label"><i class="fa-brands fa-instagram" style="margin-right:5px;"></i>Instagram</div><input class="input" type="url" id="fieldInstagram"></div>
-            <button class="btn-action" onclick="saveAllLinks()">СОХРАНИТЬ ВСЕ ССЫЛКИ</button>
+            <button class="btn-action" onclick="saveAllLinks()">СОХРАНИТЬ СОЦСЕТИ</button>
             <div class="status-line" id="linksStatus"></div>
         </div>
 
@@ -468,6 +562,109 @@
             </div>
             <button class="btn-action" onclick="saveField('fieldOrgUrl','organizer_url','orgStatus')">СОХРАНИТЬ</button>
             <div class="status-line" id="orgStatus"></div>
+        </div>
+    </div>
+
+    <!-- ════ СТРАНИЦА: тумблеры видимости + все тексты ════ -->
+    <div class="tab-content" id="tab-texts">
+
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-eye"></i>Видимость блоков</div>
+            <p class="help-text">Выключенное — скрывается на сайте. После сохранения обнови сайт (Ctrl+Shift+R).</p>
+
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Секция «Музыка»</div><div class="toggle-sub">весь блок + пункт меню</div></div>
+                <label class="toggle"><input type="checkbox" id="tglMusic" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Секция «Афиша»</div><div class="toggle-sub">весь блок + пункт меню</div></div>
+                <label class="toggle"><input type="checkbox" id="tglAfisha" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Секция «Social»</div><div class="toggle-sub">весь блок + пункт меню</div></div>
+                <label class="toggle"><input type="checkbox" id="tglSocial" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Блок биографии</div><div class="toggle-sub">текст «BULAVIN» внизу</div></div>
+                <label class="toggle"><input type="checkbox" id="tglBio" checked><span class="toggle-slider"></span></label>
+            </div>
+
+            <div class="admin-divider"></div>
+            <div class="field-label" style="margin-bottom:6px;">3D-сцена</div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">3D-сердце</div><div class="toggle-sub">разбитое сердце сбоку</div></div>
+                <label class="toggle"><input type="checkbox" id="tglHeart" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Шина Тигерштедта</div><div class="toggle-sub">металл на челюсти</div></div>
+                <label class="toggle"><input type="checkbox" id="tglSplint" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Пепел</div><div class="toggle-sub">летящие частицы</div></div>
+                <label class="toggle"><input type="checkbox" id="tglAsh" checked><span class="toggle-slider"></span></label>
+            </div>
+
+            <div class="admin-divider"></div>
+            <div class="field-label" style="margin-bottom:6px;">Эффекты страницы</div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Кастомный курсор</div><div class="toggle-sub">выкл → системный курсор</div></div>
+                <label class="toggle"><input type="checkbox" id="tglCursor" checked><span class="toggle-slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div><div class="toggle-label-text">Зерно-плёнка</div><div class="toggle-sub">шум поверх страницы</div></div>
+                <label class="toggle"><input type="checkbox" id="tglGrain" checked><span class="toggle-slider"></span></label>
+            </div>
+
+            <button class="btn-action" style="margin-top:14px;" onclick="saveToggles()">СОХРАНИТЬ ВИДИМОСТЬ</button>
+            <div class="status-line" id="toggleStatus"></div>
+        </div>
+
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-font"></i>Тексты интерфейса</div>
+            <p class="help-text">Каждое поле меняет надпись на сайте. <b>Пусто = текст по умолчанию</b> (он показан серым внутри поля). Одна кнопка внизу сохраняет всё. После сохранения — обнови сайт (Ctrl+Shift+R).</p>
+
+            <div class="field-row"><div class="field-label">Имя в хиро + бренд в шапке</div><input class="input" type="text" id="fieldUiHeroName" placeholder="BULAVIN"></div>
+
+            <div class="admin-divider"></div>
+            <div class="field-label" style="margin-bottom:6px;">Меню в шапке</div>
+            <div class="field-row"><div class="field-label">Пункт «Музыка»</div><input class="input" type="text" id="fieldUiNavMusic" placeholder="Музыка"></div>
+            <div class="field-row"><div class="field-label">Пункт «Афиша»</div><input class="input" type="text" id="fieldUiNavAfisha" placeholder="Афиша"></div>
+            <div class="field-row"><div class="field-label">Пункт «Social»</div><input class="input" type="text" id="fieldUiNavSocial" placeholder="Social"></div>
+
+            <div class="admin-divider"></div>
+            <div class="field-label" style="margin-bottom:6px;">Двери-аккордеоны</div>
+            <div class="field-row"><div class="field-label">Дверь «МУЗЫКА»</div><input class="input" type="text" id="fieldUiDoorMusic" placeholder="МУЗЫКА"></div>
+            <div class="field-row"><div class="field-label">Дверь «АФИША»</div><input class="input" type="text" id="fieldUiDoorAfisha" placeholder="АФИША"></div>
+            <div class="field-row"><div class="field-label">Дверь «SOCIAL»</div><input class="input" type="text" id="fieldUiDoorSocial" placeholder="SOCIAL"></div>
+
+            <div class="admin-divider"></div>
+            <div class="field-label" style="margin-bottom:6px;">Прочее</div>
+            <div class="field-row"><div class="field-label">Курсив над названием релиза</div><input class="input" type="text" id="fieldUiReleaseKicker" placeholder="новый релиз"></div>
+            <div class="field-row"><div class="field-label">Текст пустой афиши</div><input class="input" type="text" id="fieldUiSilence" placeholder="пока — тишина."></div>
+            <div class="field-row"><div class="field-label">Кнопка «Я организатор»</div><input class="input" type="text" id="fieldUiOrganizer" placeholder="Я организатор"></div>
+            <div class="field-row"><div class="field-label">Кнопка «Билеты» в строке концерта</div><input class="input" type="text" id="fieldUiTickets" placeholder="Билеты"></div>
+            <div class="field-row"><div class="field-label">Заголовок над био</div><input class="input" type="text" id="fieldUiBioTitle" placeholder="BULAVIN"></div>
+            <div class="field-row"><div class="field-label">Строка над футером</div><textarea class="admin-textarea" id="fieldUiFootnote" rows="2" placeholder="Официальный сайт артиста: музыка на всех площадках, афиша выступлений и прямые контакты."></textarea></div>
+
+            <button class="btn-action" onclick="saveAllTexts()">СОХРАНИТЬ ВСЕ ТЕКСТЫ</button>
+            <div class="status-line" id="uiTextStatus"></div>
+        </div>
+    </div>
+
+    <!-- ════ ПРЕВЬЮ: живой сайт в iframe ════ -->
+    <div class="tab-content" id="tab-preview">
+        <div class="admin-section">
+            <div class="section-title"><i class="fa-solid fa-eye"></i>Живой превью сайта</div>
+            <p class="help-text">Крути слайдеры/пипетки сцены и темы на вкладке «Главная» — череп и цвета здесь меняются мгновенно (без сохранения). Чтобы записать — жми «Сохранить» на «Главной».</p>
+            <div class="btn-row" style="margin-bottom:12px;">
+                <button class="btn-action" onclick="setPreviewWidth('desktop', this)">ПК</button>
+                <button class="btn-action" onclick="setPreviewWidth('mobile', this)">Телефон</button>
+                <button class="btn-action" onclick="reloadPreview()">Сбросить к базе</button>
+            </div>
+            <div id="previewHolder" style="display:flex;justify-content:center;">
+                <iframe id="sitePreviewFrame" title="Превью сайта"
+                    style="width:100%;max-width:100%;height:640px;border:1px solid var(--line);border-radius:8px;background:#000;"></iframe>
+            </div>
         </div>
     </div>
 
